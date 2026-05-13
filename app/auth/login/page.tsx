@@ -26,9 +26,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const errorMessage = getErrorMessage(params?.error)
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-2xl bg-white shadow p-8">
-        <h1 className="text-2xl font-bold mb-2">Iniciar sesión</h1>
+    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-6 text-slate-900">
+      <div className="w-full max-w-md rounded-2xl bg-white shadow p-8 text-slate-900">
+        <h1 className="text-2xl font-bold mb-2 text-slate-900">
+          Iniciar sesión
+        </h1>
 
         <p className="text-slate-600 mb-6">
           Accede al sistema de laboratorio
@@ -42,7 +44,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         <form action={loginUser} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1 text-slate-700">
               Correo
             </label>
             <input
@@ -50,12 +52,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               type="email"
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1 text-slate-700">
               Contraseña
             </label>
             <input
@@ -63,7 +65,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               type="password"
               required
               autoComplete="current-password"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
             />
           </div>
 
