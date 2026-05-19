@@ -35,6 +35,7 @@ export default async function InventarioPage() {
   const { data: items, error } = await supabase
     .from('items')
     .select('*')
+    .eq('status', 'active')
     .order('created_at', { ascending: false })
 
   if (error) {

@@ -109,6 +109,7 @@ export default async function DashboardPage({
       status,
       track_individual
     `)
+    .eq('status', 'active')
     .order('created_at', { ascending: false })
 
   if (itemsError) {
