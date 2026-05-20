@@ -153,13 +153,25 @@ export async function createReturn(formData: FormData): Promise<void> {
     }
   }
 
-  const pendienteFinal =
-    loanItem.quantity -
-    updatedLoanItem.returnedQuantity -
-    updatedLoanItem.missingQuantity
+  const { data: allLoanItems, error: allLoanItemsError } = await supabase
+    .from('loan_items')
+    .select('quantity, returned_quantity, missing_quantity')
+    .eq('loan_id', loanItem.loan_id)
+
+  if (allLoanItemsError || !allLoanItems) {
+    throw new Error('No se pudieron verificar los ítems pendientes del préstamo.')
+  }
+
+  const totalPending = allLoanItems.reduce((acc, item) => {
+    const quantity = item.quantity ?? 0
+    const returnedQuantity = item.returned_quantity ?? 0
+    const missingQuantity = item.missing_quantity ?? 0
+
+    return acc + Math.max(quantity - returnedQuantity - missingQuantity, 0)
+  }, 0)
 
   const nuevoEstado: 'returned' | 'partial_return' =
-    pendienteFinal <= 0 ? 'returned' : 'partial_return'
+    totalPending <= 0 ? 'returned' : 'partial_return'
 
   const { error: updateLoanError } = await supabase
     .from('loans')
@@ -172,7 +184,6 @@ export async function createReturn(formData: FormData): Promise<void> {
   if (updateLoanError) {
     throw new Error(updateLoanError.message)
   }
-
   const movementRows = []
 
   if (input.quantityOk > 0) {

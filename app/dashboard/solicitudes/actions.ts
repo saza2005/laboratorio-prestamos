@@ -44,6 +44,35 @@ export async function approveRequest(formData: FormData): Promise<void> {
     throw new Error('Solo se pueden aprobar solicitudes pendientes.')
   }
 
+  const { data: requestGroups, error: groupsError } = await supabase
+    .from('request_groups')
+    .select('id')
+    .eq('request_id', requestId)
+
+  if (groupsError) {
+    throw new Error(groupsError.message)
+  }
+
+  const hasGroups = (requestGroups ?? []).length > 0
+
+  if (hasGroups) {
+    const { error: updateRequestError } = await supabase
+      .from('requests')
+      .update({
+        status: 'approved',
+        approved_by: user.id,
+        approved_at: new Date().toISOString(),
+        rejection_reason: null,
+      })
+      .eq('id', requestId)
+
+    if (updateRequestError) {
+      throw new Error(updateRequestError.message)
+    }
+
+    redirect('/dashboard/solicitudes')
+  }
+
   const { data: requestItems, error: requestItemsError } = await supabase
     .from('request_items')
     .select('id, item_id, quantity_requested')

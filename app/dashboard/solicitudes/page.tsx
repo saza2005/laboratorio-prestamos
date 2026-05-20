@@ -168,56 +168,76 @@ const requests =
               </div>
             )}
 
-            <form action={approveRequest} className="space-y-4 rounded-xl border p-4">
+            {req.request_groups && req.request_groups.length > 0 ? (
+              <form action={approveRequest} className="space-y-4 rounded-xl border p-4">
+                <h3 className="font-semibold">Aprobar solicitud por grupos</h3>
+
+                <input type="hidden" name="request_id" value={req.id} />
+
+                <p className="text-sm text-slate-600">
+                  Esta solicitud contiene grupos asignados. La aprobación se realizará de
+                  forma completa para todos los grupos y materiales solicitados.
+                </p>
+
+                <button
+                  type="submit"
+                  className="rounded-lg bg-blue-600 text-white px-5 py-2.5 font-medium hover:bg-blue-700 transition"
+                >
+                  Aprobar solicitud completa
+                </button>
+              </form>
+            ) : (
+              <form action={approveRequest} className="space-y-4 rounded-xl border p-4">
                 <h3 className="font-semibold">Aprobar solicitud</h3>
 
                 <input type="hidden" name="request_id" value={req.id} />
 
                 <div className="space-y-3">
-                {req.request_items.map((ri) => (
+                  {req.request_items.map((ri) => (
                     <div
-                    key={ri.id}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end"
+                      key={ri.id}
+                      className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end"
                     >
-                    <div className="md:col-span-2">
+                      <div className="md:col-span-2">
                         <label className="block text-sm font-medium mb-1">
-                        {ri.item?.name ?? 'Ítem'} [{ri.item?.code ?? '-'}]
+                          {ri.item?.name ?? 'Ítem'} [{ri.item?.code ?? '-'}]
                         </label>
                         <p className="text-xs text-slate-500">
-                        Solicitado: {ri.quantity_requested} | Disponible:{' '}
-                        {ri.item?.stock_available ?? 0}
+                          Solicitado: {ri.quantity_requested} | Disponible:{' '}
+                          {ri.item?.stock_available ?? 0}
                         </p>
-                    </div>
+                      </div>
 
-                    <div>
+                      <div>
                         <label className="block text-sm font-medium mb-1">
-                        Cantidad aprobada
+                          Cantidad aprobada
                         </label>
                         <input
-                        type="number"
-                        name="quantity_approved"
-                        min="0"
-                        max={ri.quantity_requested}
-                        defaultValue={ri.quantity_requested}
-                        className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                          type="number"
+                          name="quantity_approved"
+                          min="0"
+                          max={ri.quantity_requested}
+                          defaultValue={ri.quantity_requested}
+                          className="w-full rounded-lg border border-slate-300 px-3 py-2"
                         />
                         <input
-                        type="hidden"
-                        name="request_item_id"
-                        value={ri.id}
+                          type="hidden"
+                          name="request_item_id"
+                          value={ri.id}
                         />
+                      </div>
                     </div>
-                    </div>
-                ))}
+                  ))}
                 </div>
 
                 <button
-                type="submit"
-                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 font-medium hover:bg-blue-700 transition"
+                  type="submit"
+                  className="rounded-lg bg-blue-600 text-white px-5 py-2.5 font-medium hover:bg-blue-700 transition"
                 >
-                Aprobar
+                  Aprobar
                 </button>
-            </form>
+              </form>
+            )}
 
             <form action={rejectRequest} className="space-y-4 rounded-xl border p-4">
                 <h3 className="font-semibold">Rechazar solicitud</h3>

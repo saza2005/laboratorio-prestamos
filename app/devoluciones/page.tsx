@@ -42,7 +42,28 @@ export default async function DevolucionesPage() {
       item_id,
       loan_id,
       items:items(id, name, code),
-      loans:loans(id, status, user_id, delivery_date, expected_return_date),
+      loans:loans(
+        id,
+        status,
+        user_id,
+        delivery_date,
+        expected_return_date,
+        loan_groups (
+          id,
+          group_name,
+          leader:profiles(full_name, email),
+          loan_group_items (
+            id,
+            item_id,
+            quantity,
+            items (
+              id,
+              name,
+              code
+            )
+          )
+        )
+      ),
       loan_user:loans!inner(
         user_id,
         profiles:profiles!loans_user_id_fkey(full_name, email)
@@ -92,18 +113,18 @@ export default async function DevolucionesPage() {
 
   const activeLoanItems =
     loanItems?.filter((li) => {
-      const loanData = li.loans as { status?: string } | null
+      const loanData = firstOrNull(li.loans) as { status?: string } | null
 
-      const pendiente =
-        li.quantity -
-        li.returned_quantity -
-        (li.missing_quantity ?? 0)
+      const returnedQuantity = li.returned_quantity ?? 0
+      const missingQuantity = li.missing_quantity ?? 0
 
-      return (
-        pendiente > 0 &&
-        (loanData?.status === 'active' ||
-          loanData?.status === 'partial_return')
-      )
+      const pendiente = li.quantity - returnedQuantity - missingQuantity
+
+      const isReturnableLoan =
+        loanData?.status === 'active' ||
+        loanData?.status === 'partial_return'
+
+      return pendiente > 0 && isReturnableLoan
     }) ?? []
   const normalizedReturnHistory =
     returnHistory?.map((entry) => {
@@ -201,32 +222,52 @@ export default async function DevolucionesPage() {
               <tbody>
                 {activeLoanItems.length > 0 ? (
                   activeLoanItems.map((li) => {
-                    const itemData = li.items as
-                      | { id?: string; name?: string; code?: string }
-                      | null
 
-                    const loanData = li.loans as
-                      | {
-                          id?: string
-                          status?: string
-                          user_id?: string
-                          delivery_date?: string
-                          expected_return_date?: string
-                          loan_groups?: {
+                  const itemData = firstOrNull(li.items) as
+                    | { id?: string; name?: string; code?: string }
+                    | null
+
+                  const loanData = firstOrNull(li.loans) as
+                    | {
+                        id?: string
+                        status?: string
+                        user_id?: string
+                        delivery_date?: string
+                        expected_return_date?: string
+                        loan_groups?: {
+                          id: string
+                          group_name: string
+                          leader?: {
+                            full_name?: string
+                            email?: string
+                          } | null
+                          loan_group_items?: {
                             id: string
-                            group_name: string
-                            leader?: {
-                              full_name?: string
+                            item_id?: string
+                            quantity: number
+                            items?: {
+                              id?: string
+                              name?: string
+                              code?: string
                             } | null
                           }[]
-                        }
-                      | null
-                    const loanUserData = li.loan_user as
-                      | {
-                          user_id?: string
-                          profiles?: { full_name?: string; email?: string } | null
-                        }
-                      | null
+                        }[]
+                      }
+                    | null
+
+                  const loanUserRaw = firstOrNull(li.loan_user) as
+                    | {
+                        user_id?: string
+                        profiles?: { full_name?: string; email?: string } | { full_name?: string; email?: string }[] | null
+                      }
+                    | null
+
+                  const loanUserData = loanUserRaw
+                    ? {
+                        ...loanUserRaw,
+                        profiles: firstOrNull(loanUserRaw.profiles),
+                      }
+                    : null
 
                     const perdido = li.missing_quantity ?? 0
                     const pendiente =
@@ -244,13 +285,39 @@ export default async function DevolucionesPage() {
                             <p className="font-medium">
                               {itemData?.name ?? '-'} [{itemData?.code ?? '-'}]
                             </p>
-
                             {Array.isArray(loanData?.loan_groups) &&
-                              loanData.loan_groups.map((group) => (
-                                <div key={group.id} className="text-xs text-slate-500 mt-1">
-                                  {group.group_name} — {group.leader?.full_name ?? 'Sin asignar'}
+                              loanData.loan_groups.length > 0 && (
+                                <div className="mt-2 space-y-1">
+                                  {loanData.loan_groups.map((group) => {
+                                    const matchingItems =
+                                      group.loan_group_items?.filter(
+                                        (gi) => gi.item_id === li.item_id
+                                      ) ?? []
+
+                                    if (matchingItems.length === 0) {
+                                      return null
+                                    }
+
+                                    return (
+                                      <div
+                                        key={group.id}
+                                        className="rounded-lg bg-slate-50 border px-3 py-2 text-xs text-slate-600"
+                                      >
+                                        <p className="font-medium text-slate-700">
+                                          {group.group_name} — jefe:{' '}
+                                          {group.leader?.full_name ?? 'Sin asignar'}
+                                        </p>
+
+                                        {matchingItems.map((gi) => (
+                                          <p key={gi.id}>
+                                            Cantidad asignada a este grupo: {gi.quantity}
+                                          </p>
+                                        ))}
+                                      </div>
+                                    )
+                                  })}
                                 </div>
-                              ))}
+                              )}
                           </div>
                         </td>
                         <td className="px-4 py-3">{li.quantity}</td>
