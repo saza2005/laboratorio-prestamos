@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 import { logoutUser } from './actions'
 import { DashboardCharts } from './dashboard-charts'
 import {
@@ -7,6 +8,7 @@ import {
   canSeeReportsModule,
 } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
+import { formatDateTime, formatMonthName } from '@/lib/format-date'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -51,36 +53,45 @@ function statusBadgeClass(status: string) {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: { month?: string; year?: string }
+  searchParams: Promise<{ month?: string; year?: string }>
 }) {
-  const { supabase, user, profile } = await getAuthProfile()
+  let auth
+
+  try {
+    auth = await getAuthProfile()
+  } catch {
+    redirect('/auth/login')
+  }
+
+  const { supabase, user, profile } = auth
+  const params = await searchParams
 
   const currentDate = new Date()
 
   const selectedMonth = Number(
-    searchParams.month || currentDate.getMonth() + 1
+    params.month || currentDate.getMonth() + 1
   )
 
   const selectedYear = Number(
-    searchParams.year || currentDate.getFullYear()
+    params.year || currentDate.getFullYear()
   )
 
-  const { data: maintenance } = await supabase
+  const monthStart = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1))
+  const nextMonthStart = new Date(Date.UTC(selectedYear, selectedMonth, 1))
+
+  const { data: maintenance, error: maintenanceError } = await supabase
     .from('maintenance_records')
     .select('maintenance_type, maintenance_date')
+    .gte('maintenance_date', monthStart.toISOString().slice(0, 10))
+    .lt('maintenance_date', nextMonthStart.toISOString().slice(0, 10))
 
-  const filteredMaintenance = (maintenance ?? []).filter((m) => {
-    const date = new Date(m.maintenance_date)
-
-    return (
-      date.getMonth() + 1 === selectedMonth &&
-      date.getFullYear() === selectedYear
-    )
-  })
+  if (maintenanceError) {
+    throw new Error(maintenanceError.message)
+  }
 
   const maintenanceMap = new Map<string, number>()
 
-  for (const m of filteredMaintenance) {
+  for (const m of maintenance ?? []) {
     const type =
       m.maintenance_type === 'preventive'
         ? 'Preventivo'
@@ -116,20 +127,52 @@ export default async function DashboardPage({
     throw new Error(itemsError.message)
   }
 
-  const { data: loans, error: loansError } = await supabase
-    .from('loans')
-    .select(`
-      id,
-      status,
-      delivery_date,
-      expected_return_date,
-      returned_at,
-      profiles:profiles!loans_user_id_fkey(full_name, email)
-    `)
-    .order('delivery_date', { ascending: false })
+  const [
+    activeLoansResult,
+    partialLoansResult,
+    returnedLoansResult,
+    recentLoansResult,
+  ] = await Promise.all([
+    supabase
+      .from('loans')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'active'),
+    supabase
+      .from('loans')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'partial_return'),
+    supabase
+      .from('loans')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'returned'),
+    supabase
+      .from('loans')
+      .select(`
+        id,
+        status,
+        delivery_date,
+        expected_return_date,
+        returned_at,
+        profiles:profiles!loans_user_id_fkey(full_name, email)
+      `)
+      .order('delivery_date', { ascending: false })
+      .limit(6),
+  ])
 
-  if (loansError) {
-    throw new Error(loansError.message)
+  if (activeLoansResult.error) {
+    throw new Error(activeLoansResult.error.message)
+  }
+
+  if (partialLoansResult.error) {
+    throw new Error(partialLoansResult.error.message)
+  }
+
+  if (returnedLoansResult.error) {
+    throw new Error(returnedLoansResult.error.message)
+  }
+
+  if (recentLoansResult.error) {
+    throw new Error(recentLoansResult.error.message)
   }
 
   const { data: movements, error: movementsError } = await supabase
@@ -161,14 +204,9 @@ export default async function DashboardPage({
   )
   const totalUnavailable = totalStock - totalAvailable
 
-  const activeLoans =
-    loans?.filter((loan) => loan.status === 'active').length ?? 0
-
-  const partialLoans =
-    loans?.filter((loan) => loan.status === 'partial_return').length ?? 0
-
-  const returnedLoans =
-    loans?.filter((loan) => loan.status === 'returned').length ?? 0
+  const activeLoans = activeLoansResult.count ?? 0
+  const partialLoans = partialLoansResult.count ?? 0
+  const returnedLoans = returnedLoansResult.count ?? 0
 
   const lowStockItems =
     (items ?? [])
@@ -177,7 +215,7 @@ export default async function DashboardPage({
       .slice(0, 6)
 
   const recentLoans =
-    (loans ?? []).slice(0, 6).map((loan) => {
+    (recentLoansResult.data ?? []).map((loan) => {
       const borrower = firstOrNull(loan.profiles) as
         | { full_name?: string; email?: string }
         | null
@@ -270,7 +308,7 @@ export default async function DashboardPage({
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
-                    {new Date(0, i).toLocaleString('es', { month: 'long' })}
+                    {formatMonthName(i)}
                   </option>
                 ))}
               </select>
@@ -458,7 +496,7 @@ export default async function DashboardPage({
                         <td className="px-4 py-3">{loan.borrower_name}</td>
                         <td className="px-4 py-3">
                           {loan.delivery_date
-                            ? new Date(loan.delivery_date).toLocaleString()
+                            ? formatDateTime(loan.delivery_date)
                             : '-'}
                         </td>
                         <td className="px-4 py-3">
@@ -559,7 +597,7 @@ export default async function DashboardPage({
                       className="border-t hover:bg-slate-50"
                     >
                       <td className="px-4 py-3">
-                        {new Date(movement.created_at).toLocaleString()}
+                        {formatDateTime(movement.created_at)}
                       </td>
                       <td className="px-4 py-3 font-medium">
                         {formatMovementType(movement.type)}

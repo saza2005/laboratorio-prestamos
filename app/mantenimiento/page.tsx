@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { canManageInventory } from '@/lib/supabase/auth/roles'
+import {
+  canManageInventory,
+  getHomeRouteByRole,
+} from '@/lib/supabase/auth/roles'
 import { createMaintenance } from './actions'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
@@ -8,11 +11,23 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   return value ?? null
 }
 
+function formatMaintenanceType(type: string) {
+  return type === 'preventive' ? 'Preventivo' : 'Correctivo'
+}
+
 export default async function MantenimientoPage() {
-  const { supabase, profile } = await getAuthProfile()
+  let auth
+
+  try {
+    auth = await getAuthProfile()
+  } catch {
+    redirect('/auth/login')
+  }
+
+  const { supabase, profile } = auth
 
   if (!canManageInventory(profile.role)) {
-    redirect('/dashboard')
+    redirect(getHomeRouteByRole(profile.role))
   }
 
   const { data: items } = await supabase
@@ -32,6 +47,7 @@ export default async function MantenimientoPage() {
       items:items(name, code)
     `)
     .order('maintenance_date', { ascending: false })
+    .limit(100)
 
   return (
     <main className="min-h-screen bg-slate-50 p-8">
@@ -94,36 +110,51 @@ export default async function MantenimientoPage() {
         </div>
 
         {/* TABLA */}
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Historial</h2>
+        <div className="bg-white rounded-2xl shadow overflow-hidden">
+          <div className="p-6 border-b">
+            <h2 className="text-xl font-semibold">Historial</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Mostrando los últimos 100 mantenimientos registrados
+            </p>
+          </div>
 
-          <table className="w-full text-sm">
-            <thead>
-              <tr>
-                <th>Equipo</th>
-                <th>Actividad</th>
-                <th>Responsable</th>
-                <th>Fecha</th>
-                <th>Tipo</th>
-              </tr>
-            </thead>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-slate-100 text-slate-700">
+                <tr>
+                  <th className="px-4 py-3 text-left">Equipo</th>
+                  <th className="px-4 py-3 text-left">Actividad</th>
+                  <th className="px-4 py-3 text-left">Responsable</th>
+                  <th className="px-4 py-3 text-left">Fecha</th>
+                  <th className="px-4 py-3 text-left">Tipo</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {records?.map((r) => {
-                const item = firstOrNull(r.items)
+              <tbody>
+                {records && records.length > 0 ? (
+                  records.map((r) => {
+                    const item = firstOrNull(r.items)
 
-                return (
-                  <tr key={r.id} className="border-t">
-                    <td>{item?.name ?? '-'}</td>
-                    <td>{r.activity}</td>
-                    <td>{r.responsible}</td>
-                    <td>{r.maintenance_date}</td>
-                    <td>{r.maintenance_type}</td>
+                    return (
+                      <tr key={r.id} className="border-t hover:bg-slate-50">
+                        <td className="px-4 py-3">{item?.name ?? '-'}</td>
+                        <td className="px-4 py-3">{r.activity}</td>
+                        <td className="px-4 py-3">{r.responsible}</td>
+                        <td className="px-4 py-3">{r.maintenance_date}</td>
+                        <td className="px-4 py-3">{formatMaintenanceType(r.maintenance_type)}</td>
+                      </tr>
+                    )
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-6 text-center text-slate-500">
+                      No hay mantenimientos registrados.
+                    </td>
                   </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>

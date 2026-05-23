@@ -1,7 +1,8 @@
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { RequestForm } from './request-form'
 import { cancelOwnRequest } from './actions'
 import { RequestFormGroups } from './request-form-groups'
+import { ItemsCatalog } from './items-catalog'
+import { formatDateTime } from '@/lib/format-date'
 
 
 type RequestItemRow = {
@@ -136,7 +137,7 @@ export default async function SolicitudesPage() {
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, name, code, stock_available, item_type')
+    .select('id, name, code, stock_available, item_type, category')
     .eq('status', 'active')
     .order('name', { ascending: true })
 
@@ -189,6 +190,7 @@ export default async function SolicitudesPage() {
     `)
     .eq('user_id', user.id)
     .order('requested_at', { ascending: false })
+    .limit(50)
 
   if (requestsError) {
     throw new Error(requestsError.message)
@@ -208,6 +210,7 @@ const { data: rawLoans } = await supabase
       quantity,
       returned_quantity,
       damaged_quantity,
+      missing_quantity,
       items (
         id,
         name,
@@ -229,6 +232,8 @@ const { data: rawLoans } = await supabase
     )
   `)
   .eq('user_id', user.id)
+  .order('delivery_date', { ascending: false })
+  .limit(50)
 
 const requests: RequestRow[] =
   rawRequests?.map((req) => ({
@@ -274,15 +279,18 @@ const loans =
             }
           | null
 
+        const missingQuantity = li.missing_quantity ?? 0
         const pending =
           li.quantity -
-          li.returned_quantity
+          li.returned_quantity -
+          missingQuantity
 
         return {
           id: li.id,
           quantity: li.quantity,
           returned_quantity: li.returned_quantity,
           damaged_quantity: li.damaged_quantity,
+          missing_quantity: missingQuantity,
           pending,
           item,
         }
@@ -325,45 +333,23 @@ const loans =
             />
         </div>
 
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Catálogo disponible
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {items && items.length > 0 ? (
-              items.map((item) => (
-                <div
-                  key={item.id}
-                  className="border rounded-xl p-4"
-                >
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-sm text-slate-500">
-                    Código: {item.code}
-                  </p>
-                  <p className="text-sm">
-                    Stock: {item.stock_available}
-                  </p>
-                  <p className="text-sm text-slate-500">
-                    Tipo: {item.item_type}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-slate-500">No hay ítems disponibles.</p>
-            )}
-          </div>
-        </div>
+        <ItemsCatalog items={items ?? []} />
 
         <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">
+          <h2 className="text-xl font-semibold mb-1">
             Mis solicitudes
           </h2>
+          <p className="mb-4 text-sm text-slate-500">
+            Mostrando tus últimas 50 solicitudes
+          </p>
 
             <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-1">
                 Mis préstamos
             </h2>
+            <p className="mb-4 text-sm text-slate-500">
+              Mostrando tus últimos 50 préstamos
+            </p>
 
             <div className="space-y-4">
                 {loans.length > 0 ? (
@@ -375,7 +361,7 @@ const loans =
                     <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                         <div>
                         <p className="text-sm text-slate-500">
-                            Entregado: {new Date(loan.delivery_date).toLocaleString()}
+                            Entregado: {formatDateTime(loan.delivery_date)}
                         </p>
 
                         <p className="text-sm">
@@ -466,7 +452,7 @@ const loans =
                 >
                   <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                     <p className="text-sm text-slate-500">
-                      {new Date(req.requested_at).toLocaleString()}
+                      {formatDateTime(req.requested_at)}
                     </p>
 
                     <span

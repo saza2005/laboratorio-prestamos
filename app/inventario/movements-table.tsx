@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { formatDateTime } from '@/lib/format-date'
 
 type Movement = {
   id: string
@@ -32,7 +33,13 @@ function formatMovementType(type: string) {
   }
 }
 
-export function MovementsTable({ data }: { data: Movement[] }) {
+export function MovementsTable({
+  data,
+  limit,
+}: {
+  data: Movement[]
+  limit?: number
+}) {
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
   const [fromDate, setFromDate] = useState('')
@@ -111,6 +118,7 @@ export function MovementsTable({ data }: { data: Movement[] }) {
 
         <p className="text-sm text-slate-500">
           Resultados: {filtered.length}
+          {limit ? ` de los últimos ${limit} movimientos` : ''}
         </p>
       </div>
 
@@ -132,7 +140,7 @@ export function MovementsTable({ data }: { data: Movement[] }) {
               filtered.map((m) => (
                 <tr key={m.id} className="border-t hover:bg-slate-50">
                   <td className="px-4 py-3">
-                    {new Date(m.created_at).toLocaleString()}
+                    {formatDateTime(m.created_at)}
                   </td>
 
                   <td className="px-4 py-3 font-medium">

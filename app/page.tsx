@@ -1,6 +1,6 @@
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-whithe text-slate-900 flex items-center justify-center px-6">
+    <main className="min-h-screen bg-white text-slate-900 flex items-center justify-center px-6">
       <div className="max-w-2xl text-center">
         <h1 className="text-4xl font-bold mb-4">
           Sistema de Gestión de Laboratorio

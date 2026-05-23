@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { ReturnForm } from '@/app/devoluciones/return-form'
 import { ReturnsHistory } from './returns-history'
-import { canManageReturns } from '@/lib/supabase/auth/roles'
+import { canManageReturns, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
+import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -12,24 +12,19 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   return value ?? null
 }
 export default async function DevolucionesPage() {
-  const supabase = await createClient()
+  let auth
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
+  try {
+    auth = await getAuthProfile()
+  } catch {
     redirect('/auth/login')
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user.id)
-    .single()
-    if (!canManageReturns(profile?.role)) {
-      redirect('/dashboard')
-    }
+  const { supabase, profile } = auth
+
+  if (!canManageReturns(profile.role)) {
+    redirect(getHomeRouteByRole(profile.role))
+  }
 
   const { data: loanItems, error } = await supabase
     .from('loan_items')
@@ -107,6 +102,7 @@ export default async function DevolucionesPage() {
       )
     `)
     .order('created_at', { ascending: false, referencedTable: 'returns' })
+    .limit(50)
   if (returnHistoryError) {
     throw new Error(returnHistoryError.message)
   }
@@ -339,7 +335,7 @@ export default async function DevolucionesPage() {
             </table>
           </div>
         </div>
-        <ReturnsHistory entries={normalizedReturnHistory} />
+        <ReturnsHistory entries={normalizedReturnHistory} limit={50} />
       </div>
     </main>
   )

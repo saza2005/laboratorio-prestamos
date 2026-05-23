@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { createRequest } from './actions'
 
 type ItemOption = {
@@ -8,6 +8,7 @@ type ItemOption = {
   name: string
   code: string
   stock_available: number
+  category: string | null
 }
 
 type Student = {
@@ -26,6 +27,10 @@ type Group = {
   items: GroupItem[]
 }
 
+function normalize(value: string | null | undefined) {
+  return value?.trim().toLowerCase() ?? ''
+}
+
 export function RequestFormGroups({
   items,
   students,
@@ -40,6 +45,66 @@ export function RequestFormGroups({
       items: [{ item_id: '', quantity: 1 }],
     },
   ])
+  const [itemSearch, setItemSearch] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('')
+
+  const itemMap = useMemo(() => {
+    return new Map(items.map((item) => [item.id, item]))
+  }, [items])
+
+  const categories = useMemo(() => {
+    return Array.from(
+      new Set(
+        items
+          .map((item) => item.category?.trim())
+          .filter((value): value is string => Boolean(value))
+      )
+    ).sort((a, b) => a.localeCompare(b, 'es'))
+  }, [items])
+
+  const filteredItems = useMemo(() => {
+    const query = normalize(itemSearch)
+
+    return items.filter((item) => {
+      const matchesCategory = !categoryFilter || item.category === categoryFilter
+      const matchesSearch =
+        !query ||
+        normalize(item.name).includes(query) ||
+        normalize(item.code).includes(query) ||
+        normalize(item.category).includes(query)
+
+      return matchesCategory && matchesSearch
+    })
+  }, [categoryFilter, itemSearch, items])
+
+  const totalsByItem = useMemo(() => {
+    return groups.reduce((acc, group) => {
+      for (const item of group.items) {
+        if (!item.item_id) continue
+        acc.set(item.item_id, (acc.get(item.item_id) ?? 0) + item.quantity)
+      }
+
+      return acc
+    }, new Map<string, number>())
+  }, [groups])
+
+  const hasErrors = groups.some((group) => {
+    if (!group.leader_student_id) return true
+
+    return group.items.some((groupItem) => {
+      const item = itemMap.get(groupItem.item_id)
+      const totalRequestedForItem = groupItem.item_id
+        ? totalsByItem.get(groupItem.item_id) ?? 0
+        : 0
+
+      return (
+        !groupItem.item_id ||
+        groupItem.quantity < 1 ||
+        !item ||
+        totalRequestedForItem > item.stock_available
+      )
+    })
+  })
 
   function addGroup() {
     setGroups((prev) => [
@@ -97,8 +162,43 @@ export function RequestFormGroups({
     )
   }
 
+  function getSelectableItems(selectedItemId: string) {
+    if (!selectedItemId || filteredItems.some((item) => item.id === selectedItemId)) {
+      return filteredItems
+    }
+
+    const selectedItem = itemMap.get(selectedItemId)
+    return selectedItem ? [selectedItem, ...filteredItems] : filteredItems
+  }
+
   return (
     <form action={createRequest} className="space-y-6">
+      <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)]">
+        <input
+          type="search"
+          value={itemSearch}
+          onChange={(event) => setItemSearch(event.target.value)}
+          placeholder="Buscar ítem por nombre, código o categoría"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <select
+          value={categoryFilter}
+          onChange={(event) => setCategoryFilter(event.target.value)}
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        >
+          <option value="">Todas las categorías</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+
+        <p className="text-sm text-slate-500 md:col-span-2">
+          Opciones disponibles: {filteredItems.length} de {items.length}
+        </p>
+      </div>
 
       {groups.map((group, gIndex) => (
         <div key={gIndex} className="border p-4 rounded-xl bg-slate-50">
@@ -132,7 +232,10 @@ export function RequestFormGroups({
             value={group.leader_student_id}
           />
 
-          {group.items.map((item, iIndex) => (
+          {group.items.map((item, iIndex) => {
+            const selectableItems = getSelectableItems(item.item_id)
+
+            return (
             <div key={iIndex} className="flex gap-2 mb-2">
 
               <select
@@ -143,9 +246,9 @@ export function RequestFormGroups({
                 className="border p-2 rounded w-full"
               >
                 <option value="">Seleccione equipo</option>
-                {items.map((it) => (
+                {selectableItems.map((it) => (
                   <option key={it.id} value={it.id}>
-                    {it.name}
+                    {it.name} [{it.code}] - Stock: {it.stock_available}
                   </option>
                 ))}
               </select>
@@ -154,6 +257,11 @@ export function RequestFormGroups({
                 type="number"
                 value={item.quantity}
                 min={1}
+                max={
+                  item.item_id
+                    ? itemMap.get(item.item_id)?.stock_available
+                    : undefined
+                }
                 onChange={(e) =>
                   updateItem(gIndex, iIndex, 'quantity', e.target.value)
                 }
@@ -173,7 +281,21 @@ export function RequestFormGroups({
               />
 
             </div>
-          ))}
+            )
+          })}
+
+          {group.items.some((groupItem) => {
+            const selectedItem = itemMap.get(groupItem.item_id)
+            const totalRequestedForItem = groupItem.item_id
+              ? totalsByItem.get(groupItem.item_id) ?? 0
+              : 0
+
+            return selectedItem && totalRequestedForItem > selectedItem.stock_available
+          }) && (
+            <p className="text-sm text-red-600">
+              La cantidad total solicitada supera el stock disponible.
+            </p>
+          )}
 
           <button
             type="button"
@@ -196,7 +318,8 @@ export function RequestFormGroups({
 
       <button
         type="submit"
-        className="bg-blue-600 text-white px-5 py-2 rounded"
+        disabled={hasErrors}
+        className="bg-blue-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Enviar solicitud con grupos
       </button>

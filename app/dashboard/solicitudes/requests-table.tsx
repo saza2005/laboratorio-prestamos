@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { formatDateTime } from '@/lib/format-date'
 
 type StaffRequestItem = {
   id: string
@@ -38,6 +39,7 @@ type StaffRequestRow = {
 
 type RequestsTableProps = {
   requests: StaffRequestRow[]
+  limit?: number
 }
 
 function formatRequestStatus(status: string) {
@@ -76,7 +78,7 @@ function statusBadgeClass(status: string) {
   }
 }
 
-export function RequestsTable({ requests }: RequestsTableProps) {
+export function RequestsTable({ requests, limit }: RequestsTableProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
@@ -84,7 +86,9 @@ export function RequestsTable({ requests }: RequestsTableProps) {
     const term = search.trim().toLowerCase()
 
     return requests.filter((req) => {
-      const matchesStatus = statusFilter ? req.status === statusFilter : true
+      const matchesStatus = statusFilter
+        ? req.status === statusFilter || req.loan?.status === statusFilter
+        : true
 
       const requesterName = req.requester?.full_name?.toLowerCase() ?? ''
       const requesterEmail = req.requester?.email?.toLowerCase() ?? ''
@@ -135,6 +139,7 @@ export function RequestsTable({ requests }: RequestsTableProps) {
 
           <div className="flex items-center text-sm text-slate-600">
             Resultados: {filteredRequests.length}
+            {limit ? ` de las últimas ${limit} solicitudes` : ''}
           </div>
         </div>
       </div>
@@ -149,7 +154,7 @@ export function RequestsTable({ requests }: RequestsTableProps) {
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-sm text-slate-500">
-                    {new Date(req.requested_at).toLocaleString()}
+                    {formatDateTime(req.requested_at)}
                   </p>
                   <p className="font-semibold">
                     Solicitante: {req.requester?.full_name ?? 'Sin nombre'}
@@ -206,7 +211,7 @@ export function RequestsTable({ requests }: RequestsTableProps) {
                     <p className="text-green-700">
                     Fecha de entrega:{' '}
                     {req.loan.delivery_date
-                        ? new Date(req.loan.delivery_date).toLocaleString()
+                        ? formatDateTime(req.loan.delivery_date)
                         : '-'}
                     </p>
 

@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { createItem } from './actions'
 import { MovementsTable } from './movements-table'
-import { canManageInventory } from '@/lib/supabase/auth/roles'
+import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
+import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -13,24 +13,19 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
 }
 
 export default async function InventarioPage() {
-  const supabase = await createClient()
+  let auth
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
+  try {
+    auth = await getAuthProfile()
+  } catch {
     redirect('/auth/login')
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user.id)
-    .single()
-    if (!canManageInventory(profile?.role)) {
-      redirect('/dashboard')
-    }
+  const { supabase, profile } = auth
+
+  if (!canManageInventory(profile.role)) {
+    redirect(getHomeRouteByRole(profile.role))
+  }
 
   const { data: items, error } = await supabase
     .from('items')
@@ -54,6 +49,7 @@ export default async function InventarioPage() {
       profiles:profiles!inventory_movements_created_by_fkey(full_name)
     `)
     .order('created_at', { ascending: false })
+    .limit(100)
 
   if (movementsError) {
     throw new Error(movementsError.message)
@@ -286,7 +282,7 @@ export default async function InventarioPage() {
             </table>
           </div>
         </div>
-        <MovementsTable data={normalizedMovements} />
+        <MovementsTable data={normalizedMovements} limit={100} />
       </div>
     </main>
   )

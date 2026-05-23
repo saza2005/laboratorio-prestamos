@@ -85,6 +85,7 @@ const { data: rawRequests, error } = await supabase
     )
   `)
   .order('requested_at', { ascending: false })
+  .limit(100)
 
   if (error) {
     throw new Error(error.message)
@@ -314,7 +315,7 @@ const requests =
             Volver al dashboard
           </a>
         </div>
-        <RequestsTable requests={requestsWithActions} />
+        <RequestsTable requests={requestsWithActions} limit={100} />
       </div>
     </main>
   )

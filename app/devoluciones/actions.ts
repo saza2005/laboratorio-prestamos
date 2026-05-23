@@ -79,6 +79,20 @@ export async function createReturn(formData: FormData): Promise<void> {
     throw new Error('No se encontró el detalle del préstamo.')
   }
 
+  const { data: loan, error: loanError } = await supabase
+    .from('loans')
+    .select('id, status')
+    .eq('id', loanItem.loan_id)
+    .single()
+
+  if (loanError || !loan) {
+    throw new Error('No se encontró el préstamo asociado.')
+  }
+
+  if (loan.status !== 'active' && loan.status !== 'partial_return') {
+    throw new Error('Este préstamo ya no admite devoluciones.')
+  }
+
   const pendienteActual = getPendingQuantity(loanItem)
   const totalProcesado = getTotalProcessed(input)
 
@@ -117,7 +131,7 @@ export async function createReturn(formData: FormData): Promise<void> {
 
   const updatedLoanItem = calculateUpdatedLoanItem(loanItem, input)
 
-  const { error: updateLoanItemError } = await supabase
+  let updateLoanItemQuery = supabase
     .from('loan_items')
     .update({
       returned_quantity: updatedLoanItem.returnedQuantity,
@@ -125,9 +139,25 @@ export async function createReturn(formData: FormData): Promise<void> {
       missing_quantity: updatedLoanItem.missingQuantity,
     })
     .eq('id', loanItem.id)
+    .eq('returned_quantity', loanItem.returned_quantity)
+    .eq('damaged_quantity', loanItem.damaged_quantity)
+
+  updateLoanItemQuery =
+    loanItem.missing_quantity === null
+      ? updateLoanItemQuery.is('missing_quantity', null)
+      : updateLoanItemQuery.eq('missing_quantity', loanItem.missing_quantity)
+
+  const { data: updatedLoanItemRows, error: updateLoanItemError } =
+    await updateLoanItemQuery.select('id')
 
   if (updateLoanItemError) {
     throw new Error(updateLoanItemError.message)
+  }
+
+  if (!updatedLoanItemRows || updatedLoanItemRows.length === 0) {
+    throw new Error(
+      'El préstamo fue actualizado por otra operación. Recargue la página e intente nuevamente.'
+    )
   }
 
   if (input.quantityOk > 0) {
@@ -141,15 +171,23 @@ export async function createReturn(formData: FormData): Promise<void> {
       throw new Error('No se encontró el item asociado.')
     }
 
-    const { error: stockError } = await supabase
+    const { data: updatedItemRows, error: stockError } = await supabase
       .from('items')
       .update({
         stock_available: item.stock_available + input.quantityOk,
       })
       .eq('id', item.id)
+      .eq('stock_available', item.stock_available)
+      .select('id')
 
     if (stockError) {
       throw new Error(stockError.message)
+    }
+
+    if (!updatedItemRows || updatedItemRows.length === 0) {
+      throw new Error(
+        'El stock fue actualizado por otra operación. Recargue la página e intente nuevamente.'
+      )
     }
   }
 

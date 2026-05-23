@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { formatDateTime } from '@/lib/format-date'
 
 type ReturnHistoryEntry = {
   id: string
@@ -17,9 +18,10 @@ type ReturnHistoryEntry = {
 
 type ReturnsHistoryProps = {
   entries: ReturnHistoryEntry[]
+  limit?: number
 }
 
-export function ReturnsHistory({ entries }: ReturnsHistoryProps) {
+export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
   const [search, setSearch] = useState('')
 
   const filteredEntries = useMemo(() => {
@@ -46,6 +48,7 @@ export function ReturnsHistory({ entries }: ReturnsHistoryProps) {
             <h2 className="text-xl font-semibold">Historial de devoluciones</h2>
             <p className="text-sm text-slate-500 mt-1">
               Resultados: {filteredEntries.length}
+              {limit ? ` de los últimos ${limit} registros` : ''}
             </p>
           </div>
 
@@ -81,7 +84,7 @@ export function ReturnsHistory({ entries }: ReturnsHistoryProps) {
                 <tr key={entry.id} className="border-t hover:bg-slate-50">
                   <td className="px-4 py-3">
                     {entry.created_at
-                      ? new Date(entry.created_at).toLocaleString()
+                      ? formatDateTime(entry.created_at)
                       : '-'}
                   </td>
                   <td className="px-4 py-3">{entry.borrower_name}</td>

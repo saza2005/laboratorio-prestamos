@@ -54,7 +54,6 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
   const totalProcesado = quantityOk + quantityDamaged + quantityMissing
   const pendienteFinal = pendienteActual - totalProcesado
   const excedePendiente = totalProcesado > pendienteActual
-  const puedeEnviar = !!selectedLoanItem && totalProcesado > 0 && !excedePendiente
 
   return (
     <form action={createReturn} className="grid md:grid-cols-2 gap-4">
@@ -235,7 +234,7 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
       <div className="md:col-span-2">
         <button
           type="submit"
-          disabled={!puedeEnviar}
+          disabled={!selectedLoanItem || totalProcesado <= 0 || excedePendiente}
           className="rounded-lg bg-green-600 text-white px-5 py-2.5 font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Registrar devolución

@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { LoanForm } from './loan-form'
-import { canManageLoans } from '@/lib/supabase/auth/roles'
+import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
+import { formatDateTime } from '@/lib/format-date'
+import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -46,24 +47,18 @@ function loanStatusBadgeClass(status: string) {
 }
 
 export default async function PrestamosPage() {
-  const supabase = await createClient()
+  let auth
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
+  try {
+    auth = await getAuthProfile()
+  } catch {
     redirect('/auth/login')
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user.id)
-    .single()
+  const { supabase, profile } = auth
 
-  if (!canManageLoans(profile?.role)) {
-    redirect('/dashboard')
+  if (!canManageLoans(profile.role)) {
+    redirect(getHomeRouteByRole(profile.role))
   }
 
   const { data: users } = await supabase
@@ -117,6 +112,7 @@ export default async function PrestamosPage() {
       )
     `)
     .order('delivery_date', { ascending: false })
+    .limit(50)
 
   if (loansError) {
     throw new Error(loansError.message)
@@ -225,6 +221,9 @@ export default async function PrestamosPage() {
         <div className="rounded-2xl bg-white shadow overflow-hidden">
           <div className="p-6 border-b">
             <h2 className="text-xl font-semibold">Préstamos registrados</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Mostrando los últimos 50 préstamos registrados
+            </p>
           </div>
 
           <div className="p-6 space-y-6">
@@ -247,7 +246,7 @@ export default async function PrestamosPage() {
                         <p>
                           <span className="font-medium">Entrega:</span>{' '}
                           {loan.delivery_date
-                            ? new Date(loan.delivery_date).toLocaleString()
+                            ? formatDateTime(loan.delivery_date)
                             : '-'}
                         </p>
                         <p>
@@ -259,7 +258,7 @@ export default async function PrestamosPage() {
                         <p>
                           <span className="font-medium">Devuelto:</span>{' '}
                           {loan.returned_at
-                            ? new Date(loan.returned_at).toLocaleString()
+                            ? formatDateTime(loan.returned_at)
                             : '-'}
                         </p>
                       </div>

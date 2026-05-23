@@ -26,6 +26,24 @@ export async function createItem(formData: FormData) {
     throw new Error('Faltan campos obligatorios.')
   }
 
+  if (!Number.isFinite(stockTotal) || !Number.isFinite(stockAvailable)) {
+    throw new Error('Los valores de stock deben ser números válidos.')
+  }
+
+  if (stockTotal < 0 || stockAvailable < 0) {
+    throw new Error('Los valores de stock no pueden ser negativos.')
+  }
+
+  if (stockAvailable > stockTotal) {
+    throw new Error('El stock disponible no puede superar el stock total.')
+  }
+
+  if (trackIndividual && itemType === 'equipment' && stockAvailable !== stockTotal) {
+    throw new Error(
+      'Los equipos con seguimiento individual deben iniciar con todo el stock disponible.'
+    )
+  }
+
   const { data: newItem, error } = await supabase
     .from('items')
     .insert({

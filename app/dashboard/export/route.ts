@@ -9,7 +9,15 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
 }
 
 export async function GET(request: NextRequest) {
-  const { supabase, profile } = await getAuthProfile()
+  let auth
+
+  try {
+    auth = await getAuthProfile()
+  } catch {
+    return new Response('No autenticado', { status: 401 })
+  }
+
+  const { supabase, profile } = auth
 
   if (!canSeeReportsModule(profile.role)) {
     return new Response('No autorizado', { status: 403 })
