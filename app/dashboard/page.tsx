@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { logoutUser } from './actions'
 import { DashboardCharts } from './dashboard-charts'
@@ -339,12 +340,12 @@ export default async function DashboardPage({
         </div>
 
         <div className="mb-6 flex gap-4">
-          <a
+          <Link
             href={`/dashboard/export?month=${selectedMonth}&year=${selectedYear}`}
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
             Exportar Excel
-          </a>
+          </Link>
         </div>
 
         <div className="mb-6 rounded-2xl bg-white shadow p-6">
@@ -406,7 +407,7 @@ export default async function DashboardPage({
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {canSeeLoans && (
-            <a
+            <Link
               href="/prestamos"
               className="block rounded-2xl bg-white shadow p-6 hover:bg-slate-50 transition"
             >
@@ -414,11 +415,11 @@ export default async function DashboardPage({
               <p className="text-sm text-slate-600">
                 Entregas y gestión de préstamos
               </p>
-            </a>
+            </Link>
           )}
 
           {canSeeReturns && (
-            <a
+            <Link
               href="/devoluciones"
               className="block rounded-2xl bg-white shadow p-6 hover:bg-slate-50 transition"
             >
@@ -426,11 +427,11 @@ export default async function DashboardPage({
               <p className="text-sm text-slate-600">
                 Recepción y cierre de préstamos
               </p>
-            </a>
+            </Link>
           )}
 
           {canSeeInventory && (
-            <a
+            <Link
               href="/inventario"
               className="block rounded-2xl bg-white shadow p-6 hover:bg-slate-50 transition"
             >
@@ -438,10 +439,10 @@ export default async function DashboardPage({
               <p className="text-sm text-slate-600">
                 Control de materiales y kardex
               </p>
-            </a>
+            </Link>
           )}
           {canSeeInventory && (
-            <a
+            <Link
               href="/mantenimiento"
               className="block rounded-2xl bg-white shadow p-6 hover:bg-slate-50 transition"
             >
@@ -449,10 +450,10 @@ export default async function DashboardPage({
               <p className="text-sm text-slate-600">
                 Registro y control de mantenimientos
               </p>
-            </a>
+            </Link>
           )}
           {canSeeLoans && (
-            <a
+            <Link
               href="/dashboard/solicitudes"
               className="block rounded-2xl bg-white shadow p-6 hover:bg-slate-50 transition"
             >
@@ -460,7 +461,7 @@ export default async function DashboardPage({
               <p className="text-sm text-slate-600">
                 Revisión y aprobación de solicitudes
               </p>
-            </a>
+            </Link>
           )}
 
           {canSeeReports && (

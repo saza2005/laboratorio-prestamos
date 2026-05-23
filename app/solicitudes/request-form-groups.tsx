@@ -1,7 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { createRequest } from './actions'
+import { useActionState, useMemo, useState } from 'react'
+import { createRequestWithState } from './actions'
 
 type ItemOption = {
   id: string
@@ -38,6 +38,9 @@ export function RequestFormGroups({
   items: ItemOption[]
   students: Student[]
 }) {
+  const [state, formAction, isPending] = useActionState(createRequestWithState, {
+    error: null,
+  })
   const [groups, setGroups] = useState<Group[]>([
     {
       group_name: 'Grupo 1',
@@ -77,6 +80,12 @@ export function RequestFormGroups({
     })
   }, [categoryFilter, itemSearch, items])
 
+  const selectedLeaderIds = groups
+    .map((group) => group.leader_student_id)
+    .filter(Boolean)
+
+  const hasDuplicateLeaders = new Set(selectedLeaderIds).size !== selectedLeaderIds.length
+
   const totalsByItem = useMemo(() => {
     return groups.reduce((acc, group) => {
       for (const item of group.items) {
@@ -88,7 +97,7 @@ export function RequestFormGroups({
     }, new Map<string, number>())
   }, [groups])
 
-  const hasErrors = groups.some((group) => {
+  const hasErrors = hasDuplicateLeaders || groups.some((group) => {
     if (!group.leader_student_id) return true
 
     return group.items.some((groupItem) => {
@@ -115,6 +124,19 @@ export function RequestFormGroups({
         items: [{ item_id: '', quantity: 1 }],
       },
     ])
+  }
+
+  function removeGroup(groupIndex: number) {
+    setGroups((prev) => {
+      if (prev.length === 1) return prev
+
+      return prev
+        .filter((_, index) => index !== groupIndex)
+        .map((group, index) => ({
+          ...group,
+          group_name: `Grupo ${index + 1}`,
+        }))
+    })
   }
 
   function updateGroup(
@@ -162,6 +184,19 @@ export function RequestFormGroups({
     )
   }
 
+  function removeItem(groupIndex: number, itemIndex: number) {
+    setGroups((prev) =>
+      prev.map((group, index) => {
+        if (index !== groupIndex || group.items.length === 1) return group
+
+        return {
+          ...group,
+          items: group.items.filter((_, currentIndex) => currentIndex !== itemIndex),
+        }
+      })
+    )
+  }
+
   function getSelectableItems(selectedItemId: string) {
     if (!selectedItemId || filteredItems.some((item) => item.id === selectedItemId)) {
       return filteredItems
@@ -172,7 +207,7 @@ export function RequestFormGroups({
   }
 
   return (
-    <form action={createRequest} className="space-y-6">
+    <form action={formAction} className="space-y-6">
       <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)]">
         <input
           type="search"
@@ -209,7 +244,17 @@ export function RequestFormGroups({
             value={group.group_name}
           />
 
-          <h3 className="font-semibold mb-2">{group.group_name}</h3>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-semibold">{group.group_name}</h3>
+            <button
+              type="button"
+              onClick={() => removeGroup(gIndex)}
+              disabled={groups.length === 1}
+              className="rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm text-red-700 hover:bg-red-100 transition disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Quitar grupo
+            </button>
+          </div>
 
           <select
             value={group.leader_student_id}
@@ -220,7 +265,11 @@ export function RequestFormGroups({
           >
             <option value="">Seleccionar jefe de grupo</option>
             {students.map((s) => (
-              <option key={s.id} value={s.id}>
+              <option
+                key={s.id}
+                value={s.id}
+                disabled={selectedLeaderIds.includes(s.id) && group.leader_student_id !== s.id}
+              >
                 {s.full_name}
               </option>
             ))}
@@ -236,7 +285,7 @@ export function RequestFormGroups({
             const selectableItems = getSelectableItems(item.item_id)
 
             return (
-            <div key={iIndex} className="flex gap-2 mb-2">
+            <div key={iIndex} className="grid gap-2 mb-2 md:grid-cols-[minmax(0,1fr)_96px_auto]">
 
               <select
                 value={item.item_id}
@@ -265,8 +314,17 @@ export function RequestFormGroups({
                 onChange={(e) =>
                   updateItem(gIndex, iIndex, 'quantity', e.target.value)
                 }
-                className="border p-2 rounded w-24"
+                className="border p-2 rounded w-full"
               />
+
+              <button
+                type="button"
+                onClick={() => removeItem(gIndex, iIndex)}
+                disabled={group.items.length === 1}
+                className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 hover:bg-red-100 transition disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Quitar
+              </button>
 
               <input
                 type="hidden"
@@ -297,6 +355,13 @@ export function RequestFormGroups({
             </p>
           )}
 
+          {group.leader_student_id &&
+            selectedLeaderIds.filter((id) => id === group.leader_student_id).length > 1 && (
+              <p className="text-sm text-red-600">
+                Este jefe de grupo ya fue seleccionado en otro grupo.
+              </p>
+            )}
+
           <button
             type="button"
             onClick={() => addItem(gIndex)}
@@ -316,13 +381,57 @@ export function RequestFormGroups({
         + agregar grupo
       </button>
 
-      <button
-        type="submit"
-        disabled={hasErrors}
-        className="bg-blue-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Enviar solicitud con grupos
-      </button>
+      <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <p className="text-sm font-medium mb-2">Resumen de solicitud grupal</p>
+        {groups.some((group) => group.items.some((item) => item.item_id)) ? (
+          <div className="space-y-3 text-sm">
+            {groups.map((group, groupIndex) => {
+              const leader = students.find((student) => student.id === group.leader_student_id)
+
+              return (
+                <div key={groupIndex}>
+                  <p className="font-medium">
+                    {group.group_name}: {leader?.full_name ?? 'Sin jefe seleccionado'}
+                  </p>
+                  <ul className="mt-1 space-y-1 text-slate-600">
+                    {group.items.map((groupItem, itemIndex) => {
+                      const item = itemMap.get(groupItem.item_id)
+
+                      if (!item) return null
+
+                      return (
+                        <li key={itemIndex}>
+                          {item.name} [{item.code}] - Cantidad: {groupItem.quantity}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Aún no has seleccionado ítems para los grupos.
+          </p>
+        )}
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          disabled={hasErrors || isPending}
+          className="bg-blue-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isPending ? 'Enviando...' : 'Enviar solicitud con grupos'}
+        </button>
+
+        {state.error && (
+          <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {state.error}
+          </p>
+        )}
+      </div>
     </form>
   )
 }

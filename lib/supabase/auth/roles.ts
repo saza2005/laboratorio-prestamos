@@ -24,6 +24,10 @@ export function canUseRequestPortal(role?: string | null) {
   return role === 'teacher' || role === 'student'
 }
 
+export function canCreateGroupRequests(role?: string | null) {
+  return role === 'teacher'
+}
+
 export function getHomeRouteByRole(role?: string | null) {
   if (role === 'admin' || role === 'lab_staff') {
     return '/dashboard'

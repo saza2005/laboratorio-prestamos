@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ReturnForm } from '@/app/devoluciones/return-form'
 import { ReturnsHistory } from './returns-history'
@@ -157,19 +158,19 @@ export default async function DevolucionesPage() {
         </div>
 
         <div className="mb-6 flex gap-3">
-          <a
+          <Link
             href="/dashboard"
             className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
           >
             Volver al dashboard
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/prestamos"
             className="inline-block rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition"
           >
             Ir a préstamos
-          </a>
+          </Link>
         </div>
 
         <div className="mb-8 rounded-2xl bg-white shadow p-6">

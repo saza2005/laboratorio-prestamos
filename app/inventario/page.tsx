@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createItem } from './actions'
 import { MovementsTable } from './movements-table'
@@ -88,12 +89,12 @@ export default async function InventarioPage() {
         </div>
 
         <div className="mb-6">
-          <a
+          <Link
             href="/dashboard"
             className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
           >
             Volver al dashboard
-          </a>
+          </Link>
         </div>
 
         <div className="mb-8 rounded-2xl bg-white shadow p-6">

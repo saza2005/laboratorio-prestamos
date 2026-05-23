@@ -1,8 +1,11 @@
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { cancelOwnRequest } from './actions'
+import { RequestForm } from './request-form'
 import { RequestFormGroups } from './request-form-groups'
 import { ItemsCatalog } from './items-catalog'
+import { CancelRequestButton } from './cancel-request-button'
 import { formatDateTime } from '@/lib/format-date'
+import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
+import { logoutUser } from '@/app/dashboard/actions'
 
 
 type RequestItemRow = {
@@ -145,11 +148,15 @@ export default async function SolicitudesPage() {
     throw new Error(itemsError.message)
   }
 
-  const { data: students, error: studentsError } = await supabase
-    .from('profiles')
-    .select('id, full_name')
-    .eq('role', 'student')
-    .order('full_name', { ascending: true })
+  const canCreateGroups = canCreateGroupRequests(profile.role)
+
+  const { data: students, error: studentsError } = canCreateGroups
+    ? await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .eq('role', 'student')
+        .order('full_name', { ascending: true })
+    : { data: [], error: null }
 
   if (studentsError) {
     throw new Error(studentsError.message)
@@ -316,24 +323,141 @@ const loans =
   return (
     <main className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Portal de solicitudes</h1>
-          <p className="text-slate-600">
-            Bienvenido, {profile.full_name}
-          </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Portal de solicitudes</h1>
+            <p className="text-slate-600">
+              Bienvenido, {profile.full_name}
+            </p>
+          </div>
+
+          <form action={logoutUser}>
+            <button
+              type="submit"
+              className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition"
+            >
+              Cerrar sesión
+            </button>
+          </form>
         </div>
 
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-xl font-semibold mb-4">
-            Crear nueva solicitud
+            Crear solicitud individual
           </h2>
+          <RequestForm items={items ?? []} />
+        </div>
+
+        {canCreateGroups && (
+          <div className="bg-white rounded-2xl shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">
+              Crear solicitud grupal
+            </h2>
             <RequestFormGroups
               items={items ?? []}
               students={students ?? []}
             />
-        </div>
+          </div>
+        )}
 
-        <ItemsCatalog items={items ?? []} />
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h2 className="text-xl font-semibold mb-1">
+            Mis préstamos
+          </h2>
+          <p className="mb-4 text-sm text-slate-500">
+            Mostrando tus últimos 50 préstamos
+          </p>
+
+          <div className="space-y-4">
+            {loans.length > 0 ? (
+              loans.map((loan) => (
+                <div
+                  key={loan.id}
+                  className="border rounded-xl p-4"
+                >
+                  <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <p className="text-sm text-slate-500">
+                        Entregado: {formatDateTime(loan.delivery_date)}
+                      </p>
+
+                      <p className="text-sm">
+                        <span className="font-medium">Devolución esperada:</span>{' '}
+                        {loan.expected_return_date || '-'}
+                      </p>
+                    </div>
+
+                    <span
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
+                        loan.status
+                      )}`}
+                    >
+                      {formatLoanStatus(loan.status)}
+                    </span>
+                  </div>
+
+                  {loan.loan_groups && loan.loan_groups.length > 0 ? (
+                    <div className="mt-4 space-y-3">
+                      {loan.loan_groups.map((group) => (
+                        <div key={group.id} className="border rounded-lg p-3 bg-slate-50">
+                          <p className="font-medium text-sm">
+                            {group.group_name} - {group.leader?.full_name ?? 'Sin asignar'}
+                          </p>
+
+                          <ul className="mt-2 text-sm space-y-1">
+                            {group.loan_group_items.map((gi, i) => (
+                              <li key={i}>
+                                {gi.item?.name ?? 'Ítem'} - {gi.quantity}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-4 overflow-x-auto">
+                      <table className="min-w-full text-sm">
+                        <thead className="bg-slate-100 text-slate-700">
+                          <tr>
+                            <th className="text-left px-4 py-3">Ítem</th>
+                            <th className="text-left px-4 py-3">Código</th>
+                            <th className="text-left px-4 py-3">Cantidad</th>
+                            <th className="text-left px-4 py-3">Devuelto</th>
+                            <th className="text-left px-4 py-3">Dañado</th>
+                            <th className="text-left px-4 py-3">Pendiente</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {loan.loan_items.map((li) => (
+                            <tr key={li.id} className="border-t">
+                              <td className="px-4 py-3">{li.item?.name ?? '-'}</td>
+                              <td className="px-4 py-3">{li.item?.code ?? '-'}</td>
+                              <td className="px-4 py-3">{li.quantity}</td>
+                              <td className="px-4 py-3">{li.returned_quantity}</td>
+                              <td className="px-4 py-3">{li.damaged_quantity}</td>
+                              <td className="px-4 py-3">{li.pending}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {loan.status === 'active' || loan.status === 'partial_return' ? (
+                    <p className="mt-3 text-sm text-slate-600">
+                      Debe entregar físicamente estos materiales al laboratorio para
+                      que el personal registre la devolución.
+                    </p>
+                  ) : null}
+                </div>
+              ))
+            ) : (
+              <p className="text-slate-500">
+                No tienes préstamos registrados.
+              </p>
+            )}
+          </div>
+        </div>
 
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-xl font-semibold mb-1">
@@ -342,106 +466,6 @@ const loans =
           <p className="mb-4 text-sm text-slate-500">
             Mostrando tus últimas 50 solicitudes
           </p>
-
-            <div className="bg-white rounded-2xl shadow p-6">
-            <h2 className="text-xl font-semibold mb-1">
-                Mis préstamos
-            </h2>
-            <p className="mb-4 text-sm text-slate-500">
-              Mostrando tus últimos 50 préstamos
-            </p>
-
-            <div className="space-y-4">
-                {loans.length > 0 ? (
-                loans.map((loan) => (
-                    <div
-                    key={loan.id}
-                    className="border rounded-xl p-4"
-                    >
-                    <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                        <div>
-                        <p className="text-sm text-slate-500">
-                            Entregado: {formatDateTime(loan.delivery_date)}
-                        </p>
-
-                        <p className="text-sm">
-                            <span className="font-medium">Devolución esperada:</span>{' '}
-                            {loan.expected_return_date || '-'}
-                        </p>
-                        </div>
-
-                        <span
-                        className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
-                            loan.status
-                        )}`}
-                        >
-                        {formatLoanStatus(loan.status)}
-                        </span>
-                    </div>
-
-                    {/* 🔥 GRUPOS EN PRÉSTAMOS */}
-                    {loan.loan_groups && loan.loan_groups.length > 0 ? (
-                      <div className="mt-4 space-y-3">
-                        {loan.loan_groups.map((group) => (
-                          <div key={group.id} className="border rounded-lg p-3 bg-slate-50">
-                            <p className="font-medium text-sm">
-                              {group.group_name} — {group.leader?.full_name ?? 'Sin asignar'}
-                            </p>
-
-                            <ul className="mt-2 text-sm space-y-1">
-                              {group.loan_group_items.map((gi, i) => (
-                                <li key={i}>
-                                  {gi.item?.name ?? 'Ítem'} - {gi.quantity}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="mt-4 overflow-x-auto">
-                        <table className="min-w-full text-sm">
-                          <thead className="bg-slate-100 text-slate-700">
-                            <tr>
-                              <th className="text-left px-4 py-3">Ítem</th>
-                              <th className="text-left px-4 py-3">Código</th>
-                              <th className="text-left px-4 py-3">Cantidad</th>
-                              <th className="text-left px-4 py-3">Devuelto</th>
-                              <th className="text-left px-4 py-3">Dañado</th>
-                              <th className="text-left px-4 py-3">Pendiente</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {loan.loan_items.map((li) => (
-                              <tr key={li.id} className="border-t">
-                                <td className="px-4 py-3">{li.item?.name ?? '-'}</td>
-                                <td className="px-4 py-3">{li.item?.code ?? '-'}</td>
-                                <td className="px-4 py-3">{li.quantity}</td>
-                                <td className="px-4 py-3">{li.returned_quantity}</td>
-                                <td className="px-4 py-3">{li.damaged_quantity}</td>
-                                <td className="px-4 py-3">{li.pending}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-
-                    {loan.status === 'active' || loan.status === 'partial_return' ? (
-                        <p className="mt-3 text-sm text-slate-600">
-                        Debe entregar físicamente estos materiales al laboratorio para
-                        que el personal registre la devolución.
-                        </p>
-                    ) : null}
-                    </div>
-                ))
-                ) : (
-                <p className="text-slate-500">
-                    No tienes préstamos registrados.
-                </p>
-                )}
-            </div>
-            </div>
 
           <div className="space-y-4">
             {requests.length > 0 ? (
@@ -523,15 +547,7 @@ const loans =
                     </ul>
                   )}
                     {req.status === 'pending' && (
-                    <form action={cancelOwnRequest} className="mt-4">
-                        <input type="hidden" name="request_id" value={req.id} />
-                        <button
-                        type="submit"
-                        className="rounded-lg bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition"
-                        >
-                        Cancelar solicitud
-                        </button>
-                    </form>
+                      <CancelRequestButton requestId={req.id} />
                     )}
 
                 </div>
@@ -543,6 +559,8 @@ const loans =
             )}
           </div>
         </div>
+
+        <ItemsCatalog items={items ?? []} />
       </div>
     </main>
   )

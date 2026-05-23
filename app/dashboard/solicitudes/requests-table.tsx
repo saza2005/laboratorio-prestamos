@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { formatDateTime } from '@/lib/format-date'
 
@@ -216,12 +217,12 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                     </p>
 
                     <div className="mt-3">
-                    <a
+                    <Link
                         href="/prestamos"
                         className="inline-block rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700 transition"
                     >
                         Ver préstamos
-                    </a>
+                    </Link>
                     </div>
                 </div>
                 )}

@@ -2,7 +2,15 @@
 
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { canUseRequestPortal } from '@/lib/supabase/auth/roles'
+import { canCreateGroupRequests, canUseRequestPortal } from '@/lib/supabase/auth/roles'
+
+export type RequestActionState = {
+  error: string | null
+}
+
+export type CancelRequestActionState = {
+  error: string | null
+}
 
 function parsePositiveInt(value: FormDataEntryValue | null): number {
   const n = Number(value)
@@ -91,7 +99,7 @@ function parseGroups(formData: FormData): RequestGroupRow[] {
     .filter((group) => group.items.length > 0)
 }
 
-export async function createRequest(formData: FormData): Promise<void> {
+async function persistRequest(formData: FormData): Promise<void> {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canUseRequestPortal(profile.role)) {
@@ -107,6 +115,10 @@ export async function createRequest(formData: FormData): Promise<void> {
   const groups = parseGroups(formData)
 
   if (groups.length > 0) {
+    if (!canCreateGroupRequests(profile.role)) {
+      throw new Error('Su rol no permite crear solicitudes grupales.')
+    }
+
     const allGroupItems = groups.flatMap((group) => group.items)
 
     const totalsByItem = new Map<string, number>()
@@ -240,7 +252,7 @@ export async function createRequest(formData: FormData): Promise<void> {
       }
     }
 
-    redirect('/solicitudes')
+    return
   }
 
   const itemIds = formData
@@ -325,10 +337,53 @@ export async function createRequest(formData: FormData): Promise<void> {
     throw new Error(requestItemsError.message)
   }
 
+}
+
+function getRequestErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return 'No se pudo procesar la solicitud. Intente nuevamente.'
+}
+
+export async function createRequest(formData: FormData): Promise<void> {
+  await persistRequest(formData)
+  redirect('/solicitudes')
+}
+
+export async function createRequestWithState(
+  _prevState: RequestActionState,
+  formData: FormData
+): Promise<RequestActionState> {
+  try {
+    await persistRequest(formData)
+  } catch (error) {
+    return { error: getRequestErrorMessage(error) }
+  }
+
   redirect('/solicitudes')
 }
 
 export async function cancelOwnRequest(formData: FormData): Promise<void> {
+  await persistCancelOwnRequest(formData)
+  redirect('/solicitudes')
+}
+
+export async function cancelOwnRequestWithState(
+  _prevState: CancelRequestActionState,
+  formData: FormData
+): Promise<CancelRequestActionState> {
+  try {
+    await persistCancelOwnRequest(formData)
+  } catch (error) {
+    return { error: getRequestErrorMessage(error) }
+  }
+
+  redirect('/solicitudes')
+}
+
+async function persistCancelOwnRequest(formData: FormData): Promise<void> {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canUseRequestPortal(profile.role)) {
@@ -370,5 +425,4 @@ export async function cancelOwnRequest(formData: FormData): Promise<void> {
     throw new Error(updateError.message)
   }
 
-  redirect('/solicitudes')
 }

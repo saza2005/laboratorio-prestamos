@@ -4,13 +4,17 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageLoans } from '@/lib/supabase/auth/roles'
 
+export type ActionState = {
+  error: string | null
+}
+
 function parseNonNegativeInt(value: FormDataEntryValue | null): number {
   const n = Number(value)
   if (!Number.isFinite(n) || n < 0) return 0
   return Math.floor(n)
 }
 
-export async function approveRequest(formData: FormData): Promise<void> {
+async function persistApproveRequest(formData: FormData): Promise<void> {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canManageLoans(profile.role)) {
@@ -70,7 +74,7 @@ export async function approveRequest(formData: FormData): Promise<void> {
       throw new Error(updateRequestError.message)
     }
 
-    redirect('/dashboard/solicitudes')
+    return
   }
 
   const { data: requestItems, error: requestItemsError } = await supabase
@@ -138,10 +142,9 @@ export async function approveRequest(formData: FormData): Promise<void> {
     throw new Error(updateRequestError.message)
   }
 
-  redirect('/dashboard/solicitudes')
 }
 
-export async function rejectRequest(formData: FormData): Promise<void> {
+async function persistRejectRequest(formData: FormData): Promise<void> {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canManageLoans(profile.role)) {
@@ -183,10 +186,9 @@ export async function rejectRequest(formData: FormData): Promise<void> {
     throw new Error(updateError.message)
   }
 
-  redirect('/dashboard/solicitudes')
 }
 
-export async function deliverRequest(formData: FormData): Promise<void> {
+async function persistDeliverRequest(formData: FormData): Promise<void> {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canManageLoans(profile.role)) {
@@ -208,6 +210,66 @@ export async function deliverRequest(formData: FormData): Promise<void> {
 
   if (error) {
     throw new Error(error.message)
+  }
+}
+
+function getActionErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return 'No se pudo procesar la acción. Intente nuevamente.'
+}
+
+export async function approveRequest(formData: FormData): Promise<void> {
+  await persistApproveRequest(formData)
+  redirect('/dashboard/solicitudes')
+}
+
+export async function approveRequestWithState(
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    await persistApproveRequest(formData)
+  } catch (error) {
+    return { error: getActionErrorMessage(error) }
+  }
+
+  redirect('/dashboard/solicitudes')
+}
+
+export async function rejectRequest(formData: FormData): Promise<void> {
+  await persistRejectRequest(formData)
+  redirect('/dashboard/solicitudes')
+}
+
+export async function rejectRequestWithState(
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    await persistRejectRequest(formData)
+  } catch (error) {
+    return { error: getActionErrorMessage(error) }
+  }
+
+  redirect('/dashboard/solicitudes')
+}
+
+export async function deliverRequest(formData: FormData): Promise<void> {
+  await persistDeliverRequest(formData)
+  redirect('/dashboard/solicitudes')
+}
+
+export async function deliverRequestWithState(
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    await persistDeliverRequest(formData)
+  } catch (error) {
+    return { error: getActionErrorMessage(error) }
   }
 
   redirect('/dashboard/solicitudes')
