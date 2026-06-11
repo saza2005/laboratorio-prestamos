@@ -1,7 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { createReturn } from '@/app/devoluciones/actions'
+import { useActionState, useMemo, useState } from 'react'
+import { createReturnWithState } from '@/app/devoluciones/actions'
 
 type LoanItemOption = {
   id: string
@@ -35,6 +35,9 @@ type ReturnFormProps = {
 }
 
 export function ReturnForm({ loanItems }: ReturnFormProps) {
+  const [state, formAction, isPending] = useActionState(createReturnWithState, {
+    error: null,
+  })
   const [selectedId, setSelectedId] = useState('')
   const [quantityOk, setQuantityOk] = useState(0)
   const [quantityDamaged, setQuantityDamaged] = useState(0)
@@ -56,7 +59,15 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
   const excedePendiente = totalProcesado > pendienteActual
 
   return (
-    <form action={createReturn} className="grid md:grid-cols-2 gap-4">
+    <form
+      action={formAction}
+      className="grid md:grid-cols-2 gap-4"
+      onSubmit={(event) => {
+        if (!confirm('¿Seguro que deseas registrar esta devolución?')) {
+          event.preventDefault()
+        }
+      }}
+    >
       <div className="md:col-span-2">
         <label className="block text-sm font-medium mb-1">
           Ítem prestado
@@ -234,11 +245,17 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
       <div className="md:col-span-2">
         <button
           type="submit"
-          disabled={!selectedLoanItem || totalProcesado <= 0 || excedePendiente}
+          disabled={!selectedLoanItem || totalProcesado <= 0 || excedePendiente || isPending}
           className="rounded-lg bg-green-600 text-white px-5 py-2.5 font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Registrar devolución
+          {isPending ? 'Registrando...' : 'Registrar devolución'}
         </button>
+
+        {state.error && (
+          <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {state.error}
+          </p>
+        )}
       </div>
     </form>
   )

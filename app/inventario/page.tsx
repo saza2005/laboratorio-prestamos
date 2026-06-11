@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { createItem } from './actions'
+import { ItemForm } from './item-form'
 import { MovementsTable } from './movements-table'
 import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
@@ -30,9 +30,21 @@ export default async function InventarioPage() {
 
   const { data: items, error } = await supabase
     .from('items')
-    .select('*')
+    .select(`
+      id,
+      code,
+      name,
+      category,
+      item_type,
+      track_individual,
+      stock_total,
+      stock_available,
+      status,
+      location
+    `)
     .eq('status', 'active')
     .order('created_at', { ascending: false })
+    .limit(500)
 
   if (error) {
     throw new Error(error.message)
@@ -79,7 +91,7 @@ export default async function InventarioPage() {
     }) ?? []
 
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Gestión de Inventario</h1>
@@ -100,136 +112,7 @@ export default async function InventarioPage() {
         <div className="mb-8 rounded-2xl bg-white shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Agregar nuevo item</h2>
 
-          <form action={createItem} className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Código</label>
-              <input
-                name="code"
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                placeholder="BAN-001"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Nombre</label>
-              <input
-                name="name"
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                placeholder="Bandeja"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Descripción
-              </label>
-              <input
-                name="description"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                placeholder="Descripción del item"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Categoría
-              </label>
-              <input
-                name="category"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                placeholder="Materiales / Equipos / Herramientas"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Tipo</label>
-              <select
-                name="item_type"
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-              >
-                <option value="">Seleccione</option>
-                <option value="consumable">Consumible</option>
-                <option value="equipment">Equipo</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Estado</label>
-              <select
-                name="status"
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-              >
-                <option value="">Seleccione</option>
-                <option value="active">Activo</option>
-                <option value="inactive">Inactivo</option>
-                <option value="maintenance">Mantenimiento</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Stock total
-              </label>
-              <input
-                name="stock_total"
-                type="number"
-                min="0"
-                defaultValue="0"
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Stock disponible
-              </label>
-              <input
-                name="stock_available"
-                type="number"
-                min="0"
-                defaultValue="0"
-                required
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Ubicación
-              </label>
-              <input
-                name="location"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                placeholder="Estante A"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 mt-6">
-              <input
-                id="track_individual"
-                name="track_individual"
-                type="checkbox"
-                className="h-4 w-4"
-              />
-              <label htmlFor="track_individual" className="text-sm font-medium">
-                Seguimiento individual
-              </label>
-            </div>
-
-            <div className="md:col-span-2">
-              <button
-                type="submit"
-                className="rounded-lg bg-blue-600 text-white px-5 py-2.5 font-medium hover:bg-blue-700 transition"
-              >
-                Guardar item
-              </button>
-            </div>
-          </form>
+          <ItemForm />
         </div>
 
         <div className="rounded-2xl bg-white shadow overflow-hidden">
@@ -237,8 +120,36 @@ export default async function InventarioPage() {
             <h2 className="text-xl font-semibold">Items registrados</h2>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+          <div className="divide-y md:hidden">
+            {items && items.length > 0 ? (
+              items.map((item) => (
+                <div key={item.id} className="space-y-2 p-4 text-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-slate-500">{item.code}</p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
+                      {item.status}
+                    </span>
+                  </div>
+                  <p><span className="font-medium">Categoría:</span> {item.category || '-'}</p>
+                  <p><span className="font-medium">Tipo:</span> {item.item_type}</p>
+                  <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-50 p-3 text-center">
+                    <p><span className="block text-xs text-slate-500">Stock total</span>{item.stock_total}</p>
+                    <p><span className="block text-xs text-slate-500">Disponible</span>{item.stock_available}</p>
+                  </div>
+                  <p><span className="font-medium">Seguimiento:</span> {item.track_individual ? 'Sí' : 'No'}</p>
+                  <p><span className="font-medium">Ubicación:</span> {item.location || '-'}</p>
+                </div>
+              ))
+            ) : (
+              <p className="p-6 text-center text-slate-500">No hay ítems registrados todavía.</p>
+            )}
+          </div>
+
+          <div className="hidden overflow-x-auto md:block">
+            <table className="min-w-[1080px] text-sm">
               <thead className="bg-slate-100 text-slate-700">
                 <tr>
                   <th className="text-left px-4 py-3">Código</th>

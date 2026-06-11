@@ -4,7 +4,11 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageInventory } from '@/lib/supabase/auth/roles'
 
-export async function createItem(formData: FormData) {
+export type InventoryActionState = {
+  error: string | null
+}
+
+async function persistItem(formData: FormData) {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canManageInventory(profile.role)) {
@@ -59,7 +63,7 @@ export async function createItem(formData: FormData) {
       location: location || null,
       created_by: user.id,
     })
-    .select()
+    .select('id')
     .single()
 
   if (error) {
@@ -89,6 +93,31 @@ export async function createItem(formData: FormData) {
     if (unitError) {
       throw new Error(unitError.message)
     }
+  }
+
+}
+
+function getInventoryErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return 'No se pudo guardar el ítem. Intente nuevamente.'
+}
+
+export async function createItem(formData: FormData): Promise<void> {
+  await persistItem(formData)
+  redirect('/inventario')
+}
+
+export async function createItemWithState(
+  _prevState: InventoryActionState,
+  formData: FormData
+): Promise<InventoryActionState> {
+  try {
+    await persistItem(formData)
+  } catch (error) {
+    return { error: getInventoryErrorMessage(error) }
   }
 
   redirect('/inventario')

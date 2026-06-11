@@ -64,8 +64,39 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
+      <div className="divide-y md:hidden">
+        {filteredEntries.length > 0 ? (
+          filteredEntries.map((entry) => (
+            <div key={entry.id} className="space-y-2 p-4 text-sm">
+              <div>
+                <p className="font-medium">
+                  {entry.item_name} [{entry.item_code}]
+                </p>
+                <p className="text-slate-500">
+                  {entry.created_at ? formatDateTime(entry.created_at) : '-'}
+                </p>
+              </div>
+              <p><span className="font-medium">Usuario:</span> {entry.borrower_name}</p>
+              <div className="grid grid-cols-3 gap-2 rounded-lg bg-slate-50 p-3 text-center">
+                <p><span className="block text-xs text-slate-500">OK</span>{entry.quantity_ok}</p>
+                <p><span className="block text-xs text-slate-500">Dañado</span>{entry.quantity_damaged}</p>
+                <p><span className="block text-xs text-slate-500">Faltante</span>{entry.quantity_missing}</p>
+              </div>
+              <p><span className="font-medium">Recibido por:</span> {entry.receiver_name}</p>
+              {entry.notes && (
+                <p className="text-slate-600"><span className="font-medium">Notas:</span> {entry.notes}</p>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className="p-6 text-center text-slate-500">
+            No se encontraron resultados para la búsqueda.
+          </p>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
+        <table className="min-w-[980px] text-sm">
           <thead className="bg-slate-100 text-slate-700">
             <tr>
               <th className="text-left px-4 py-3">Fecha</th>

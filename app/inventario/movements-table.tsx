@@ -122,8 +122,39 @@ export function MovementsTable({
         </p>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
+      <div className="divide-y md:hidden">
+        {filtered.length > 0 ? (
+          filtered.map((movement) => (
+            <div key={movement.id} className="space-y-2 p-4 text-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium">
+                    {movement.item_name} [{movement.item_code}]
+                  </p>
+                  <p className="text-slate-500">
+                    {formatDateTime(movement.created_at)}
+                  </p>
+                </div>
+                <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
+                  {formatMovementType(movement.type)}
+                </span>
+              </div>
+              <p><span className="font-medium">Cantidad:</span> {movement.quantity}</p>
+              <p><span className="font-medium">Usuario:</span> {movement.user_name}</p>
+              {movement.notes && (
+                <p className="text-slate-600">
+                  <span className="font-medium">Notas:</span> {movement.notes}
+                </p>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className="p-6 text-center text-slate-500">No hay resultados</p>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
+        <table className="min-w-[840px] text-sm">
           <thead className="bg-slate-100 text-slate-700">
             <tr>
               <th className="px-4 py-3 text-left">Fecha</th>

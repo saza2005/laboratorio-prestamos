@@ -4,7 +4,11 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageInventory } from '@/lib/supabase/auth/roles'
 
-export async function createMaintenance(formData: FormData) {
+export type MaintenanceActionState = {
+  error: string | null
+}
+
+async function persistMaintenance(formData: FormData) {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canManageInventory(profile.role)) {
@@ -36,6 +40,31 @@ export async function createMaintenance(formData: FormData) {
 
   if (error) {
     throw new Error(error.message)
+  }
+
+}
+
+function getMaintenanceErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return 'No se pudo registrar el mantenimiento. Intente nuevamente.'
+}
+
+export async function createMaintenance(formData: FormData): Promise<void> {
+  await persistMaintenance(formData)
+  redirect('/mantenimiento')
+}
+
+export async function createMaintenanceWithState(
+  _prevState: MaintenanceActionState,
+  formData: FormData
+): Promise<MaintenanceActionState> {
+  try {
+    await persistMaintenance(formData)
+  } catch (error) {
+    return { error: getMaintenanceErrorMessage(error) }
   }
 
   redirect('/mantenimiento')

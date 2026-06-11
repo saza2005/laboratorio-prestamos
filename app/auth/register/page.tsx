@@ -1,52 +1,34 @@
-import { registerUser } from './actions'
+import Link from 'next/link'
+import { RegisterForm } from './register-form'
 
 export default function RegisterPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-2xl bg-white shadow p-8">
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 sm:px-6">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow sm:p-8">
         <h1 className="text-2xl font-bold mb-2">Registro</h1>
         <p className="text-slate-600 mb-6">
           Crea una cuenta para usar el sistema
         </p>
 
-        <form action={registerUser} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Nombre completo</label>
-            <input
-              name="full_name"
-              type="text"
-              placeholder="Tu nombre"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+        <RegisterForm />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Correo</label>
-            <input
-              name="email"
-              type="email"
-              placeholder="correo@ejemplo.com"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Contraseña</label>
-            <input
-              name="password"
-              type="password"
-              placeholder="********"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-slate-900 text-white py-2.5 font-medium hover:bg-slate-800 transition"
+        <div className="mt-6 space-y-2 text-center text-sm">
+          <p className="text-slate-600">
+            ¿Ya tienes una cuenta?{' '}
+            <Link
+              href="/auth/login"
+              className="font-medium text-blue-700 hover:underline"
+            >
+              Inicia sesión
+            </Link>
+          </p>
+          <Link
+            href="/"
+            className="inline-block font-medium text-slate-600 hover:text-slate-900 hover:underline"
           >
-            Crear cuenta
-          </button>
-        </form>
+            Volver al inicio
+          </Link>
+        </div>
       </div>
     </main>
   )

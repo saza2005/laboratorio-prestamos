@@ -244,13 +244,13 @@ export function RequestFormGroups({
             value={group.group_name}
           />
 
-          <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="font-semibold">{group.group_name}</h3>
             <button
               type="button"
               onClick={() => removeGroup(gIndex)}
               disabled={groups.length === 1}
-              className="rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm text-red-700 hover:bg-red-100 transition disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               Quitar grupo
             </button>
@@ -376,7 +376,7 @@ export function RequestFormGroups({
       <button
         type="button"
         onClick={addGroup}
-        className="bg-blue-100 px-3 py-2 rounded"
+        className="w-full rounded bg-blue-100 px-3 py-2 text-blue-800 transition hover:bg-blue-200 sm:w-auto"
       >
         + agregar grupo
       </button>
@@ -421,7 +421,7 @@ export function RequestFormGroups({
         <button
           type="submit"
           disabled={hasErrors || isPending}
-          className="bg-blue-600 text-white px-5 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {isPending ? 'Enviando...' : 'Enviar solicitud con grupos'}
         </button>

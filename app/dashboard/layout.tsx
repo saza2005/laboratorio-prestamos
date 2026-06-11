@@ -18,7 +18,6 @@ export default async function DashboardLayout({
 
   const { profile } = data
 
-  // 🔐 Validación de rol centralizada
   if (!canViewOperationalDashboard(profile.role)) {
     redirect(getHomeRouteByRole(profile.role))
   }

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { logoutUser } from './actions'
+import { LogoutButton } from '@/app/logout-button'
 import { DashboardCharts } from './dashboard-charts'
 import {
   canSeeInventoryModule,
@@ -276,7 +276,7 @@ export default async function DashboardPage({
   )
   
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
@@ -289,14 +289,7 @@ export default async function DashboardPage({
             </p>
           </div>
 
-          <form action={logoutUser}>
-            <button
-              type="submit"
-              className="rounded-lg bg-red-600 text-white px-4 py-2 font-medium hover:bg-red-700 transition"
-            >
-              Cerrar sesión
-            </button>
-          </form>
+          <LogoutButton className="w-full rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700 sm:w-auto" />
         </div>
         <div className="mb-6 rounded-2xl bg-white shadow p-4">
           <form className="flex flex-col gap-4 md:flex-row md:items-end">
@@ -305,7 +298,7 @@ export default async function DashboardPage({
               <select
                 name="month"
                 defaultValue={selectedMonth}
-                className="rounded-lg border border-slate-300 px-3 py-2"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2"
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -320,7 +313,7 @@ export default async function DashboardPage({
               <select
                 name="year"
                 defaultValue={selectedYear}
-                className="rounded-lg border border-slate-300 px-3 py-2"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2"
               >
                 {[2024, 2025, 2026, 2027].map((year) => (
                   <option key={year} value={year}>
@@ -332,17 +325,17 @@ export default async function DashboardPage({
 
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 text-white px-4 py-2 font-medium hover:bg-blue-700 transition"
+              className="w-full rounded-lg bg-blue-600 text-white px-4 py-2 font-medium hover:bg-blue-700 transition md:w-auto"
             >
               Filtrar
             </button>
           </form>
         </div>
 
-        <div className="mb-6 flex gap-4">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <Link
             href={`/dashboard/export?month=${selectedMonth}&year=${selectedYear}`}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="text-center bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 sm:text-left"
           >
             Exportar Excel
           </Link>
@@ -481,7 +474,7 @@ export default async function DashboardPage({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
+              <table className="min-w-[640px] text-sm">
                 <thead className="bg-slate-100 text-slate-700">
                   <tr>
                     <th className="text-left px-4 py-3">Usuario</th>
@@ -535,7 +528,7 @@ export default async function DashboardPage({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
+              <table className="min-w-[560px] text-sm">
                 <thead className="bg-slate-100 text-slate-700">
                   <tr>
                     <th className="text-left px-4 py-3">Código</th>
@@ -578,7 +571,7 @@ export default async function DashboardPage({
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="min-w-[840px] text-sm">
               <thead className="bg-slate-100 text-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left">Fecha</th>

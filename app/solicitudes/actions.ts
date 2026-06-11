@@ -396,33 +396,25 @@ async function persistCancelOwnRequest(formData: FormData): Promise<void> {
     throw new Error('Solicitud inválida.')
   }
 
-  const { data: request, error: requestError } = await supabase
-    .from('requests')
-    .select('id, user_id, status')
-    .eq('id', requestId)
-    .single()
-
-  if (requestError || !request) {
-    throw new Error('No se encontró la solicitud.')
-  }
-
-  if (request.user_id !== user.id) {
-    throw new Error('No puede cancelar una solicitud que no le pertenece.')
-  }
-
-  if (request.status !== 'pending') {
-    throw new Error('Solo se pueden cancelar solicitudes pendientes.')
-  }
-
-  const { error: updateError } = await supabase
+  const { data: cancelledRequest, error: updateError } = await supabase
     .from('requests')
     .update({
       status: 'cancelled',
     })
     .eq('id', requestId)
+    .eq('user_id', user.id)
+    .eq('status', 'pending')
+    .select('id')
+    .maybeSingle()
 
   if (updateError) {
     throw new Error(updateError.message)
+  }
+
+  if (!cancelledRequest) {
+    throw new Error(
+      'La solicitud no existe, no le pertenece o ya no está pendiente.'
+    )
   }
 
 }

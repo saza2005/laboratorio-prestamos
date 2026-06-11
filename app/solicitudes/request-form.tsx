@@ -317,7 +317,7 @@ export function RequestForm({ items }: RequestFormProps) {
         <button
           type="submit"
           disabled={hasErrors || isPending}
-          className={`rounded-lg px-5 py-2.5 font-medium transition ${
+          className={`w-full rounded-lg px-5 py-2.5 font-medium transition sm:w-auto ${
             hasErrors
               ? 'bg-gray-400 text-white cursor-not-allowed'
               : 'bg-blue-600 text-white hover:bg-blue-700'

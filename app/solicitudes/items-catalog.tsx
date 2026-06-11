@@ -45,7 +45,7 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
   }, [category, items, search])
 
   return (
-    <div className="bg-white rounded-2xl shadow p-6">
+    <div className="rounded-lg bg-white p-4 shadow sm:p-6">
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="text-xl font-semibold">Catálogo disponible</h2>
@@ -81,7 +81,7 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredItems.length > 0 ? (
           filteredItems.map((item) => (
-            <div key={item.id} className="border rounded-xl p-4">
+            <div key={item.id} className="rounded-lg border border-slate-200 p-4">
               <h3 className="font-semibold">{item.name}</h3>
               <p className="text-sm text-slate-500">Código: {item.code}</p>
               <p className="text-sm">Stock: {item.stock_available}</p>

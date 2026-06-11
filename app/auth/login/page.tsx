@@ -1,4 +1,5 @@
-import { loginUser } from './actions'
+import Link from 'next/link'
+import { LoginForm } from './login-form'
 
 type LoginPageProps = {
   searchParams?: Promise<{
@@ -26,8 +27,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const errorMessage = getErrorMessage(params?.error)
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-6 text-slate-900">
-      <div className="w-full max-w-md rounded-2xl bg-white shadow p-8 text-slate-900">
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 text-slate-900 sm:px-6">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 text-slate-900 shadow sm:p-8">
         <h1 className="text-2xl font-bold mb-2 text-slate-900">
           Iniciar sesión
         </h1>
@@ -42,40 +43,25 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
         )}
 
-        <form action={loginUser} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1 text-slate-700">
-              Correo
-            </label>
-            <input
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
-            />
-          </div>
+        <LoginForm />
 
-          <div>
-            <label className="block text-sm font-medium mb-1 text-slate-700">
-              Contraseña
-            </label>
-            <input
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-blue-600 text-white py-2.5 font-medium hover:bg-blue-700 transition"
+        <div className="mt-6 space-y-2 text-center text-sm">
+          <p className="text-slate-600">
+            ¿No tienes una cuenta?{' '}
+            <Link
+              href="/auth/register"
+              className="font-medium text-blue-700 hover:underline"
+            >
+              Regístrate
+            </Link>
+          </p>
+          <Link
+            href="/"
+            className="inline-block font-medium text-slate-600 hover:text-slate-900 hover:underline"
           >
-            Entrar
-          </button>
-        </form>
+            Volver al inicio
+          </Link>
+        </div>
       </div>
     </main>
   )

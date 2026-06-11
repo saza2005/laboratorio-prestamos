@@ -43,7 +43,7 @@ function hasChartData(data: { value: number }[]) {
 }
 
 function ChartFrame({ children }: { children: React.ReactNode }) {
-  return <div className="h-80 min-h-80 overflow-x-auto">{children}</div>
+  return <div className="h-80 min-h-80 overflow-x-auto"><div className="mx-auto w-[520px]">{children}</div></div>
 }
 
 function EmptyChartState() {
@@ -65,7 +65,7 @@ export function DashboardCharts({
 
   return (
     <div className="grid min-w-0 xl:grid-cols-2 gap-8 mb-8">
-      <div className="min-w-0 rounded-2xl bg-white shadow p-6">
+      <div className="min-w-0 rounded-2xl bg-white shadow p-4 sm:p-6">
         <h2 className="text-xl font-semibold mb-4">Préstamos por estado</h2>
         <ChartFrame>
           {hasLoanStatusData ? (
@@ -96,7 +96,7 @@ export function DashboardCharts({
       </div>
 
   {maintenanceData && (
-    <div className="min-w-0 rounded-2xl bg-white shadow p-6 xl:col-span-2">
+    <div className="min-w-0 rounded-2xl bg-white shadow p-4 sm:p-6 xl:col-span-2">
       <h2 className="text-xl font-semibold mb-4">
         Mantenimiento Preventivo vs Correctivo
       </h2>
@@ -131,7 +131,7 @@ export function DashboardCharts({
     </div>
   )}
 
-      <div className="min-w-0 rounded-2xl bg-white shadow p-6">
+      <div className="min-w-0 rounded-2xl bg-white shadow p-4 sm:p-6">
         <h2 className="text-xl font-semibold mb-4">Movimientos por tipo</h2>
         <ChartFrame>
           {hasMovementTypeData ? (

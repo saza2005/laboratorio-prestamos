@@ -1,7 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { createLoan } from './actions'
+import { useActionState, useMemo, useState } from 'react'
+import { createLoanWithState } from './actions'
 
 type Item = {
   id: string
@@ -23,6 +23,10 @@ export function LoanForm({
   users: User[]
   items: Item[]
 }) {
+  const [state, formAction, isPending] = useActionState(createLoanWithState, {
+    error: null,
+  })
+  const [selectedUserId, setSelectedUserId] = useState('')
   const [selectedItemId, setSelectedItemId] = useState('')
   const [quantity, setQuantity] = useState(1)
 
@@ -33,16 +37,26 @@ export function LoanForm({
 
   const stock = selectedItem?.stock_available ?? 0
   const exceedsStock = quantity > stock
-  const canSubmit = selectedItem && quantity > 0 && !exceedsStock
+  const canSubmit = selectedUserId && selectedItem && quantity > 0 && !exceedsStock
 
   return (
-    <form action={createLoan} className="grid md:grid-cols-2 gap-4">
+    <form
+      action={formAction}
+      className="grid md:grid-cols-2 gap-4"
+      onSubmit={(event) => {
+        if (!confirm('¿Seguro que deseas registrar este préstamo?')) {
+          event.preventDefault()
+        }
+      }}
+    >
       {/* Usuario */}
       <div>
         <label className="block text-sm font-medium mb-1">Usuario</label>
         <select
           name="user_id"
           required
+          value={selectedUserId}
+          onChange={(event) => setSelectedUserId(event.target.value)}
           className="w-full rounded-lg border px-3 py-2"
         >
           <option value="">Seleccione</option>
@@ -144,11 +158,17 @@ export function LoanForm({
       <div className="md:col-span-2">
         <button
           type="submit"
-          disabled={!canSubmit}
+          disabled={!canSubmit || isPending}
           className="bg-blue-600 text-white px-5 py-2 rounded-lg disabled:opacity-50"
         >
-          Guardar préstamo
+          {isPending ? 'Guardando...' : 'Guardar préstamo'}
         </button>
+
+        {state.error && (
+          <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {state.error}
+          </p>
+        )}
       </div>
     </form>
   )

@@ -60,7 +60,56 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
   const hasGroups = (requestGroups ?? []).length > 0
 
   if (hasGroups) {
-    const { error: updateRequestError } = await supabase
+    const groupIds = (requestGroups ?? []).map((group) => group.id)
+    const { data: groupItems, error: groupItemsError } = await supabase
+      .from('request_group_items')
+      .select('item_id, quantity')
+      .in('request_group_id', groupIds)
+
+    if (groupItemsError || !groupItems || groupItems.length === 0) {
+      throw new Error('No se pudieron validar los materiales de los grupos.')
+    }
+
+    const totalsByItem = new Map<string, number>()
+
+    for (const groupItem of groupItems) {
+      if (!groupItem.item_id || groupItem.quantity < 1) {
+        throw new Error('Uno de los materiales grupales no es válido.')
+      }
+
+      totalsByItem.set(
+        groupItem.item_id,
+        (totalsByItem.get(groupItem.item_id) ?? 0) + groupItem.quantity
+      )
+    }
+
+    const itemIds = Array.from(totalsByItem.keys())
+    const { data: currentItems, error: currentItemsError } = await supabase
+      .from('items')
+      .select('id, stock_available, status')
+      .in('id', itemIds)
+
+    if (currentItemsError || !currentItems) {
+      throw new Error('No se pudo verificar el stock actual de los grupos.')
+    }
+
+    const currentItemMap = new Map(currentItems.map((item) => [item.id, item]))
+
+    for (const [itemId, totalQuantity] of totalsByItem.entries()) {
+      const item = currentItemMap.get(itemId)
+
+      if (!item || item.status !== 'active') {
+        throw new Error('Uno de los materiales grupales ya no está disponible.')
+      }
+
+      if (totalQuantity > item.stock_available) {
+        throw new Error(
+          'La cantidad total de los grupos excede el stock disponible.'
+        )
+      }
+    }
+
+    const { data: approvedRequest, error: updateRequestError } = await supabase
       .from('requests')
       .update({
         status: 'approved',
@@ -69,9 +118,16 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
         rejection_reason: null,
       })
       .eq('id', requestId)
+      .eq('status', 'pending')
+      .select('id')
+      .maybeSingle()
 
     if (updateRequestError) {
       throw new Error(updateRequestError.message)
+    }
+
+    if (!approvedRequest) {
+      throw new Error('La solicitud ya no está pendiente.')
     }
 
     return
@@ -86,7 +142,26 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
     throw new Error('No se pudieron cargar los ítems de la solicitud.')
   }
 
+  if (
+    requestItemIds.length !== requestItems.length ||
+    approvedQuantities.length !== requestItems.length ||
+    new Set(requestItemIds).size !== requestItemIds.length
+  ) {
+    throw new Error('Los ítems enviados no coinciden con la solicitud.')
+  }
+
+  const itemIds = Array.from(new Set(requestItems.map((item) => item.item_id)))
+  const { data: currentItems, error: currentItemsError } = await supabase
+    .from('items')
+    .select('id, stock_available, status')
+    .in('id', itemIds)
+
+  if (currentItemsError || !currentItems) {
+    throw new Error('No se pudo verificar el stock actual.')
+  }
+
   const requestItemMap = new Map(requestItems.map((ri) => [ri.id, ri]))
+  const currentItemMap = new Map(currentItems.map((item) => [item.id, item]))
 
   const updatePayload = requestItemIds.map((id, index) => ({
     request_item_id: id,
@@ -102,8 +177,18 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
       throw new Error('Uno de los ítems de la solicitud no es válido.')
     }
 
+    const currentItem = currentItemMap.get(requestItem.item_id)
+
+    if (!currentItem || currentItem.status !== 'active') {
+      throw new Error('Uno de los ítems ya no está disponible.')
+    }
+
     if (row.quantity_approved > requestItem.quantity_requested) {
       throw new Error('La cantidad aprobada no puede exceder la solicitada.')
+    }
+
+    if (row.quantity_approved > currentItem.stock_available) {
+      throw new Error('La cantidad aprobada excede el stock disponible.')
     }
 
     if (row.quantity_approved > 0) {
@@ -128,7 +213,7 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
     }
   }
 
-  const { error: updateRequestError } = await supabase
+  const { data: approvedRequest, error: updateRequestError } = await supabase
     .from('requests')
     .update({
       status: 'approved',
@@ -137,9 +222,16 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
       rejection_reason: null,
     })
     .eq('id', requestId)
+    .eq('status', 'pending')
+    .select('id')
+    .maybeSingle()
 
   if (updateRequestError) {
     throw new Error(updateRequestError.message)
+  }
+
+  if (!approvedRequest) {
+    throw new Error('La solicitud ya no está pendiente.')
   }
 
 }
@@ -158,21 +250,7 @@ async function persistRejectRequest(formData: FormData): Promise<void> {
     throw new Error('Solicitud inválida.')
   }
 
-  const { data: request, error: requestError } = await supabase
-    .from('requests')
-    .select('id, status')
-    .eq('id', requestId)
-    .single()
-
-  if (requestError || !request) {
-    throw new Error('No se encontró la solicitud.')
-  }
-
-  if (request.status !== 'pending') {
-    throw new Error('Solo se pueden rechazar solicitudes pendientes.')
-  }
-
-  const { error: updateError } = await supabase
+  const { data: rejectedRequest, error: updateError } = await supabase
     .from('requests')
     .update({
       status: 'rejected',
@@ -181,9 +259,16 @@ async function persistRejectRequest(formData: FormData): Promise<void> {
       rejection_reason: rejectionReason || 'Solicitud rechazada',
     })
     .eq('id', requestId)
+    .eq('status', 'pending')
+    .select('id')
+    .maybeSingle()
 
   if (updateError) {
     throw new Error(updateError.message)
+  }
+
+  if (!rejectedRequest) {
+    throw new Error('La solicitud no existe o ya no está pendiente.')
   }
 
 }

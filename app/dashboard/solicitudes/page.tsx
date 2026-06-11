@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import {
   canManageLoans,
   getHomeRouteByRole,
@@ -17,27 +17,15 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
 }
 
 export default async function DashboardSolicitudesPage() {
-  const supabase = await createClient()
+  let auth
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
+  try {
+    auth = await getAuthProfile()
+  } catch {
     redirect('/auth/login')
   }
 
-  const userId = user.id
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, email, role')
-    .eq('id', userId)
-    .single()
-
-  if (!profile) {
-    redirect('/auth/login')
-  }
+  const { supabase, profile } = auth
 
   if (!canManageLoans(profile.role)) {
     redirect(getHomeRouteByRole(profile.role))
@@ -141,13 +129,13 @@ const requests =
 
     const requestsWithActions = requests.map((req) => ({
     ...req,
-    actions: <RequestActionsPanel request={req} />,
+    actions: <RequestActionsPanel key={req.id} request={req} />,
     }))
 
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Gestión de solicitudes</h1>
             <p className="text-slate-600">
@@ -157,7 +145,7 @@ const requests =
 
           <Link
             href="/dashboard"
-            className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
+            className="inline-block text-center rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
           >
             Volver al dashboard
           </Link>

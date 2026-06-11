@@ -4,14 +4,8 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageReturns } from '@/lib/supabase/auth/roles'
 
-type LoanItemRecord = {
-  id: string
-  loan_id: string
-  item_id: string
-  quantity: number
-  returned_quantity: number
-  damaged_quantity: number
-  missing_quantity: number | null
+export type ReturnActionState = {
+  error: string | null
 }
 
 type ParsedReturnInput = {
@@ -22,252 +16,51 @@ type ParsedReturnInput = {
   notes: string
 }
 
-export async function createReturn(formData: FormData): Promise<void> {
-
+async function persistReturn(formData: FormData): Promise<void> {
   const { supabase, user, profile } = await getAuthProfile()
 
   if (!canManageReturns(profile.role)) {
     throw new Error('No tiene permisos para registrar devoluciones.')
   }
+
   const input = parseReturnFormData(formData)
   validateReturnInput(input)
 
-  const { data: loanItem, error: loanItemError } = await supabase
-    .from('loan_items')
-    .select(`
-      id,
-      quantity,
-      returned_quantity,
-      damaged_quantity,
-      missing_quantity,
-      item_id,
-      loan_id,
+  const { error } = await supabase.rpc('register_return_transaction', {
+    p_loan_item_id: input.loanItemId,
+    p_quantity_ok: input.quantityOk,
+    p_quantity_damaged: input.quantityDamaged,
+    p_quantity_missing: input.quantityMissing,
+    p_notes: input.notes || null,
+    p_received_by: user.id,
+  })
 
-      items:items(id, name, code),
+  if (error) {
+    throw new Error(error.message)
+  }
+}
 
-      loans:loans(
-        id,
-        status,
-        user_id,
-        delivery_date,
-        expected_return_date,
-
-        loan_groups (
-          id,
-          group_name,
-          leader:profiles(full_name),
-          loan_group_items (
-            quantity,
-            items (
-              id,
-              name,
-              code
-            )
-          )
-        )
-      ),
-
-      loan_user:loans!inner(
-        user_id,
-        profiles:profiles!loans_user_id_fkey(full_name, email)
-      )
-    `)
-    .eq('id', input.loanItemId)
-    .single<LoanItemRecord>()
-
-  if (loanItemError || !loanItem) {
-    throw new Error('No se encontró el detalle del préstamo.')
+function getReturnErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message) {
+    return error.message
   }
 
-  const { data: loan, error: loanError } = await supabase
-    .from('loans')
-    .select('id, status')
-    .eq('id', loanItem.loan_id)
-    .single()
+  return 'No se pudo registrar la devolución. Intente nuevamente.'
+}
 
-  if (loanError || !loan) {
-    throw new Error('No se encontró el préstamo asociado.')
-  }
+export async function createReturn(formData: FormData): Promise<void> {
+  await persistReturn(formData)
+  redirect('/devoluciones')
+}
 
-  if (loan.status !== 'active' && loan.status !== 'partial_return') {
-    throw new Error('Este préstamo ya no admite devoluciones.')
-  }
-
-  const pendienteActual = getPendingQuantity(loanItem)
-  const totalProcesado = getTotalProcessed(input)
-
-  if (totalProcesado > pendienteActual) {
-    throw new Error('La devolución excede la cantidad pendiente.')
-  }
-
-  const { data: newReturn, error: returnError } = await supabase
-    .from('returns')
-    .insert({
-      loan_id: loanItem.loan_id,
-      received_by: user.id,
-      notes: input.notes || null,
-    })
-    .select('id')
-    .single()
-
-  if (returnError || !newReturn) {
-    throw new Error(returnError?.message || 'No se pudo crear la devolución.')
-  }
-
-  const { error: returnItemError } = await supabase
-    .from('return_items')
-    .insert({
-      return_id: newReturn.id,
-      loan_item_id: loanItem.id,
-      quantity_ok: input.quantityOk,
-      quantity_damaged: input.quantityDamaged,
-      quantity_missing: input.quantityMissing,
-      notes: input.notes || null,
-    })
-
-  if (returnItemError) {
-    throw new Error(returnItemError.message)
-  }
-
-  const updatedLoanItem = calculateUpdatedLoanItem(loanItem, input)
-
-  let updateLoanItemQuery = supabase
-    .from('loan_items')
-    .update({
-      returned_quantity: updatedLoanItem.returnedQuantity,
-      damaged_quantity: updatedLoanItem.damagedQuantity,
-      missing_quantity: updatedLoanItem.missingQuantity,
-    })
-    .eq('id', loanItem.id)
-    .eq('returned_quantity', loanItem.returned_quantity)
-    .eq('damaged_quantity', loanItem.damaged_quantity)
-
-  updateLoanItemQuery =
-    loanItem.missing_quantity === null
-      ? updateLoanItemQuery.is('missing_quantity', null)
-      : updateLoanItemQuery.eq('missing_quantity', loanItem.missing_quantity)
-
-  const { data: updatedLoanItemRows, error: updateLoanItemError } =
-    await updateLoanItemQuery.select('id')
-
-  if (updateLoanItemError) {
-    throw new Error(updateLoanItemError.message)
-  }
-
-  if (!updatedLoanItemRows || updatedLoanItemRows.length === 0) {
-    throw new Error(
-      'El préstamo fue actualizado por otra operación. Recargue la página e intente nuevamente.'
-    )
-  }
-
-  if (input.quantityOk > 0) {
-    const { data: item, error: itemError } = await supabase
-      .from('items')
-      .select('id, stock_available')
-      .eq('id', loanItem.item_id)
-      .single()
-
-    if (itemError || !item) {
-      throw new Error('No se encontró el item asociado.')
-    }
-
-    const { data: updatedItemRows, error: stockError } = await supabase
-      .from('items')
-      .update({
-        stock_available: item.stock_available + input.quantityOk,
-      })
-      .eq('id', item.id)
-      .eq('stock_available', item.stock_available)
-      .select('id')
-
-    if (stockError) {
-      throw new Error(stockError.message)
-    }
-
-    if (!updatedItemRows || updatedItemRows.length === 0) {
-      throw new Error(
-        'El stock fue actualizado por otra operación. Recargue la página e intente nuevamente.'
-      )
-    }
-  }
-
-  const { data: allLoanItems, error: allLoanItemsError } = await supabase
-    .from('loan_items')
-    .select('quantity, returned_quantity, missing_quantity')
-    .eq('loan_id', loanItem.loan_id)
-
-  if (allLoanItemsError || !allLoanItems) {
-    throw new Error('No se pudieron verificar los ítems pendientes del préstamo.')
-  }
-
-  const totalPending = allLoanItems.reduce((acc, item) => {
-    const quantity = item.quantity ?? 0
-    const returnedQuantity = item.returned_quantity ?? 0
-    const missingQuantity = item.missing_quantity ?? 0
-
-    return acc + Math.max(quantity - returnedQuantity - missingQuantity, 0)
-  }, 0)
-
-  const nuevoEstado: 'returned' | 'partial_return' =
-    totalPending <= 0 ? 'returned' : 'partial_return'
-
-  const { error: updateLoanError } = await supabase
-    .from('loans')
-    .update({
-      status: nuevoEstado,
-      returned_at: nuevoEstado === 'returned' ? new Date().toISOString() : null,
-    })
-    .eq('id', loanItem.loan_id)
-
-  if (updateLoanError) {
-    throw new Error(updateLoanError.message)
-  }
-  const movementRows = []
-
-  if (input.quantityOk > 0) {
-    movementRows.push({
-      item_id: loanItem.item_id,
-      movement_type: 'return_ok',
-      quantity: input.quantityOk,
-      reference_table: 'returns',
-      reference_id: newReturn.id,
-      notes: input.notes || null,
-      created_by: user.id,
-    })
-  }
-
-  if (input.quantityDamaged > 0) {
-    movementRows.push({
-      item_id: loanItem.item_id,
-      movement_type: 'return_damaged',
-      quantity: input.quantityDamaged,
-      reference_table: 'returns',
-      reference_id: newReturn.id,
-      notes: input.notes || null,
-      created_by: user.id,
-    })
-  }
-
-  if (input.quantityMissing > 0) {
-    movementRows.push({
-      item_id: loanItem.item_id,
-      movement_type: 'return_missing',
-      quantity: input.quantityMissing,
-      reference_table: 'returns',
-      reference_id: newReturn.id,
-      notes: input.notes || null,
-      created_by: user.id,
-    })
-  }
-
-  if (movementRows.length > 0) {
-    const { error: movementError } = await supabase
-      .from('inventory_movements')
-      .insert(movementRows)
-
-    if (movementError) {
-      throw new Error(movementError.message)
-    }
+export async function createReturnWithState(
+  _prevState: ReturnActionState,
+  formData: FormData
+): Promise<ReturnActionState> {
+  try {
+    await persistReturn(formData)
+  } catch (error) {
+    return { error: getReturnErrorMessage(error) }
   }
 
   redirect('/devoluciones')
@@ -288,9 +81,10 @@ function validateReturnInput(input: ParsedReturnInput) {
     throw new Error('Debe seleccionar un préstamo.')
   }
 
-  const totalProcesado = getTotalProcessed(input)
+  const totalProcessed =
+    input.quantityOk + input.quantityDamaged + input.quantityMissing
 
-  if (totalProcesado <= 0) {
+  if (totalProcessed <= 0) {
     throw new Error('Debe registrar al menos una unidad.')
   }
 }
@@ -303,32 +97,4 @@ function parseNonNegativeInteger(value: FormDataEntryValue | null): number {
   }
 
   return Math.floor(parsed)
-}
-
-function getTotalProcessed(input: ParsedReturnInput): number {
-  return input.quantityOk + input.quantityDamaged + input.quantityMissing
-}
-
-function getTotalPhysicallyReturned(input: ParsedReturnInput): number {
-  return input.quantityOk + input.quantityDamaged
-}
-
-function getPendingQuantity(loanItem: LoanItemRecord): number {
-  return (
-    loanItem.quantity -
-    loanItem.returned_quantity -
-    (loanItem.missing_quantity ?? 0)
-  )
-}
-
-function calculateUpdatedLoanItem(
-  loanItem: LoanItemRecord,
-  input: ParsedReturnInput
-) {
-  return {
-    returnedQuantity:
-      loanItem.returned_quantity + getTotalPhysicallyReturned(input),
-    damagedQuantity: loanItem.damaged_quantity + input.quantityDamaged,
-    missingQuantity: (loanItem.missing_quantity ?? 0) + input.quantityMissing,
-  }
 }

@@ -108,7 +108,13 @@ function ApproveForm({ request }: RequestActionsPanelProps) {
         </p>
       ) : (
         <div className="space-y-3">
-          {request.request_items.map((requestItem) => (
+          {request.request_items.map((requestItem) => {
+            const maximumApprovable = Math.min(
+              requestItem.quantity_requested,
+              requestItem.item?.stock_available ?? 0
+            )
+
+            return (
             <div
               key={requestItem.id}
               className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end"
@@ -131,8 +137,8 @@ function ApproveForm({ request }: RequestActionsPanelProps) {
                   type="number"
                   name="quantity_approved"
                   min="0"
-                  max={requestItem.quantity_requested}
-                  defaultValue={requestItem.quantity_requested}
+                  max={maximumApprovable}
+                  defaultValue={maximumApprovable}
                   className="w-full rounded-lg border border-slate-300 px-3 py-2"
                 />
                 <input
@@ -142,7 +148,8 @@ function ApproveForm({ request }: RequestActionsPanelProps) {
                 />
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

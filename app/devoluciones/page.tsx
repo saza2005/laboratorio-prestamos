@@ -66,6 +66,7 @@ export default async function DevolucionesPage() {
       )
     `)
     .order('created_at', { ascending: false })
+    .limit(500)
 
   if (error) {
     throw new Error(error.message)
@@ -148,7 +149,7 @@ export default async function DevolucionesPage() {
       }
     }) ?? []
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Gestión de Devoluciones</h1>
@@ -157,7 +158,7 @@ export default async function DevolucionesPage() {
           </p>
         </div>
 
-        <div className="mb-6 flex gap-3">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/dashboard"
             className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
@@ -204,7 +205,7 @@ export default async function DevolucionesPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+            <table className="min-w-[900px] text-sm">
               <thead className="bg-slate-100 text-slate-700">
                 <tr>
                   <th className="text-left px-4 py-3">Usuario</th>

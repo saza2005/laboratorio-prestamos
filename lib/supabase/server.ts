@@ -25,3 +25,16 @@ export async function createClient() {
     }
   )
 }
+
+export async function clearSupabaseAuthCookies() {
+  const cookieStore = await cookies()
+
+  for (const cookie of cookieStore.getAll()) {
+    if (cookie.name.startsWith('sb-') && cookie.name.includes('auth-token')) {
+      cookieStore.set(cookie.name, '', {
+        path: '/',
+        maxAge: 0,
+      })
+    }
+  }
+}

@@ -1,10 +1,11 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import {
   canManageInventory,
   getHomeRouteByRole,
 } from '@/lib/supabase/auth/roles'
-import { createMaintenance } from './actions'
+import { MaintenanceForm } from './maintenance-form'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) return value[0] ?? null
@@ -30,12 +31,17 @@ export default async function MantenimientoPage() {
     redirect(getHomeRouteByRole(profile.role))
   }
 
-  const { data: items } = await supabase
+  const { data: items, error: itemsError } = await supabase
     .from('items')
     .select('id, name, code')
     .order('name')
+    .limit(500)
 
-  const { data: records } = await supabase
+  if (itemsError) {
+    throw new Error(itemsError.message)
+  }
+
+  const { data: records, error: recordsError } = await supabase
     .from('maintenance_records')
     .select(`
       id,
@@ -49,64 +55,30 @@ export default async function MantenimientoPage() {
     .order('maintenance_date', { ascending: false })
     .limit(100)
 
+  if (recordsError) {
+    throw new Error(recordsError.message)
+  }
+
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
 
-        <h1 className="text-3xl font-bold">Mantenimiento de equipos</h1>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-3xl font-bold">Mantenimiento de equipos</h1>
+
+          <Link
+            href="/dashboard"
+            className="rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
+          >
+            Volver al dashboard
+          </Link>
+        </div>
 
         {/* FORM */}
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Registrar mantenimiento</h2>
 
-          <form action={createMaintenance} className="grid md:grid-cols-2 gap-4">
-
-            <select name="item_id" required className="border p-2 rounded">
-              <option value="">Seleccione equipo</option>
-              {items?.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name} [{item.code}]
-                </option>
-              ))}
-            </select>
-
-            <input
-              name="activity"
-              placeholder="Actividad realizada"
-              required
-              className="border p-2 rounded"
-            />
-
-            <input
-              name="responsible"
-              placeholder="Responsable(s)"
-              required
-              className="border p-2 rounded"
-            />
-
-            <input
-              name="maintenance_date"
-              type="date"
-              required
-              className="border p-2 rounded"
-            />
-
-            <select name="maintenance_type" required className="border p-2 rounded">
-              <option value="">Tipo</option>
-              <option value="preventive">Preventivo</option>
-              <option value="corrective">Correctivo</option>
-            </select>
-
-            <textarea
-              name="observations"
-              placeholder="Observaciones"
-              className="border p-2 rounded md:col-span-2"
-            />
-
-            <button className="bg-blue-600 text-white px-4 py-2 rounded md:col-span-2">
-              Guardar
-            </button>
-          </form>
+          <MaintenanceForm items={items ?? []} />
         </div>
 
         {/* TABLA */}
@@ -118,8 +90,37 @@ export default async function MantenimientoPage() {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+          <div className="divide-y md:hidden">
+            {records && records.length > 0 ? (
+              records.map((record) => {
+                const item = firstOrNull(record.items)
+
+                return (
+                  <div key={record.id} className="space-y-2 p-4 text-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium">{item?.name ?? '-'}</p>
+                        <p className="text-slate-500">{record.maintenance_date}</p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
+                        {formatMaintenanceType(record.maintenance_type)}
+                      </span>
+                    </div>
+                    <p><span className="font-medium">Actividad:</span> {record.activity}</p>
+                    <p><span className="font-medium">Responsable:</span> {record.responsible}</p>
+                    {record.observations && (
+                      <p className="text-slate-600"><span className="font-medium">Observaciones:</span> {record.observations}</p>
+                    )}
+                  </div>
+                )
+              })
+            ) : (
+              <p className="p-6 text-center text-slate-500">No hay mantenimientos registrados.</p>
+            )}
+          </div>
+
+          <div className="hidden overflow-x-auto md:block">
+            <table className="min-w-[760px] text-sm">
               <thead className="bg-slate-100 text-slate-700">
                 <tr>
                   <th className="px-4 py-3 text-left">Equipo</th>

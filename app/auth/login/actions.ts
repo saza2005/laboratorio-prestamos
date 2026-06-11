@@ -1,10 +1,11 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { clearSupabaseAuthCookies, createClient } from '@/lib/supabase/server'
 import { getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 
 export async function loginUser(formData: FormData) {
+  await clearSupabaseAuthCookies()
   const supabase = await createClient()
 
   const email = String(formData.get('email') || '').trim()
@@ -36,7 +37,8 @@ export async function loginUser(formData: FormData) {
     .single()
 
   if (profileError || !profile) {
-    await supabase.auth.signOut()
+    await supabase.auth.signOut({ scope: 'local' })
+    await clearSupabaseAuthCookies()
     redirect('/auth/login?error=no_profile')
   }
 

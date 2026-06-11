@@ -62,16 +62,26 @@ export default async function PrestamosPage() {
     redirect(getHomeRouteByRole(profile.role))
   }
 
-  const { data: users } = await supabase
+  const { data: users, error: usersError } = await supabase
     .from('profiles')
     .select('id, full_name, email, role')
     .order('full_name', { ascending: true })
+    .limit(500)
 
-  const { data: items } = await supabase
+  if (usersError) {
+    throw new Error(usersError.message)
+  }
+
+  const { data: items, error: itemsError } = await supabase
     .from('items')
     .select('id, code, name, stock_available, item_type, track_individual')
     .eq('status', 'active')
     .order('name', { ascending: true })
+    .limit(500)
+
+  if (itemsError) {
+    throw new Error(itemsError.message)
+  }
 
   const { data: rawLoans, error: loansError } = await supabase
     .from('loans')
@@ -196,7 +206,7 @@ export default async function PrestamosPage() {
     }) ?? []
 
   return (
-    <main className="min-h-screen bg-slate-50 p-8 text-slate-900">
+    <main className="min-h-screen bg-slate-50 p-4 sm:p-8 text-slate-900">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Gestión de Préstamos</h1>
@@ -284,7 +294,7 @@ export default async function PrestamosPage() {
                     <h4 className="font-semibold mb-3">Materiales prestados</h4>
 
                     <div className="overflow-x-auto rounded-xl border">
-                      <table className="min-w-full text-sm">
+                      <table className="min-w-[840px] text-sm">
                         <thead className="bg-slate-100 text-slate-700">
                           <tr>
                             <th className="text-left px-4 py-3">Ítem</th>

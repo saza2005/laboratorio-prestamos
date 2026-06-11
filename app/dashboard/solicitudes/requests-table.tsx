@@ -113,7 +113,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-white shadow p-6">
+      <div className="rounded-2xl bg-white shadow p-4 sm:p-6">
         <div className="grid md:grid-cols-3 gap-3">
           <input
             type="text"
@@ -150,7 +150,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
           filteredRequests.map((req) => (
             <div
               key={req.id}
-              className="rounded-2xl bg-white shadow p-6 space-y-4"
+              className="rounded-2xl bg-white shadow p-4 space-y-4 sm:p-6"
             >
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -227,8 +227,32 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                 </div>
                 )}
 
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
+              <div className="space-y-2 md:hidden">
+                {req.request_items.map((requestItem) => (
+                  <div key={requestItem.id} className="rounded-lg border bg-slate-50 p-3 text-sm">
+                    <p className="font-medium">
+                      {requestItem.item?.name ?? '-'} [{requestItem.item?.code ?? '-'}]
+                    </p>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                      <p>
+                        <span className="block text-xs text-slate-500">Solicitado</span>
+                        {requestItem.quantity_requested}
+                      </p>
+                      <p>
+                        <span className="block text-xs text-slate-500">Aprobado</span>
+                        {requestItem.quantity_approved}
+                      </p>
+                      <p>
+                        <span className="block text-xs text-slate-500">Disponible</span>
+                        {requestItem.item?.stock_available ?? 0}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden overflow-x-auto md:block">
+                <table className="min-w-[680px] text-sm">
                   <thead className="bg-slate-100 text-slate-700">
                     <tr>
                       <th className="text-left px-4 py-3">Ítem</th>
