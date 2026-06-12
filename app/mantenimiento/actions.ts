@@ -15,15 +15,38 @@ async function persistMaintenance(formData: FormData) {
     throw new Error('No tiene permisos para registrar mantenimiento.')
   }
 
-  const itemId = String(formData.get('item_id') || '')
+  const itemId = String(formData.get('item_id') || '').trim()
   const activity = String(formData.get('activity') || '').trim()
   const responsible = String(formData.get('responsible') || '').trim()
-  const maintenanceDate = String(formData.get('maintenance_date') || '')
+  const maintenanceDate = String(formData.get('maintenance_date') || '').trim()
   const observations = String(formData.get('observations') || '').trim()
-  const maintenanceType = String(formData.get('maintenance_type') || '')
+  const maintenanceType = String(formData.get('maintenance_type') || '').trim()
 
   if (!itemId || !activity || !responsible || !maintenanceDate || !maintenanceType) {
     throw new Error('Faltan campos obligatorios.')
+  }
+
+  if (!['preventive', 'corrective'].includes(maintenanceType)) {
+    throw new Error('El tipo de mantenimiento no es válido.')
+  }
+
+  if (!isValidDateInput(maintenanceDate)) {
+    throw new Error('La fecha de mantenimiento no es válida.')
+  }
+
+  const { data: item, error: itemError } = await supabase
+    .from('items')
+    .select('id')
+    .eq('id', itemId)
+    .eq('item_type', 'equipment')
+    .maybeSingle()
+
+  if (itemError) {
+    throw new Error(itemError.message)
+  }
+
+  if (!item) {
+    throw new Error('El equipo seleccionado no existe o no es válido.')
   }
 
   const { error } = await supabase
@@ -42,6 +65,19 @@ async function persistMaintenance(formData: FormData) {
     throw new Error(error.message)
   }
 
+}
+
+function isValidDateInput(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  )
 }
 
 function getMaintenanceErrorMessage(error: unknown) {

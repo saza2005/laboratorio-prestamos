@@ -5,6 +5,18 @@ import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { formatDateTime } from '@/lib/format-date'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 
+function getEcuadorDate() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Guayaquil',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date())
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+
+  return `${values.year}-${values.month}-${values.day}`
+}
+
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
     return value[0] ?? null
@@ -65,6 +77,7 @@ export default async function PrestamosPage() {
   const { data: users, error: usersError } = await supabase
     .from('profiles')
     .select('id, full_name, email, role')
+    .in('role', ['teacher', 'student'])
     .order('full_name', { ascending: true })
     .limit(500)
 
@@ -76,6 +89,7 @@ export default async function PrestamosPage() {
     .from('items')
     .select('id, code, name, stock_available, item_type, track_individual')
     .eq('status', 'active')
+    .gt('stock_available', 0)
     .order('name', { ascending: true })
     .limit(500)
 
@@ -226,7 +240,11 @@ export default async function PrestamosPage() {
 
         <div className="mb-8 rounded-2xl bg-white shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Registrar préstamo</h2>
-          <LoanForm users={users ?? []} items={items ?? []} />
+          <LoanForm
+            users={users ?? []}
+            items={items ?? []}
+            minExpectedReturnDate={getEcuadorDate()}
+          />
         </div>
 
         <div className="rounded-2xl bg-white shadow overflow-hidden">

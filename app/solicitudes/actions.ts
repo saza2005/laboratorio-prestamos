@@ -14,8 +14,8 @@ export type CancelRequestActionState = {
 
 function parsePositiveInt(value: FormDataEntryValue | null): number {
   const n = Number(value)
-  if (!Number.isFinite(n) || n < 1) return 0
-  return Math.floor(n)
+  if (!Number.isInteger(n) || n < 1) return 0
+  return n
 }
 
 type RequestedRow = {
@@ -99,8 +99,33 @@ function parseGroups(formData: FormData): RequestGroupRow[] {
     .filter((group) => group.items.length > 0)
 }
 
+function isValidDateInput(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  )
+}
+
+function getEcuadorDate() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Guayaquil',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date())
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+
+  return `${values.year}-${values.month}-${values.day}`
+}
+
 async function persistRequest(formData: FormData): Promise<void> {
-  const { supabase, user, profile } = await getAuthProfile()
+  const { supabase, profile } = await getAuthProfile()
 
   if (!canUseRequestPortal(profile.role)) {
     redirect('/auth/login')
@@ -114,145 +139,8 @@ async function persistRequest(formData: FormData): Promise<void> {
 
   const groups = parseGroups(formData)
 
-  if (groups.length > 0) {
-    if (!canCreateGroupRequests(profile.role)) {
-      throw new Error('Su rol no permite crear solicitudes grupales.')
-    }
-
-    const allGroupItems = groups.flatMap((group) => group.items)
-
-    const totalsByItem = new Map<string, number>()
-
-    for (const item of allGroupItems) {
-      totalsByItem.set(
-        item.item_id,
-        (totalsByItem.get(item.item_id) ?? 0) + item.quantity
-      )
-    }
-
-    const itemIdsToCheck = Array.from(totalsByItem.keys())
-
-    const { data: items, error: itemsError } = await supabase
-      .from('items')
-      .select('id, status, stock_available')
-      .in('id', itemIdsToCheck)
-
-    if (itemsError || !items) {
-      throw new Error('No se pudieron validar los ítems seleccionados.')
-    }
-
-    const itemMap = new Map(items.map((item) => [item.id, item]))
-
-    for (const [itemId, totalQuantity] of totalsByItem.entries()) {
-      const item = itemMap.get(itemId)
-
-      if (!item) {
-        throw new Error('Uno de los ítems seleccionados no existe.')
-      }
-
-      if (item.status !== 'active') {
-        throw new Error('Uno de los ítems seleccionados no está disponible.')
-      }
-
-      if (item.stock_available < totalQuantity) {
-        throw new Error(
-          'La cantidad total solicitada por grupos excede el stock disponible.'
-        )
-      }
-    }
-
-    const leaderIds = groups.map((group) => group.leader_student_id)
-
-    const { data: leaders, error: leadersError } = await supabase
-      .from('profiles')
-      .select('id, role')
-      .in('id', leaderIds)
-
-    if (leadersError || !leaders) {
-      throw new Error('No se pudieron validar los jefes de grupo.')
-    }
-
-    const leaderMap = new Map(leaders.map((leader) => [leader.id, leader]))
-
-    for (const group of groups) {
-      const leader = leaderMap.get(group.leader_student_id)
-
-      if (!leader) {
-        throw new Error('Uno de los jefes de grupo no existe.')
-      }
-
-      if (leader.role !== 'student') {
-        throw new Error('El jefe de grupo debe tener rol de estudiante.')
-      }
-    }
-
-    const { data: newRequest, error: requestError } = await supabase
-      .from('requests')
-      .insert({
-        user_id: user.id,
-        purpose: purpose || null,
-        comments: comments || null,
-        scheduled_return_date: scheduledReturnDate || null,
-        status: 'pending',
-      })
-      .select('id')
-      .single()
-
-    if (requestError || !newRequest) {
-      throw new Error(requestError?.message || 'No se pudo crear la solicitud.')
-    }
-
-    const requestItemsPayload = Array.from(totalsByItem.entries()).map(
-      ([itemId, quantity]) => ({
-        request_id: newRequest.id,
-        item_id: itemId,
-        quantity_requested: quantity,
-        quantity_approved: 0,
-        quantity_delivered: 0,
-        quantity_returned: 0,
-        quantity_damaged: 0,
-      })
-    )
-
-    const { error: requestItemsError } = await supabase
-      .from('request_items')
-      .insert(requestItemsPayload)
-
-    if (requestItemsError) {
-      throw new Error(requestItemsError.message)
-    }
-
-    for (const group of groups) {
-      const { data: newGroup, error: groupError } = await supabase
-        .from('request_groups')
-        .insert({
-          request_id: newRequest.id,
-          group_name: group.group_name,
-          leader_student_id: group.leader_student_id,
-        })
-        .select('id')
-        .single()
-
-      if (groupError || !newGroup) {
-        throw new Error(groupError?.message || 'No se pudo crear el grupo.')
-      }
-
-      const groupItemsPayload = group.items.map((item) => ({
-        request_group_id: newGroup.id,
-        item_id: item.item_id,
-        quantity: item.quantity,
-      }))
-
-      const { error: groupItemsError } = await supabase
-        .from('request_group_items')
-        .insert(groupItemsPayload)
-
-      if (groupItemsError) {
-        throw new Error(groupItemsError.message)
-      }
-    }
-
-    return
+  if (groups.length > 0 && !canCreateGroupRequests(profile.role)) {
+    throw new Error('Su rol no permite crear solicitudes grupales.')
   }
 
   const itemIds = formData
@@ -270,73 +158,29 @@ async function persistRequest(formData: FormData): Promise<void> {
     }))
     .filter((row) => row.item_id && row.quantity_requested > 0)
 
-  if (rows.length === 0) {
+  if (groups.length === 0 && rows.length === 0) {
     throw new Error('Debe agregar al menos un ítem válido a la solicitud.')
   }
 
-  const itemIdsToCheck = rows.map((row) => row.item_id)
-
-  const { data: items, error: itemsError } = await supabase
-    .from('items')
-    .select('id, status, stock_available')
-    .in('id', itemIdsToCheck)
-
-  if (itemsError || !items) {
-    throw new Error('No se pudieron validar los ítems seleccionados.')
+  if (scheduledReturnDate && !isValidDateInput(scheduledReturnDate)) {
+    throw new Error('La fecha estimada de devolución no es válida.')
   }
 
-  const itemMap = new Map(items.map((item) => [item.id, item]))
-
-  for (const row of rows) {
-    const item = itemMap.get(row.item_id)
-
-    if (!item) {
-      throw new Error('Uno de los ítems seleccionados no existe.')
-    }
-
-    if (item.status !== 'active') {
-      throw new Error('Uno de los ítems seleccionados no está disponible.')
-    }
-
-    if (item.stock_available < row.quantity_requested) {
-      throw new Error('La cantidad solicitada excede el stock disponible.')
-    }
+  if (scheduledReturnDate && scheduledReturnDate < getEcuadorDate()) {
+    throw new Error('La fecha estimada de devolución no puede estar en el pasado.')
   }
 
-  const { data: newRequest, error: requestError } = await supabase
-    .from('requests')
-    .insert({
-      user_id: user.id,
-      purpose: purpose || null,
-      comments: comments || null,
-      scheduled_return_date: scheduledReturnDate || null,
-      status: 'pending',
-    })
-    .select('id')
-    .single()
+  const { error } = await supabase.rpc('create_request_transaction', {
+    p_purpose: purpose || null,
+    p_comments: comments || null,
+    p_scheduled_return_date: scheduledReturnDate || null,
+    p_items: groups.length > 0 ? [] : rows,
+    p_groups: groups,
+  })
 
-  if (requestError || !newRequest) {
-    throw new Error(requestError?.message || 'No se pudo crear la solicitud.')
+  if (error) {
+    throw new Error(error.message)
   }
-
-  const requestItemsPayload = rows.map((row) => ({
-    request_id: newRequest.id,
-    item_id: row.item_id,
-    quantity_requested: row.quantity_requested,
-    quantity_approved: 0,
-    quantity_delivered: 0,
-    quantity_returned: 0,
-    quantity_damaged: 0,
-  }))
-
-  const { error: requestItemsError } = await supabase
-    .from('request_items')
-    .insert(requestItemsPayload)
-
-  if (requestItemsError) {
-    throw new Error(requestItemsError.message)
-  }
-
 }
 
 function getRequestErrorMessage(error: unknown) {

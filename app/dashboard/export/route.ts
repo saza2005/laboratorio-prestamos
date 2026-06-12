@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs'
 import { NextRequest } from 'next/server'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canSeeReportsModule } from '@/lib/supabase/auth/roles'
+import { parseReportPeriod } from '@/lib/report-period'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) return value[0] ?? null
@@ -24,14 +25,18 @@ export async function GET(request: NextRequest) {
   }
 
   const searchParams = request.nextUrl.searchParams
-  const month = Number(searchParams.get('month'))
-  const year = Number(searchParams.get('year'))
+  const period = parseReportPeriod(
+    searchParams.get('month'),
+    searchParams.get('year')
+  )
 
-  if (!month || !year) {
-    return new Response('Mes y año requeridos', { status: 400 })
+  if (!period) {
+    return new Response('Mes o año no válido', { status: 400 })
   }
 
-  const { data: maintenance } = await supabase
+  const { month, year, startDate, endDate, startTimestamp, endTimestamp } = period
+
+  const { data: maintenance, error: maintenanceError } = await supabase
     .from('maintenance_records')
     .select(`
       activity,
@@ -41,13 +46,14 @@ export async function GET(request: NextRequest) {
       observations,
       items:items(name, code)
     `)
+    .gte('maintenance_date', startDate)
+    .lt('maintenance_date', endDate)
 
-  const filteredMaintenance = (maintenance ?? []).filter((m) => {
-    const date = new Date(m.maintenance_date)
-    return date.getMonth() + 1 === month && date.getFullYear() === year
-  })
+  if (maintenanceError) {
+    return new Response('No se pudo cargar el mantenimiento', { status: 500 })
+  }
 
-  const { data: loans } = await supabase
+  const { data: loans, error: loansError } = await supabase
     .from('loans')
     .select(`
       id,
@@ -57,12 +63,12 @@ export async function GET(request: NextRequest) {
       returned_at,
       profiles:profiles!loans_user_id_fkey(full_name, email)
     `)
+    .gte('delivery_date', startTimestamp)
+    .lt('delivery_date', endTimestamp)
 
-  const filteredLoans = (loans ?? []).filter((loan) => {
-    if (!loan.delivery_date) return false
-    const date = new Date(loan.delivery_date)
-    return date.getMonth() + 1 === month && date.getFullYear() === year
-  })
+  if (loansError) {
+    return new Response('No se pudieron cargar los préstamos', { status: 500 })
+  }
 
   const workbook = new ExcelJS.Workbook()
 
@@ -78,7 +84,7 @@ export async function GET(request: NextRequest) {
     { header: 'Observaciones', key: 'observations', width: 40 },
   ]
 
-  for (const record of filteredMaintenance) {
+  for (const record of maintenance ?? []) {
     const item = firstOrNull(record.items)
 
     maintenanceSheet.addRow({
@@ -106,7 +112,7 @@ export async function GET(request: NextRequest) {
     { header: 'Estado', key: 'status', width: 18 },
   ]
 
-  for (const loan of filteredLoans) {
+  for (const loan of loans ?? []) {
     const borrower = firstOrNull(loan.profiles)
 
     loansSheet.addRow({

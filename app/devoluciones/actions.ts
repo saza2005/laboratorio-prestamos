@@ -92,9 +92,9 @@ function validateReturnInput(input: ParsedReturnInput) {
 function parseNonNegativeInteger(value: FormDataEntryValue | null): number {
   const parsed = Number(value)
 
-  if (!Number.isFinite(parsed) || parsed < 0) {
+  if (!Number.isInteger(parsed) || parsed < 0) {
     return 0
   }
 
-  return Math.floor(parsed)
+  return parsed
 }

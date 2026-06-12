@@ -9,7 +9,7 @@ export type InventoryActionState = {
 }
 
 async function persistItem(formData: FormData) {
-  const { supabase, user, profile } = await getAuthProfile()
+  const { supabase, profile } = await getAuthProfile()
 
   if (!canManageInventory(profile.role)) {
     throw new Error('No tiene permisos para gestionar inventario.')
@@ -30,8 +30,8 @@ async function persistItem(formData: FormData) {
     throw new Error('Faltan campos obligatorios.')
   }
 
-  if (!Number.isFinite(stockTotal) || !Number.isFinite(stockAvailable)) {
-    throw new Error('Los valores de stock deben ser números válidos.')
+  if (!Number.isInteger(stockTotal) || !Number.isInteger(stockAvailable)) {
+    throw new Error('Los valores de stock deben ser números enteros.')
   }
 
   if (stockTotal < 0 || stockAvailable < 0) {
@@ -42,59 +42,40 @@ async function persistItem(formData: FormData) {
     throw new Error('El stock disponible no puede superar el stock total.')
   }
 
-  if (trackIndividual && itemType === 'equipment' && stockAvailable !== stockTotal) {
+  if (trackIndividual && itemType !== 'equipment') {
+    throw new Error(
+      'El seguimiento individual solo está disponible para equipos.'
+    )
+  }
+
+  if (trackIndividual && stockAvailable !== stockTotal) {
     throw new Error(
       'Los equipos con seguimiento individual deben iniciar con todo el stock disponible.'
     )
   }
 
-  const { data: newItem, error } = await supabase
-    .from('items')
-    .insert({
-      code,
-      name,
-      description: description || null,
-      category: category || null,
-      item_type: itemType,
-      track_individual: trackIndividual,
-      stock_total: stockTotal,
-      stock_available: stockAvailable,
-      status,
-      location: location || null,
-      created_by: user.id,
-    })
-    .select('id')
-    .single()
+  if (trackIndividual && stockTotal > 1000) {
+    throw new Error(
+      'No se pueden generar más de 1000 unidades individuales por ítem.'
+    )
+  }
+
+  const { error } = await supabase.rpc('create_inventory_item_transaction', {
+    p_code: code,
+    p_name: name,
+    p_description: description || null,
+    p_category: category || null,
+    p_item_type: itemType,
+    p_track_individual: trackIndividual,
+    p_stock_total: stockTotal,
+    p_stock_available: stockAvailable,
+    p_status: status,
+    p_location: location || null,
+  })
 
   if (error) {
     throw new Error(error.message)
   }
-
-  if (trackIndividual && itemType === 'equipment') {
-    const units = []
-
-    for (let i = 1; i <= stockTotal; i++) {
-      const codeFormatted = `${code}-${String(i).padStart(3, '0')}`
-
-      units.push({
-        item_id: newItem.id,
-        serial_code: codeFormatted,
-        qr_code: codeFormatted,
-        condition: 'good',
-        availability_status: 'available',
-        notes: null,
-      })
-    }
-
-    const { error: unitError } = await supabase
-      .from('item_units')
-      .insert(units)
-
-    if (unitError) {
-      throw new Error(unitError.message)
-    }
-  }
-
 }
 
 function getInventoryErrorMessage(error: unknown) {

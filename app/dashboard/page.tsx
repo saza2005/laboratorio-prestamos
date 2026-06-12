@@ -10,6 +10,7 @@ import {
 } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
+import { parseReportPeriod } from '@/lib/report-period'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -67,24 +68,20 @@ export default async function DashboardPage({
   const { supabase, user, profile } = auth
   const params = await searchParams
 
-  const currentDate = new Date()
+  const period = parseReportPeriod(params.month, params.year, new Date())
 
-  const selectedMonth = Number(
-    params.month || currentDate.getMonth() + 1
-  )
+  if (!period) {
+    redirect('/dashboard')
+  }
 
-  const selectedYear = Number(
-    params.year || currentDate.getFullYear()
-  )
-
-  const monthStart = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1))
-  const nextMonthStart = new Date(Date.UTC(selectedYear, selectedMonth, 1))
+  const selectedMonth = period.month
+  const selectedYear = period.year
 
   const { data: maintenance, error: maintenanceError } = await supabase
     .from('maintenance_records')
     .select('maintenance_type, maintenance_date')
-    .gte('maintenance_date', monthStart.toISOString().slice(0, 10))
-    .lt('maintenance_date', nextMonthStart.toISOString().slice(0, 10))
+    .gte('maintenance_date', period.startDate)
+    .lt('maintenance_date', period.endDate)
 
   if (maintenanceError) {
     throw new Error(maintenanceError.message)
@@ -110,22 +107,23 @@ export default async function DashboardPage({
   const canSeeReturns = canSeeReturnsModule(profile.role)
   const canSeeReports = canSeeReportsModule(profile.role)
 
-  const { data: items, error: itemsError } = await supabase
-    .from('items')
-    .select(`
-      id,
-      code,
-      name,
-      stock_total,
-      stock_available,
-      status,
-      track_individual
-    `)
-    .eq('status', 'active')
-    .order('created_at', { ascending: false })
+  const [inventorySummaryResult, lowStockItemsResult] = await Promise.all([
+    supabase.rpc('get_dashboard_inventory_summary'),
+    supabase
+      .from('items')
+      .select('id, code, name, stock_available, status')
+      .eq('status', 'active')
+      .lte('stock_available', 2)
+      .order('stock_available', { ascending: true })
+      .limit(6),
+  ])
 
-  if (itemsError) {
-    throw new Error(itemsError.message)
+  if (inventorySummaryResult.error) {
+    throw new Error(inventorySummaryResult.error.message)
+  }
+
+  if (lowStockItemsResult.error) {
+    throw new Error(lowStockItemsResult.error.message)
   }
 
   const [
@@ -194,26 +192,17 @@ export default async function DashboardPage({
     throw new Error(movementsError.message)
   }
 
-  const totalItems = items?.length ?? 0
-  const totalStock = (items ?? []).reduce(
-    (acc, item) => acc + (item.stock_total ?? 0),
-    0
-  )
-  const totalAvailable = (items ?? []).reduce(
-    (acc, item) => acc + (item.stock_available ?? 0),
-    0
-  )
+  const inventorySummary = inventorySummaryResult.data?.[0]
+  const totalItems = Number(inventorySummary?.total_items ?? 0)
+  const totalStock = Number(inventorySummary?.total_stock ?? 0)
+  const totalAvailable = Number(inventorySummary?.total_available ?? 0)
   const totalUnavailable = totalStock - totalAvailable
 
   const activeLoans = activeLoansResult.count ?? 0
   const partialLoans = partialLoansResult.count ?? 0
   const returnedLoans = returnedLoansResult.count ?? 0
 
-  const lowStockItems =
-    (items ?? [])
-      .filter((item) => item.stock_available <= 2)
-      .sort((a, b) => a.stock_available - b.stock_available)
-      .slice(0, 6)
+  const lowStockItems = lowStockItemsResult.data ?? []
 
   const recentLoans =
     (recentLoansResult.data ?? []).map((loan) => {

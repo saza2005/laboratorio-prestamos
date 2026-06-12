@@ -34,6 +34,7 @@ export default async function MantenimientoPage() {
   const { data: items, error: itemsError } = await supabase
     .from('items')
     .select('id, name, code')
+    .eq('item_type', 'equipment')
     .order('name')
     .limit(500)
 

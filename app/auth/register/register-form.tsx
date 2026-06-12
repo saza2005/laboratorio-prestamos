@@ -20,6 +20,7 @@ export function RegisterForm() {
           name="full_name"
           type="text"
           required
+          maxLength={120}
           autoComplete="name"
           placeholder="Tu nombre"
           className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
@@ -35,6 +36,7 @@ export function RegisterForm() {
           name="email"
           type="email"
           required
+          maxLength={254}
           autoComplete="email"
           placeholder="correo@ejemplo.com"
           className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
@@ -54,6 +56,7 @@ export function RegisterForm() {
           type="password"
           required
           minLength={6}
+          maxLength={128}
           autoComplete="new-password"
           placeholder="Mínimo 6 caracteres"
           className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"

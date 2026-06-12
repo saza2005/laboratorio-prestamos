@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { RequestForm } from './request-form'
 import { RequestFormGroups } from './request-form-groups'
@@ -49,6 +50,18 @@ type RequestGroupRow = {
       }
     | null
   request_group_items: RequestGroupItemRow[]
+}
+
+function getEcuadorDate() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Guayaquil',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date())
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+
+  return `${values.year}-${values.month}-${values.day}`
 }
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
@@ -136,7 +149,15 @@ function loanStatusBadgeClass(status: string) {
 }
 
 export default async function SolicitudesPage() {
-  const { supabase, user, profile } = await getAuthProfile()
+  let auth
+
+  try {
+    auth = await getAuthProfile()
+  } catch {
+    redirect('/auth/login')
+  }
+
+  const { supabase, user, profile } = auth
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
@@ -344,7 +365,10 @@ const loans =
           <h2 className="text-xl font-semibold mb-4">
             Crear solicitud individual
           </h2>
-          <RequestForm items={items ?? []} />
+          <RequestForm
+            items={items ?? []}
+            minScheduledReturnDate={getEcuadorDate()}
+          />
         </div>
 
         {canCreateGroups && (

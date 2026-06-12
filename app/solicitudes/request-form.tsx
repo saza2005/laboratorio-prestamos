@@ -19,13 +19,17 @@ type RequestRow = {
 
 type RequestFormProps = {
   items: ItemOption[]
+  minScheduledReturnDate: string
 }
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? ''
 }
 
-export function RequestForm({ items }: RequestFormProps) {
+export function RequestForm({
+  items,
+  minScheduledReturnDate,
+}: RequestFormProps) {
   const [state, formAction, isPending] = useActionState(createRequestWithState, {
     error: null,
   })
@@ -71,6 +75,7 @@ export function RequestForm({ items }: RequestFormProps) {
 
     return (
       !row.item_id ||
+      !Number.isInteger(row.quantity_requested) ||
       row.quantity_requested < 1 ||
       (item ? row.quantity_requested > item.stock_available : true)
     )
@@ -134,6 +139,7 @@ export function RequestForm({ items }: RequestFormProps) {
         <input
           name="scheduled_return_date"
           type="date"
+          min={minScheduledReturnDate}
           className="w-full rounded-lg border border-slate-300 px-3 py-2"
         />
       </div>
@@ -230,6 +236,7 @@ export function RequestForm({ items }: RequestFormProps) {
                       type="number"
                       min="1"
                       max={selectedItem?.stock_available ?? undefined}
+                      step="1"
                       value={row.quantity_requested}
                       onChange={(e) =>
                         updateRow(index, 'quantity_requested', e.target.value)

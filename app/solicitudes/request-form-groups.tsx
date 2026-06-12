@@ -108,6 +108,7 @@ export function RequestFormGroups({
 
       return (
         !groupItem.item_id ||
+        !Number.isInteger(groupItem.quantity) ||
         groupItem.quantity < 1 ||
         !item ||
         totalRequestedForItem > item.stock_available
@@ -306,6 +307,7 @@ export function RequestFormGroups({
                 type="number"
                 value={item.quantity}
                 min={1}
+                step={1}
                 max={
                   item.item_id
                     ? itemMap.get(item.item_id)?.stock_available

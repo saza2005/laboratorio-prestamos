@@ -4,7 +4,16 @@ import { LoginForm } from './login-form'
 type LoginPageProps = {
   searchParams?: Promise<{
     error?: string
+    registered?: string
   }>
+}
+
+function getRegistrationMessage(registered?: string) {
+  if (registered === 'check_email') {
+    return 'Cuenta creada. Revisa tu correo para confirmar el registro antes de iniciar sesión.'
+  }
+
+  return null
 }
 
 function getErrorMessage(error?: string) {
@@ -25,6 +34,7 @@ function getErrorMessage(error?: string) {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams
   const errorMessage = getErrorMessage(params?.error)
+  const registrationMessage = getRegistrationMessage(params?.registered)
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 text-slate-900 sm:px-6">
@@ -36,6 +46,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <p className="text-slate-600 mb-6">
           Accede al sistema de laboratorio
         </p>
+
+        {registrationMessage && (
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+            {registrationMessage}
+          </div>
+        )}
 
         {errorMessage && (
           <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">

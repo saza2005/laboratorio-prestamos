@@ -19,9 +19,11 @@ type User = {
 export function LoanForm({
   users,
   items,
+  minExpectedReturnDate,
 }: {
   users: User[]
   items: Item[]
+  minExpectedReturnDate: string
 }) {
   const [state, formAction, isPending] = useActionState(createLoanWithState, {
     error: null,
@@ -37,7 +39,12 @@ export function LoanForm({
 
   const stock = selectedItem?.stock_available ?? 0
   const exceedsStock = quantity > stock
-  const canSubmit = selectedUserId && selectedItem && quantity > 0 && !exceedsStock
+  const canSubmit =
+    selectedUserId &&
+    selectedItem &&
+    Number.isInteger(quantity) &&
+    quantity > 0 &&
+    !exceedsStock
 
   return (
     <form
@@ -57,7 +64,8 @@ export function LoanForm({
           required
           value={selectedUserId}
           onChange={(event) => setSelectedUserId(event.target.value)}
-          className="w-full rounded-lg border px-3 py-2"
+          disabled={isPending || users.length === 0}
+          className="w-full rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100"
         >
           <option value="">Seleccione</option>
           {users.map((u) => (
@@ -79,7 +87,8 @@ export function LoanForm({
             setSelectedItemId(e.target.value)
             setQuantity(1)
           }}
-          className="w-full rounded-lg border px-3 py-2"
+          disabled={isPending || items.length === 0}
+          className="w-full rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100"
         >
           <option value="">Seleccione</option>
           {items.map((item) => (
@@ -108,6 +117,8 @@ export function LoanForm({
           name="quantity"
           type="number"
           min="1"
+          max={stock || undefined}
+          step="1"
           value={quantity}
           onChange={(e) =>
             setQuantity(Math.max(1, Number(e.target.value) || 1))
@@ -140,6 +151,7 @@ export function LoanForm({
         <input
           name="expected_return_date"
           type="date"
+          min={minExpectedReturnDate}
           className="w-full rounded-lg border px-3 py-2"
         />
       </div>
@@ -163,6 +175,12 @@ export function LoanForm({
         >
           {isPending ? 'Guardando...' : 'Guardar préstamo'}
         </button>
+
+        {(users.length === 0 || items.length === 0) && (
+          <p className="mt-2 text-sm text-amber-700">
+            Debe existir al menos un prestatario y un material con stock disponible.
+          </p>
+        )}
 
         {state.error && (
           <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

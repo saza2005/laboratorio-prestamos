@@ -81,7 +81,8 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
             setQuantityDamaged(0)
             setQuantityMissing(0)
           }}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2"
+          disabled={isPending || loanItems.length === 0}
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100"
         >
           <option value="">Seleccione</option>
           {loanItems.map((li) => {
@@ -175,6 +176,8 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
           name="quantity_ok"
           type="number"
           min="0"
+          max={pendienteActual}
+          step="1"
           value={quantityOk}
           onChange={(e) => setQuantityOk(Math.max(0, Number(e.target.value) || 0))}
           className="w-full rounded-lg border border-slate-300 px-3 py-2"
@@ -189,6 +192,8 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
           name="quantity_damaged"
           type="number"
           min="0"
+          max={pendienteActual}
+          step="1"
           value={quantityDamaged}
           onChange={(e) => setQuantityDamaged(Math.max(0, Number(e.target.value) || 0))}
           className="w-full rounded-lg border border-slate-300 px-3 py-2"
@@ -203,6 +208,8 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
           name="quantity_missing"
           type="number"
           min="0"
+          max={pendienteActual}
+          step="1"
           value={quantityMissing}
           onChange={(e) => setQuantityMissing(Math.max(0, Number(e.target.value) || 0))}
           className="w-full rounded-lg border border-slate-300 px-3 py-2"
@@ -245,11 +252,23 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
       <div className="md:col-span-2">
         <button
           type="submit"
-          disabled={!selectedLoanItem || totalProcesado <= 0 || excedePendiente || isPending}
+          disabled={
+            !selectedLoanItem ||
+            totalProcesado <= 0 ||
+            !Number.isInteger(totalProcesado) ||
+            excedePendiente ||
+            isPending
+          }
           className="rounded-lg bg-green-600 text-white px-5 py-2.5 font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? 'Registrando...' : 'Registrar devolución'}
         </button>
+
+        {loanItems.length === 0 && (
+          <p className="mt-2 text-sm text-slate-600">
+            No hay préstamos pendientes disponibles para devolución.
+          </p>
+        )}
 
         {state.error && (
           <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

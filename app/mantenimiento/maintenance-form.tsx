@@ -25,7 +25,12 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
         }
       }}
     >
-      <select name="item_id" required className="border p-2 rounded">
+      <select
+        name="item_id"
+        required
+        disabled={isPending || items.length === 0}
+        className="border p-2 rounded disabled:cursor-not-allowed disabled:bg-slate-100"
+      >
         <option value="">Seleccione equipo</option>
         {items.map((item) => (
           <option key={item.id} value={item.id}>
@@ -70,11 +75,17 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
       <div className="md:col-span-2">
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || items.length === 0}
           className="w-full rounded bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {isPending ? 'Guardando...' : 'Guardar'}
         </button>
+
+        {items.length === 0 && (
+          <p className="mt-2 text-sm text-amber-700">
+            Debe registrar al menos un equipo antes de crear mantenimientos.
+          </p>
+        )}
 
         {state.error && (
           <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

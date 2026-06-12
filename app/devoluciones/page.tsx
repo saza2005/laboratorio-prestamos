@@ -38,7 +38,7 @@ export default async function DevolucionesPage() {
       item_id,
       loan_id,
       items:items(id, name, code),
-      loans:loans(
+      loans:loans!inner(
         id,
         status,
         user_id,
@@ -65,6 +65,7 @@ export default async function DevolucionesPage() {
         profiles:profiles!loans_user_id_fkey(full_name, email)
       )
     `)
+    .in('loans.status', ['active', 'partial_return'])
     .order('created_at', { ascending: false })
     .limit(500)
 
