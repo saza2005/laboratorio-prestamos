@@ -4,6 +4,7 @@ import { LoanForm } from './loan-form'
 import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { formatDateTime } from '@/lib/format-date'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
+import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 
 function getEcuadorDate() {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -87,15 +88,40 @@ export default async function PrestamosPage() {
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, code, name, stock_available, item_type, track_individual')
+    .select('id, code, name, stock_available, item_type, track_individual, category')
     .eq('status', 'active')
     .gt('stock_available', 0)
     .order('name', { ascending: true })
-    .limit(500)
+    .limit(INVENTORY_CATALOG_LIMIT)
 
   if (itemsError) {
     throw new Error(itemsError.message)
   }
+
+  const [firstUnitsPage, secondUnitsPage] = await Promise.all([
+    supabase
+      .from('item_units')
+      .select('id, item_id, asset_code, serial_code, brand, model')
+      .eq('availability_status', 'available')
+      .eq('condition', 'good')
+      .order('asset_code', { ascending: true })
+      .range(0, 999),
+    supabase
+      .from('item_units')
+      .select('id, item_id, asset_code, serial_code, brand, model')
+      .eq('availability_status', 'available')
+      .eq('condition', 'good')
+      .order('asset_code', { ascending: true })
+      .range(1000, 1999),
+  ])
+
+  if (firstUnitsPage.error) throw new Error(firstUnitsPage.error.message)
+  if (secondUnitsPage.error) throw new Error(secondUnitsPage.error.message)
+
+  const availableUnits = [
+    ...(firstUnitsPage.data ?? []),
+    ...(secondUnitsPage.data ?? []),
+  ]
 
   const { data: rawLoans, error: loansError } = await supabase
     .from('loans')
@@ -114,6 +140,7 @@ export default async function PrestamosPage() {
         returned_quantity,
         damaged_quantity,
         missing_quantity,
+        item_units:item_units(asset_code, serial_code),
         items (
           id,
           name,
@@ -184,6 +211,7 @@ export default async function PrestamosPage() {
               missing_quantity: missingQuantity,
               pending,
               item,
+              unit: firstOrNull(li.item_units),
             }
           }) ?? [],
 
@@ -243,6 +271,7 @@ export default async function PrestamosPage() {
           <LoanForm
             users={users ?? []}
             items={items ?? []}
+            availableUnits={availableUnits}
             minExpectedReturnDate={getEcuadorDate()}
           />
         </div>
@@ -317,6 +346,7 @@ export default async function PrestamosPage() {
                           <tr>
                             <th className="text-left px-4 py-3">Ítem</th>
                             <th className="text-left px-4 py-3">Código</th>
+                            <th className="text-left px-4 py-3">Unidad patrimonial</th>
                             <th className="text-left px-4 py-3">Cantidad</th>
                             <th className="text-left px-4 py-3">Devuelto</th>
                             <th className="text-left px-4 py-3">Dañado</th>
@@ -333,6 +363,9 @@ export default async function PrestamosPage() {
                                 </td>
                                 <td className="px-4 py-3">
                                   {li.item?.code ?? '-'}
+                                </td>
+                                <td className="px-4 py-3">
+                                  {li.unit?.asset_code || li.unit?.serial_code || '-'}
                                 </td>
                                 <td className="px-4 py-3">{li.quantity}</td>
                                 <td className="px-4 py-3">
@@ -352,7 +385,7 @@ export default async function PrestamosPage() {
                           ) : (
                             <tr>
                               <td
-                                colSpan={7}
+                                colSpan={8}
                                 className="px-4 py-6 text-center text-slate-500"
                               >
                                 No hay materiales registrados para este préstamo.

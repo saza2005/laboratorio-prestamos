@@ -2,8 +2,11 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ItemForm } from './item-form'
 import { MovementsTable } from './movements-table'
+import { InventoryList } from './inventory-list'
+import { InventoryUnitsList } from './inventory-units-list'
 import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
+import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -42,13 +45,69 @@ export default async function InventarioPage() {
       status,
       location
     `)
-    .eq('status', 'active')
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(INVENTORY_CATALOG_LIMIT)
 
   if (error) {
     throw new Error(error.message)
   }
+
+  const unitSelect = `
+    id,
+    asset_code,
+    old_code,
+    serial_code,
+    model,
+    brand,
+    condition,
+    availability_status,
+    entry_date,
+    assignment_date,
+    items:items(name, code)
+  `
+
+  const [firstUnitsPage, secondUnitsPage] = await Promise.all([
+    supabase
+      .from('item_units')
+      .select(unitSelect)
+      .order('asset_code', { ascending: true })
+      .range(0, 999),
+    supabase
+      .from('item_units')
+      .select(unitSelect)
+      .order('asset_code', { ascending: true })
+      .range(1000, 1999),
+  ])
+
+  if (firstUnitsPage.error) {
+    throw new Error(firstUnitsPage.error.message)
+  }
+
+  if (secondUnitsPage.error) {
+    throw new Error(secondUnitsPage.error.message)
+  }
+
+  const units = [...(firstUnitsPage.data ?? []), ...(secondUnitsPage.data ?? [])]
+    .map((unit) => {
+      const item = firstOrNull(unit.items) as
+        | { name?: string; code?: string }
+        | null
+
+      return {
+        id: unit.id,
+        asset_code: unit.asset_code,
+        old_code: unit.old_code,
+        serial_code: unit.serial_code,
+        model: unit.model,
+        brand: unit.brand,
+        condition: unit.condition,
+        availability_status: unit.availability_status,
+        entry_date: unit.entry_date,
+        assignment_date: unit.assignment_date,
+        item_name: item?.name ?? 'Sin equipo',
+        item_code: item?.code ?? '-',
+      }
+    })
 
   const { data: movements, error: movementsError } = await supabase
     .from('inventory_movements')
@@ -115,85 +174,8 @@ export default async function InventarioPage() {
           <ItemForm />
         </div>
 
-        <div className="rounded-2xl bg-white shadow overflow-hidden">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">Items registrados</h2>
-          </div>
-
-          <div className="divide-y md:hidden">
-            {items && items.length > 0 ? (
-              items.map((item) => (
-                <div key={item.id} className="space-y-2 p-4 text-sm">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-slate-500">{item.code}</p>
-                    </div>
-                    <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
-                      {item.status}
-                    </span>
-                  </div>
-                  <p><span className="font-medium">Categoría:</span> {item.category || '-'}</p>
-                  <p><span className="font-medium">Tipo:</span> {item.item_type}</p>
-                  <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-50 p-3 text-center">
-                    <p><span className="block text-xs text-slate-500">Stock total</span>{item.stock_total}</p>
-                    <p><span className="block text-xs text-slate-500">Disponible</span>{item.stock_available}</p>
-                  </div>
-                  <p><span className="font-medium">Seguimiento:</span> {item.track_individual ? 'Sí' : 'No'}</p>
-                  <p><span className="font-medium">Ubicación:</span> {item.location || '-'}</p>
-                </div>
-              ))
-            ) : (
-              <p className="p-6 text-center text-slate-500">No hay ítems registrados todavía.</p>
-            )}
-          </div>
-
-          <div className="hidden overflow-x-auto md:block">
-            <table className="min-w-[1080px] text-sm">
-              <thead className="bg-slate-100 text-slate-700">
-                <tr>
-                  <th className="text-left px-4 py-3">Código</th>
-                  <th className="text-left px-4 py-3">Nombre</th>
-                  <th className="text-left px-4 py-3">Categoría</th>
-                  <th className="text-left px-4 py-3">Tipo</th>
-                  <th className="text-left px-4 py-3">Seguimiento</th>
-                  <th className="text-left px-4 py-3">Stock total</th>
-                  <th className="text-left px-4 py-3">Disponible</th>
-                  <th className="text-left px-4 py-3">Estado</th>
-                  <th className="text-left px-4 py-3">Ubicación</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items && items.length > 0 ? (
-                  items.map((item) => (
-                    <tr key={item.id} className="border-t hover:bg-slate-50">
-                      <td className="px-4 py-3">{item.code}</td>
-                      <td className="px-4 py-3">{item.name}</td>
-                      <td className="px-4 py-3">{item.category || '-'}</td>
-                      <td className="px-4 py-3">{item.item_type}</td>
-                      <td className="px-4 py-3">
-                        {item.track_individual ? 'Sí' : 'No'}
-                      </td>
-                      <td className="px-4 py-3">{item.stock_total}</td>
-                      <td className="px-4 py-3">{item.stock_available}</td>
-                      <td className="px-4 py-3">{item.status}</td>
-                      <td className="px-4 py-3">{item.location || '-'}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={9}
-                      className="px-4 py-6 text-center text-slate-500"
-                    >
-                      No hay items registrados todavía.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <InventoryList items={items ?? []} />
+        <InventoryUnitsList units={units} />
         <MovementsTable data={normalizedMovements} limit={100} />
       </div>
     </main>

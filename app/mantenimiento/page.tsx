@@ -6,6 +6,7 @@ import {
   getHomeRouteByRole,
 } from '@/lib/supabase/auth/roles'
 import { MaintenanceForm } from './maintenance-form'
+import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) return value[0] ?? null
@@ -33,10 +34,11 @@ export default async function MantenimientoPage() {
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, name, code')
+    .select('id, name, code, category')
     .eq('item_type', 'equipment')
+    .eq('status', 'active')
     .order('name')
-    .limit(500)
+    .limit(INVENTORY_CATALOG_LIMIT)
 
   if (itemsError) {
     throw new Error(itemsError.message)
@@ -100,7 +102,7 @@ export default async function MantenimientoPage() {
                   <div key={record.id} className="space-y-2 p-4 text-sm">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-medium">{item?.name ?? '-'}</p>
+                        <p className="font-medium">{item?.name ?? 'Trabajo general'}</p>
                         <p className="text-slate-500">{record.maintenance_date}</p>
                       </div>
                       <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
@@ -139,7 +141,7 @@ export default async function MantenimientoPage() {
 
                     return (
                       <tr key={r.id} className="border-t hover:bg-slate-50">
-                        <td className="px-4 py-3">{item?.name ?? '-'}</td>
+                        <td className="px-4 py-3">{item?.name ?? 'Trabajo general'}</td>
                         <td className="px-4 py-3">{r.activity}</td>
                         <td className="px-4 py-3">{r.responsible}</td>
                         <td className="px-4 py-3">{r.maintenance_date}</td>

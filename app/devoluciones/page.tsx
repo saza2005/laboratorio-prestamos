@@ -36,7 +36,9 @@ export default async function DevolucionesPage() {
       damaged_quantity,
       missing_quantity,
       item_id,
+      item_unit_id,
       loan_id,
+      item_units:item_units(asset_code, serial_code),
       items:items(id, name, code),
       loans:loans!inner(
         id,
@@ -95,7 +97,9 @@ export default async function DevolucionesPage() {
         id,
         quantity,
         item_id,
+        item_unit_id,
         loan_id,
+        item_units:item_units(asset_code, serial_code),
         items:items(id, name, code),
         loans:loans(
           id,
@@ -131,6 +135,7 @@ export default async function DevolucionesPage() {
       const loanItemData = firstOrNull(entry.loan_items)
 
       const itemData = firstOrNull(loanItemData?.items)
+      const unitData = firstOrNull(loanItemData?.item_units)
       const loanData = firstOrNull(loanItemData?.loans)
 
       const borrowerProfile = firstOrNull(loanData?.borrower_profile)
@@ -145,6 +150,7 @@ export default async function DevolucionesPage() {
         created_at: returnData?.created_at ?? null,
         item_name: itemData?.name ?? '-',
         item_code: itemData?.code ?? '-',
+        unit_code: unitData?.asset_code ?? unitData?.serial_code ?? null,
         borrower_name: borrowerProfile?.full_name ?? 'Sin nombre',
         receiver_name: receiverProfile?.full_name ?? 'Sin nombre',
       }
@@ -186,6 +192,7 @@ export default async function DevolucionesPage() {
               return {
                 ...li,
                 items: Array.isArray(li.items) ? li.items[0] ?? null : li.items,
+                item_units: Array.isArray(li.item_units) ? li.item_units[0] ?? null : li.item_units,
                 loans: Array.isArray(li.loans) ? li.loans[0] ?? null : li.loans,
                 loan_user: normalizedLoanUser
                   ? {
@@ -211,6 +218,7 @@ export default async function DevolucionesPage() {
                 <tr>
                   <th className="text-left px-4 py-3">Usuario</th>
                   <th className="text-left px-4 py-3">Ítem</th>
+                  <th className="text-left px-4 py-3">Unidad</th>
                   <th className="text-left px-4 py-3">Cantidad</th>
                   <th className="text-left px-4 py-3">Devuelto</th>
                   <th className="text-left px-4 py-3">Perdido</th>
@@ -319,6 +327,9 @@ export default async function DevolucionesPage() {
                               )}
                           </div>
                         </td>
+                        <td className="px-4 py-3">
+                          {firstOrNull(li.item_units)?.asset_code || firstOrNull(li.item_units)?.serial_code || '-'}
+                        </td>
                         <td className="px-4 py-3">{li.quantity}</td>
                         <td className="px-4 py-3">{li.returned_quantity}</td>
                         <td className="px-4 py-3">{perdido}</td>
@@ -329,7 +340,7 @@ export default async function DevolucionesPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={7} className="px-4 py-6 text-center text-slate-500">
+                    <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
                       No hay préstamos pendientes.
                     </td>
                   </tr>

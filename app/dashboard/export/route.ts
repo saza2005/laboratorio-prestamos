@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
     const item = firstOrNull(record.items)
 
     maintenanceSheet.addRow({
-      equipment: item?.name ?? '-',
+      equipment: item?.name ?? 'Trabajo general',
       code: item?.code ?? '-',
       activity: record.activity,
       responsible: record.responsible,

@@ -1,0 +1,1 @@
+export const INVENTORY_CATALOG_LIMIT = 1000

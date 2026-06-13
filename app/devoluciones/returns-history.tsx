@@ -12,6 +12,7 @@ type ReturnHistoryEntry = {
   created_at: string | null
   item_name: string
   item_code: string
+  unit_code: string | null
   borrower_name: string
   receiver_name: string
 }
@@ -35,6 +36,7 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
         entry.receiver_name.toLowerCase().includes(term) ||
         entry.item_name.toLowerCase().includes(term) ||
         entry.item_code.toLowerCase().includes(term) ||
+        (entry.unit_code ?? '').toLowerCase().includes(term) ||
         (entry.notes ?? '').toLowerCase().includes(term)
       )
     })
@@ -76,6 +78,9 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
                   {entry.created_at ? formatDateTime(entry.created_at) : '-'}
                 </p>
               </div>
+              {entry.unit_code && (
+                <p><span className="font-medium">Unidad:</span> {entry.unit_code}</p>
+              )}
               <p><span className="font-medium">Usuario:</span> {entry.borrower_name}</p>
               <div className="grid grid-cols-3 gap-2 rounded-lg bg-slate-50 p-3 text-center">
                 <p><span className="block text-xs text-slate-500">OK</span>{entry.quantity_ok}</p>
@@ -102,6 +107,7 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
               <th className="text-left px-4 py-3">Fecha</th>
               <th className="text-left px-4 py-3">Usuario</th>
               <th className="text-left px-4 py-3">Ítem</th>
+              <th className="text-left px-4 py-3">Unidad</th>
               <th className="text-left px-4 py-3">OK</th>
               <th className="text-left px-4 py-3">Dañado</th>
               <th className="text-left px-4 py-3">Faltante</th>
@@ -122,6 +128,7 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
                   <td className="px-4 py-3">
                     {entry.item_name} [{entry.item_code}]
                   </td>
+                  <td className="px-4 py-3">{entry.unit_code || '-'}</td>
                   <td className="px-4 py-3">{entry.quantity_ok}</td>
                   <td className="px-4 py-3">{entry.quantity_damaged}</td>
                   <td className="px-4 py-3">{entry.quantity_missing}</td>
@@ -131,7 +138,7 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
+                <td colSpan={9} className="px-4 py-6 text-center text-slate-500">
                   No se encontraron resultados para la búsqueda.
                 </td>
               </tr>

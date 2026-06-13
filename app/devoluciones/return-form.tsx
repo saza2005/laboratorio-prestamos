@@ -9,6 +9,10 @@ type LoanItemOption = {
   returned_quantity: number
   damaged_quantity: number
   missing_quantity: number | null
+  item_units: {
+    asset_code?: string
+    serial_code?: string
+  } | null
   items: {
     id?: string
     name?: string
@@ -95,7 +99,11 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
 
             return (
               <option key={li.id} value={li.id}>
-                {itemData?.name ?? '-'} [{itemData?.code ?? '-'}] | Usuario: {borrower} | Pendiente: {pendiente}
+                {itemData?.name ?? '-'} [{itemData?.code ?? '-'}]
+                {li.item_units?.asset_code || li.item_units?.serial_code
+                  ? ` | Unidad: ${li.item_units.asset_code || li.item_units.serial_code}`
+                  : ''}
+                {' '}| Usuario: {borrower} | Pendiente: {pendiente}
               </option>
             )
           })}
@@ -119,6 +127,12 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
               <span className="font-medium">Usuario:</span>{' '}
               {selectedLoanItem.loan_user?.profiles?.full_name ?? '-'}
             </p>
+            {(selectedLoanItem.item_units?.asset_code || selectedLoanItem.item_units?.serial_code) && (
+              <p>
+                <span className="font-medium">Unidad patrimonial:</span>{' '}
+                {selectedLoanItem.item_units.asset_code || selectedLoanItem.item_units.serial_code}
+              </p>
+            )}
             <p>
               <span className="font-medium">Cantidad prestada:</span>{' '}
               {selectedLoanItem.quantity}

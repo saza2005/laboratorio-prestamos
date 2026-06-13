@@ -21,6 +21,7 @@ async function persistMaintenance(formData: FormData) {
   const maintenanceDate = String(formData.get('maintenance_date') || '').trim()
   const observations = String(formData.get('observations') || '').trim()
   const maintenanceType = String(formData.get('maintenance_type') || '').trim()
+  const isGeneralMaintenance = itemId === 'general'
 
   if (!itemId || !activity || !responsible || !maintenanceDate || !maintenanceType) {
     throw new Error('Faltan campos obligatorios.')
@@ -34,25 +35,28 @@ async function persistMaintenance(formData: FormData) {
     throw new Error('La fecha de mantenimiento no es válida.')
   }
 
-  const { data: item, error: itemError } = await supabase
-    .from('items')
-    .select('id')
-    .eq('id', itemId)
-    .eq('item_type', 'equipment')
-    .maybeSingle()
+  if (!isGeneralMaintenance) {
+    const { data: item, error: itemError } = await supabase
+      .from('items')
+      .select('id')
+      .eq('id', itemId)
+      .eq('item_type', 'equipment')
+      .eq('status', 'active')
+      .maybeSingle()
 
-  if (itemError) {
-    throw new Error(itemError.message)
-  }
+    if (itemError) {
+      throw new Error(itemError.message)
+    }
 
-  if (!item) {
-    throw new Error('El equipo seleccionado no existe o no es válido.')
+    if (!item) {
+      throw new Error('El equipo seleccionado no existe, no está activo o no es válido.')
+    }
   }
 
   const { error } = await supabase
     .from('maintenance_records')
     .insert({
-      item_id: itemId,
+      item_id: isGeneralMaintenance ? null : itemId,
       activity,
       responsible,
       maintenance_date: maintenanceDate,

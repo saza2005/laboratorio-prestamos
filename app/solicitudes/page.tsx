@@ -7,6 +7,7 @@ import { CancelRequestButton } from './cancel-request-button'
 import { formatDateTime } from '@/lib/format-date'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
 import { LogoutButton } from '@/app/logout-button'
+import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 
 
 type RequestItemRow = {
@@ -164,7 +165,7 @@ export default async function SolicitudesPage() {
     .select('id, name, code, stock_available, item_type, category')
     .eq('status', 'active')
     .order('name', { ascending: true })
-    .limit(500)
+    .limit(INVENTORY_CATALOG_LIMIT)
 
   if (itemsError) {
     throw new Error(itemsError.message)

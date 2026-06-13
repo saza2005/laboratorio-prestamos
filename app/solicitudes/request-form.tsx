@@ -22,6 +22,8 @@ type RequestFormProps = {
   minScheduledReturnDate: string
 }
 
+const SELECT_OPTIONS_LIMIT = 100
+
 function normalize(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? ''
 }
@@ -70,6 +72,8 @@ export function RequestForm({
     })
   }, [categoryFilter, itemSearch, items])
 
+  const visibleItems = filteredItems.slice(0, SELECT_OPTIONS_LIMIT)
+
   const hasErrors = rows.some((row) => {
     const item = items.find((i) => i.id === row.item_id)
 
@@ -113,12 +117,12 @@ export function RequestForm({
   }
 
   function getSelectableItems(selectedItemId: string) {
-    if (!selectedItemId || filteredItems.some((item) => item.id === selectedItemId)) {
-      return filteredItems
+    if (!selectedItemId || visibleItems.some((item) => item.id === selectedItemId)) {
+      return visibleItems
     }
 
     const selectedItem = itemMap.get(selectedItemId)
-    return selectedItem ? [selectedItem, ...filteredItems] : filteredItems
+    return selectedItem ? [selectedItem, ...visibleItems] : visibleItems
   }
 
   return (
@@ -180,7 +184,10 @@ export function RequestForm({
           </select>
 
           <p className="text-sm text-slate-500 md:col-span-2">
-            Opciones disponibles: {filteredItems.length} de {items.length}
+            Coincidencias: {filteredItems.length} de {items.length}.
+            {filteredItems.length > SELECT_OPTIONS_LIMIT
+              ? ` Mostrando las primeras ${SELECT_OPTIONS_LIMIT}; afine la búsqueda para encontrar otras.`
+              : ''}
           </p>
         </div>
 

@@ -21,13 +21,14 @@ Fuente: `0301115606 - SANCHEZ ARCE JOSE FRANCISCO 09062026.xls`
 
 ## Revisión requerida
 
-- Categorías pendientes: 75
+- Categorías pendientes: 0
+- Categorías revisadas y aprobadas: 75
 - Grupos con variantes de nombre/modelo: 68
 - Modelos faltantes: 3
 - Unidades nuevas anexadas a grupos existentes: 4
 - Filas excluidas: 1
 
-No importar todavía. Revisar `03_review_required.csv`, especialmente categorías pendientes y grupos con variantes.
+Las categorías están aprobadas. Antes de importar, seguir exactamente `IMPORT_INSTRUCTIONS.md`.
 
 ## Archivos
 
@@ -35,6 +36,13 @@ No importar todavía. Revisar `03_review_required.csv`, especialmente categoría
 - `01_items_import.csv`: 730 ítems agrupados.
 - `02_item_units_staging.csv`: 1.425 unidades patrimoniales.
 - `03_review_required.csv`: variantes, modelos faltantes y exclusiones.
-- `04_category_suggestions.csv`: sugerencias no aplicadas; completar `approved_category`.
+- `04_category_suggestions.csv`: categorías revisadas y aprobadas.
+- `05_inspect_supabase_schema.sql`: consulta de metadatos previa al SQL de reemplazo.
+- `06_prepare_staging_tables.sql`: crea y vacía únicamente las tablas staging.
+- `07_validate_staging.sql`: verifica la carga sin modificar el inventario actual.
+- `08_replace_inventory_transaction.sql`: respalda y reemplaza los datos dentro de una transacción.
+- `09_verify_inventory_import.sql`: verifica el inventario importado.
+- `10_restore_previous_data.sql`: restaura el respaldo si fuera necesario.
+- `IMPORT_INSTRUCTIONS.md`: orden exacto del proceso.
 
-Las sugerencias de categoría no deben importarse automáticamente: 6 tienen confianza media y 69 baja.
+Las 75 categorías aprobadas ya fueron aplicadas a `01_items_import.csv`.
