@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canSeeReportsModule } from '@/lib/supabase/auth/roles'
 import { parseReportPeriod } from '@/lib/report-period'
+import { getEffectiveLoanStatus } from '@/lib/loan-status'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) return value[0] ?? null
@@ -121,7 +122,10 @@ export async function GET(request: NextRequest) {
       deliveryDate: loan.delivery_date ?? '-',
       expectedReturnDate: loan.expected_return_date ?? '-',
       returnedAt: loan.returned_at ?? '-',
-      status: loan.status,
+      status: getEffectiveLoanStatus(
+        loan.status,
+        loan.expected_return_date
+      ),
     })
   }
 

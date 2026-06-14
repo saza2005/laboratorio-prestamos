@@ -8,6 +8,7 @@ import { formatDateTime } from '@/lib/format-date'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
 import { LogoutButton } from '@/app/logout-button'
 import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 
 
 type RequestItemRow = {
@@ -51,18 +52,6 @@ type RequestGroupRow = {
       }
     | null
   request_group_items: RequestGroupItemRow[]
-}
-
-function getEcuadorDate() {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Guayaquil',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date())
-  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
-
-  return `${values.year}-${values.month}-${values.day}`
 }
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
@@ -178,6 +167,7 @@ export default async function SolicitudesPage() {
         .from('profiles')
         .select('id, full_name')
         .eq('role', 'student')
+        .eq('is_active', true)
         .order('full_name', { ascending: true })
         .limit(500)
     : { data: [], error: null }
@@ -300,7 +290,10 @@ const requests: RequestRow[] =
 const loans =
   rawLoans?.map((loan) => ({
     id: loan.id,
-    status: loan.status,
+    status: getEffectiveLoanStatus(
+      loan.status,
+      loan.expected_return_date
+    ),
     delivery_date: loan.delivery_date,
     expected_return_date: loan.expected_return_date,
     returned_at: loan.returned_at,
@@ -380,6 +373,7 @@ const loans =
             <RequestFormGroups
               items={items ?? []}
               students={students ?? []}
+              minScheduledReturnDate={getEcuadorDate()}
             />
           </div>
         )}

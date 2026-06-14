@@ -86,13 +86,25 @@ async function persistDeliverRequest(formData: FormData): Promise<void> {
 
   const requestId = String(formData.get('request_id') || '').trim()
   const notes = String(formData.get('delivery_notes') || '').trim()
+  const units = formData.getAll('delivery_unit').map((value) => {
+    const [itemId, itemUnitId] = String(value || '').split(':')
+    return {
+      item_id: itemId?.trim() ?? '',
+      item_unit_id: itemUnitId?.trim() ?? '',
+    }
+  })
+
+  if (units.some((unit) => !unit.item_id || !unit.item_unit_id)) {
+    throw new Error('Una de las unidades patrimoniales seleccionadas no es válida.')
+  }
 
   if (!requestId) {
     throw new Error('Solicitud inválida.')
   }
 
-  const { error } = await supabase.rpc('deliver_approved_request', {
+  const { error } = await supabase.rpc('deliver_approved_request_with_units', {
     p_request_id: requestId,
+    p_units: units,
     p_delivered_by: user.id,
     p_notes: notes || null,
   })

@@ -228,7 +228,7 @@ export async function cancelOwnRequestWithState(
 }
 
 async function persistCancelOwnRequest(formData: FormData): Promise<void> {
-  const { supabase, user, profile } = await getAuthProfile()
+  const { supabase, profile } = await getAuthProfile()
 
   if (!canUseRequestPortal(profile.role)) {
     redirect('/auth/login')
@@ -240,22 +240,18 @@ async function persistCancelOwnRequest(formData: FormData): Promise<void> {
     throw new Error('Solicitud inválida.')
   }
 
-  const { data: cancelledRequest, error: updateError } = await supabase
-    .from('requests')
-    .update({
-      status: 'cancelled',
-    })
-    .eq('id', requestId)
-    .eq('user_id', user.id)
-    .eq('status', 'pending')
-    .select('id')
-    .maybeSingle()
+  const { data: cancelledRequestId, error: updateError } = await supabase.rpc(
+    'cancel_own_request_transaction',
+    {
+      p_request_id: requestId,
+    }
+  )
 
   if (updateError) {
     throw new Error(updateError.message)
   }
 
-  if (!cancelledRequest) {
+  if (!cancelledRequestId) {
     throw new Error(
       'La solicitud no existe, no le pertenece o ya no está pendiente.'
     )

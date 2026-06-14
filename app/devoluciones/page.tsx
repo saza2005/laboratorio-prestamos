@@ -67,7 +67,7 @@ export default async function DevolucionesPage() {
         profiles:profiles!loans_user_id_fkey(full_name, email)
       )
     `)
-    .in('loans.status', ['active', 'partial_return'])
+    .in('loans.status', ['active', 'partial_return', 'overdue'])
     .order('created_at', { ascending: false })
     .limit(500)
 
@@ -125,7 +125,8 @@ export default async function DevolucionesPage() {
 
       const isReturnableLoan =
         loanData?.status === 'active' ||
-        loanData?.status === 'partial_return'
+        loanData?.status === 'partial_return' ||
+        loanData?.status === 'overdue'
 
       return pendiente > 0 && isReturnableLoan
     }) ?? []

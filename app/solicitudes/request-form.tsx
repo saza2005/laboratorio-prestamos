@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useMemo, useState } from 'react'
+import { useActionState, useMemo, useState, useSyncExternalStore } from 'react'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -23,6 +23,7 @@ type RequestFormProps = {
 }
 
 const SELECT_OPTIONS_LIMIT = 100
+const subscribeToHydration = () => () => {}
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? ''
@@ -40,6 +41,11 @@ export function RequestForm({
   ])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
+  const mounted = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false
+  )
 
   const selectedIds = rows.map((row) => row.item_id).filter(Boolean)
 
@@ -330,7 +336,8 @@ export function RequestForm({
       <div className="md:col-span-2">
         <button
           type="submit"
-          disabled={hasErrors || isPending}
+          suppressHydrationWarning
+          disabled={!mounted || hasErrors || isPending}
           className={`w-full rounded-lg px-5 py-2.5 font-medium transition sm:w-auto ${
             hasErrors
               ? 'bg-gray-400 text-white cursor-not-allowed'

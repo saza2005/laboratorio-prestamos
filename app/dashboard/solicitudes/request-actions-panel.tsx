@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useMemo, useState } from 'react'
 import {
   approveRequestWithState,
   deliverRequestWithState,
@@ -10,10 +10,13 @@ import {
 type StaffRequestItem = {
   id: string
   quantity_requested: number
+  quantity_approved: number
   item: {
+    id?: string
     name?: string
     code?: string
     stock_available?: number
+    track_individual?: boolean
   } | null
 }
 
@@ -26,19 +29,34 @@ type StaffRequestGroup = {
   request_group_items: Array<{
     quantity: number
     item: {
+      id?: string
       name?: string
       code?: string
+      stock_available?: number
+      track_individual?: boolean
     } | null
   }>
 }
 
+type AvailableUnit = {
+  id: string
+  item_id: string
+  asset_code: string | null
+  serial_code: string | null
+  brand: string | null
+  model: string | null
+}
+
+type StaffRequest = {
+  id: string
+  status: string
+  request_items: StaffRequestItem[]
+  request_groups: StaffRequestGroup[]
+}
+
 type RequestActionsPanelProps = {
-  request: {
-    id: string
-    status: string
-    request_items: StaffRequestItem[]
-    request_groups: StaffRequestGroup[]
-  }
+  request: StaffRequest
+  availableUnits: AvailableUnit[]
 }
 
 function ActionError({ error }: { error: string | null }) {
@@ -79,7 +97,7 @@ function GroupSummary({ groups }: { groups: StaffRequestGroup[] }) {
   )
 }
 
-function ApproveForm({ request }: RequestActionsPanelProps) {
+function ApproveForm({ request }: { request: StaffRequest }) {
   const [state, formAction, isPending] = useActionState(approveRequestWithState, {
     error: null,
   })
@@ -208,9 +226,60 @@ function RejectForm({ requestId }: { requestId: string }) {
   )
 }
 
-function DeliverForm({ requestId }: { requestId: string }) {
+function DeliverForm({
+  request,
+  availableUnits,
+}: {
+  request: StaffRequest
+  availableUnits: AvailableUnit[]
+}) {
   const [state, formAction, isPending] = useActionState(deliverRequestWithState, {
     error: null,
+  })
+  const [selectedUnits, setSelectedUnits] = useState<Record<string, string[]>>({})
+
+  const requirements = useMemo(() => {
+    const totals = new Map<string, {
+      itemId: string
+      name: string
+      code: string
+      quantity: number
+    }>()
+
+    if (request.request_groups.length > 0) {
+      for (const group of request.request_groups) {
+        for (const entry of group.request_group_items) {
+          if (!entry.item?.id || !entry.item.track_individual) continue
+          const current = totals.get(entry.item.id)
+          totals.set(entry.item.id, {
+            itemId: entry.item.id,
+            name: entry.item.name ?? 'Equipo',
+            code: entry.item.code ?? '-',
+            quantity: (current?.quantity ?? 0) + entry.quantity,
+          })
+        }
+      }
+    } else {
+      for (const entry of request.request_items) {
+        if (!entry.item?.id || !entry.item.track_individual) continue
+        const quantity = entry.quantity_approved
+        if (quantity <= 0) continue
+        const current = totals.get(entry.item.id)
+        totals.set(entry.item.id, {
+          itemId: entry.item.id,
+          name: entry.item.name ?? 'Equipo',
+          code: entry.item.code ?? '-',
+          quantity: (current?.quantity ?? 0) + quantity,
+        })
+      }
+    }
+
+    return [...totals.values()]
+  }, [request])
+
+  const hasInvalidSelection = requirements.some((requirement) => {
+    const selected = selectedUnits[requirement.itemId] ?? []
+    return selected.length !== requirement.quantity
   })
 
   return (
@@ -225,7 +294,73 @@ function DeliverForm({ requestId }: { requestId: string }) {
     >
       <h3 className="font-semibold">Registrar entrega</h3>
 
-      <input type="hidden" name="request_id" value={requestId} />
+      <input type="hidden" name="request_id" value={request.id} />
+
+      {requirements.map((requirement) => {
+        const units = availableUnits.filter(
+          (unit) => unit.item_id === requirement.itemId
+        )
+        const selected = selectedUnits[requirement.itemId] ?? []
+
+        return (
+          <div key={requirement.itemId} className="rounded-lg border bg-slate-50 p-4">
+            <label className="block text-sm font-medium">
+              {requirement.name} [{requirement.code}]
+            </label>
+            <p className="mb-2 text-xs text-slate-500">
+              Seleccione exactamente {requirement.quantity} unidad(es). Disponibles: {units.length}
+            </p>
+            <div className="max-h-64 space-y-1 overflow-y-auto rounded-lg border border-slate-300 bg-white p-2">
+              {units.map((unit) => (
+                <label
+                  key={unit.id}
+                  className="flex cursor-pointer items-start gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-50"
+                >
+                  <input
+                    type="checkbox"
+                    name="delivery_unit"
+                    value={`${requirement.itemId}:${unit.id}`}
+                    checked={selected.includes(unit.id)}
+                    disabled={
+                      !selected.includes(unit.id) &&
+                      selected.length >= requirement.quantity
+                    }
+                    onChange={(event) => {
+                      setSelectedUnits((current) => {
+                        const currentSelection =
+                          current[requirement.itemId] ?? []
+                        const nextSelection = event.target.checked
+                          ? [...currentSelection, unit.id]
+                          : currentSelection.filter((id) => id !== unit.id)
+
+                        return {
+                          ...current,
+                          [requirement.itemId]: nextSelection,
+                        }
+                      })
+                    }}
+                    className="mt-0.5 size-4"
+                  />
+                  <span>
+                    {unit.asset_code || unit.serial_code || 'Sin código'}
+                    {unit.brand || unit.model
+                      ? ` - ${[unit.brand, unit.model].filter(Boolean).join(' ')}`
+                      : ''}
+                  </span>
+                </label>
+              ))}
+              {units.length === 0 && (
+                <p className="px-2 py-3 text-sm text-red-700">
+                  No hay unidades disponibles en buen estado.
+                </p>
+              )}
+            </div>
+            <p className={`mt-2 text-xs ${selected.length === requirement.quantity ? 'text-green-700' : 'text-amber-700'}`}>
+              Seleccionadas: {selected.length} de {requirement.quantity}
+            </p>
+          </div>
+        )
+      })}
 
       <div>
         <label className="block text-sm font-medium mb-1">
@@ -241,7 +376,7 @@ function DeliverForm({ requestId }: { requestId: string }) {
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isPending || hasInvalidSelection}
         className="rounded-lg bg-green-600 text-white px-5 py-2.5 font-medium hover:bg-green-700 transition disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isPending ? 'Entregando...' : 'Confirmar entrega y crear préstamo'}
@@ -251,7 +386,7 @@ function DeliverForm({ requestId }: { requestId: string }) {
   )
 }
 
-export function RequestActionsPanel({ request }: RequestActionsPanelProps) {
+export function RequestActionsPanel({ request, availableUnits }: RequestActionsPanelProps) {
   if (request.status === 'pending') {
     return (
       <div className="grid lg:grid-cols-2 gap-4">
@@ -265,7 +400,7 @@ export function RequestActionsPanel({ request }: RequestActionsPanelProps) {
   }
 
   if (request.status === 'approved') {
-    return <DeliverForm requestId={request.id} />
+    return <DeliverForm request={request} availableUnits={availableUnits} />
   }
 
   return null

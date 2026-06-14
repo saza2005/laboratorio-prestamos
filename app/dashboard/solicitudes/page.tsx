@@ -56,7 +56,8 @@ const { data: rawRequests, error } = await supabase
         id,
         name,
         code,
-        stock_available
+        stock_available,
+        track_individual
       )
     ),
 
@@ -67,8 +68,11 @@ const { data: rawRequests, error } = await supabase
       request_group_items (
         quantity,
         items (
+          id,
           name,
-          code
+          code,
+          stock_available,
+          track_individual
         )
       )
     )
@@ -111,6 +115,7 @@ const requests =
               name?: string
               code?: string
               stock_available?: number
+              track_individual?: boolean
             }
           | null,
       })) ?? [],
@@ -127,10 +132,83 @@ const requests =
       })) ?? [],
   })) ?? []
 
-    const requestsWithActions = requests.map((req) => ({
-    ...req,
-    actions: <RequestActionsPanel key={req.id} request={req} />,
-    }))
+  const trackedItemIds = Array.from(
+    new Set(
+      requests
+        .filter((request) => request.status === 'approved')
+        .flatMap((request) => [
+          ...request.request_items
+            .filter((entry) => entry.item?.track_individual)
+            .map((entry) => entry.item?.id),
+          ...request.request_groups.flatMap((group) =>
+            group.request_group_items
+              .filter((entry) => entry.item?.track_individual)
+              .map((entry) => entry.item?.id)
+          ),
+        ])
+        .filter((itemId): itemId is string => Boolean(itemId))
+    )
+  )
+
+  let availableUnits: Array<{
+    id: string
+    item_id: string
+    asset_code: string | null
+    serial_code: string | null
+    brand: string | null
+    model: string | null
+  }> = []
+
+  if (trackedItemIds.length > 0) {
+    const [firstUnitsPage, secondUnitsPage] = await Promise.all([
+      supabase
+        .from('item_units')
+        .select('id, item_id, asset_code, serial_code, brand, model')
+        .in('item_id', trackedItemIds)
+        .eq('availability_status', 'available')
+        .eq('condition', 'good')
+        .order('asset_code', { ascending: true })
+        .range(0, 999),
+      supabase
+        .from('item_units')
+        .select('id, item_id, asset_code, serial_code, brand, model')
+        .in('item_id', trackedItemIds)
+        .eq('availability_status', 'available')
+        .eq('condition', 'good')
+        .order('asset_code', { ascending: true })
+        .range(1000, 1999),
+    ])
+
+    if (firstUnitsPage.error) throw new Error(firstUnitsPage.error.message)
+    if (secondUnitsPage.error) throw new Error(secondUnitsPage.error.message)
+
+    availableUnits = [
+      ...(firstUnitsPage.data ?? []),
+      ...(secondUnitsPage.data ?? []),
+    ]
+  }
+
+  const requestsWithActions = requests.map((req) => {
+    const requestedItemIds = new Set([
+      ...req.request_items.map((entry) => entry.item?.id).filter(Boolean),
+      ...req.request_groups.flatMap((group) =>
+        group.request_group_items.map((entry) => entry.item?.id).filter(Boolean)
+      ),
+    ])
+
+    return {
+      ...req,
+      actions: (
+        <RequestActionsPanel
+          key={req.id}
+          request={req}
+          availableUnits={availableUnits.filter((unit) =>
+            requestedItemIds.has(unit.item_id)
+          )}
+        />
+      ),
+    }
+  })
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">

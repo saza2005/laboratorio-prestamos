@@ -11,6 +11,7 @@ import {
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
 import { parseReportPeriod } from '@/lib/report-period'
+import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -47,6 +48,8 @@ function statusBadgeClass(status: string) {
       return 'bg-amber-100 text-amber-700'
     case 'returned':
       return 'bg-green-100 text-green-700'
+    case 'overdue':
+      return 'bg-red-100 text-red-700'
     default:
       return 'bg-slate-100 text-slate-700'
   }
@@ -126,20 +129,29 @@ export default async function DashboardPage({
     throw new Error(lowStockItemsResult.error.message)
   }
 
+  const currentDate = getEcuadorDate()
   const [
     activeLoansResult,
     partialLoansResult,
+    overdueLoansResult,
     returnedLoansResult,
     recentLoansResult,
   ] = await Promise.all([
     supabase
       .from('loans')
       .select('id', { count: 'exact', head: true })
-      .eq('status', 'active'),
+      .eq('status', 'active')
+      .or(`expected_return_date.is.null,expected_return_date.gte.${currentDate}`),
     supabase
       .from('loans')
       .select('id', { count: 'exact', head: true })
-      .eq('status', 'partial_return'),
+      .eq('status', 'partial_return')
+      .or(`expected_return_date.is.null,expected_return_date.gte.${currentDate}`),
+    supabase
+      .from('loans')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['active', 'partial_return', 'overdue'])
+      .lt('expected_return_date', currentDate),
     supabase
       .from('loans')
       .select('id', { count: 'exact', head: true })
@@ -164,6 +176,10 @@ export default async function DashboardPage({
 
   if (partialLoansResult.error) {
     throw new Error(partialLoansResult.error.message)
+  }
+
+  if (overdueLoansResult.error) {
+    throw new Error(overdueLoansResult.error.message)
   }
 
   if (returnedLoansResult.error) {
@@ -200,6 +216,7 @@ export default async function DashboardPage({
 
   const activeLoans = activeLoansResult.count ?? 0
   const partialLoans = partialLoansResult.count ?? 0
+  const overdueLoans = overdueLoansResult.count ?? 0
   const returnedLoans = returnedLoansResult.count ?? 0
 
   const lowStockItems = lowStockItemsResult.data ?? []
@@ -212,7 +229,11 @@ export default async function DashboardPage({
 
       return {
         id: loan.id,
-        status: loan.status,
+        status: getEffectiveLoanStatus(
+          loan.status,
+          loan.expected_return_date,
+          currentDate
+        ),
         delivery_date: loan.delivery_date,
         expected_return_date: loan.expected_return_date,
         borrower_name: borrower?.full_name ?? 'Sin nombre',
@@ -244,6 +265,7 @@ export default async function DashboardPage({
   const loanStatusData = [
     { name: 'Activos', value: activeLoans },
     { name: 'Parciales', value: partialLoans },
+    { name: 'Vencidos', value: overdueLoans },
     { name: 'Cerrados', value: returnedLoans },
   ]
 
@@ -370,7 +392,7 @@ export default async function DashboardPage({
           maintenanceData={maintenanceData}
         />
 
-        <div className="grid gap-4 md:grid-cols-3 mb-8">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 mb-8">
           <div className="rounded-2xl bg-white shadow p-6">
             <p className="text-sm text-slate-500 mb-1">Préstamos activos</p>
             <p className="text-3xl font-bold text-blue-700">{activeLoans}</p>
@@ -379,6 +401,11 @@ export default async function DashboardPage({
           <div className="rounded-2xl bg-white shadow p-6">
             <p className="text-sm text-slate-500 mb-1">Devoluciones parciales</p>
             <p className="text-3xl font-bold text-amber-700">{partialLoans}</p>
+          </div>
+
+          <div className="rounded-2xl bg-white shadow p-6">
+            <p className="text-sm text-slate-500 mb-1">Préstamos vencidos</p>
+            <p className="text-3xl font-bold text-red-700">{overdueLoans}</p>
           </div>
 
           <div className="rounded-2xl bg-white shadow p-6">
@@ -491,7 +518,7 @@ export default async function DashboardPage({
                               loan.status
                             )}`}
                           >
-                            {loan.status}
+                            {loan.status === 'overdue' ? 'Vencido' : loan.status}
                           </span>
                         </td>
                       </tr>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useMemo, useState } from 'react'
+import { useActionState, useMemo, useState, useSyncExternalStore } from 'react'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -28,6 +28,7 @@ type Group = {
 }
 
 const SELECT_OPTIONS_LIMIT = 100
+const subscribeToHydration = () => () => {}
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? ''
@@ -36,9 +37,11 @@ function normalize(value: string | null | undefined) {
 export function RequestFormGroups({
   items,
   students,
+  minScheduledReturnDate,
 }: {
   items: ItemOption[]
   students: Student[]
+  minScheduledReturnDate: string
 }) {
   const [state, formAction, isPending] = useActionState(createRequestWithState, {
     error: null,
@@ -52,6 +55,11 @@ export function RequestFormGroups({
   ])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
+  const mounted = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false
+  )
 
   const itemMap = useMemo(() => {
     return new Map(items.map((item) => [item.id, item]))
@@ -213,6 +221,39 @@ export function RequestFormGroups({
 
   return (
     <form action={formAction} className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-sm font-medium">Propósito</label>
+          <input
+            name="purpose"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            placeholder="Práctica de laboratorio / clase / proyecto"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium">
+            Fecha estimada de devolución
+          </label>
+          <input
+            name="scheduled_return_date"
+            type="date"
+            min={minScheduledReturnDate}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="mb-1 block text-sm font-medium">Comentarios</label>
+          <textarea
+            name="comments"
+            rows={3}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            placeholder="Detalle adicional de la solicitud grupal"
+          />
+        </div>
+      </div>
+
       <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)]">
         <input
           type="search"
@@ -429,7 +470,8 @@ export function RequestFormGroups({
       <div>
         <button
           type="submit"
-          disabled={hasErrors || isPending}
+          suppressHydrationWarning
+          disabled={!mounted || hasErrors || isPending}
           className="w-full rounded bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {isPending ? 'Enviando...' : 'Enviar solicitud con grupos'}
