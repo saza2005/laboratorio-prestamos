@@ -10,6 +10,7 @@ type Item = {
   stock_available: number
   category: string | null
   track_individual: boolean
+  asset_codes: string[]
 }
 
 type ItemUnit = {
@@ -85,6 +86,7 @@ export function LoanForm({
         !query ||
         normalize(item.name).includes(query) ||
         normalize(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalize(code).includes(query)) ||
         normalize(item.category).includes(query)
       return matchesCategory && matchesSearch
     })
@@ -196,7 +198,7 @@ export function LoanForm({
           type="search"
           value={itemSearch}
           onChange={(event) => setItemSearch(event.target.value)}
-          placeholder="Buscar material por nombre, código o categoría"
+          placeholder="Buscar material por nombre, código interno, código patrimonial o categoría"
           className="rounded-lg border bg-white px-3 py-2 text-sm"
         />
         <select

@@ -13,6 +13,7 @@ type InventoryItem = {
   stock_available: number
   status: string
   location: string | null
+  asset_codes: string[]
 }
 
 const PAGE_SIZE = 50
@@ -62,6 +63,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
         !query ||
         normalize(item.name).includes(query) ||
         normalize(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalize(code).includes(query)) ||
         normalize(item.category).includes(query) ||
         normalize(item.location).includes(query)
 
@@ -106,7 +108,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
             type="search"
             value={search}
             onChange={(event) => updateSearch(event.target.value)}
-            placeholder="Buscar por nombre, código, categoría o ubicación"
+            placeholder="Buscar por nombre, código interno, código patrimonial, categoría o ubicación"
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
 

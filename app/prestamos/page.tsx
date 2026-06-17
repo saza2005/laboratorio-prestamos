@@ -75,7 +75,7 @@ export default async function PrestamosPage() {
     supabase
       .from('items')
       .select(
-        'id, code, name, stock_available, item_type, track_individual, category'
+        'id, code, name, stock_available, item_type, track_individual, category, item_units(asset_code)'
       )
       .eq('status', 'active')
       .gt('stock_available', 0)
@@ -92,7 +92,14 @@ export default async function PrestamosPage() {
   }
 
   const users = usersResult.data ?? []
-  const items = itemsResult.data ?? []
+  const items =
+    itemsResult.data?.map((item) => ({
+      ...item,
+      asset_codes:
+        item.item_units
+          ?.map((unit) => unit.asset_code)
+          .filter((code): code is string => Boolean(code)) ?? [],
+    })) ?? []
   const hasTrackedItems = items.some((item) => item.track_individual)
 
   let availableUnits: Array<{

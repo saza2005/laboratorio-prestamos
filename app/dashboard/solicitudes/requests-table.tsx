@@ -13,6 +13,7 @@ type StaffRequestItem = {
     name?: string
     code?: string
     stock_available?: number
+    asset_codes?: string[]
   } | null
 }
 
@@ -96,7 +97,11 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
       const purpose = req.purpose?.toLowerCase() ?? ''
       const comments = req.comments?.toLowerCase() ?? ''
       const itemsText = req.request_items
-        .map((ri) => `${ri.item?.name ?? ''} ${ri.item?.code ?? ''}`.toLowerCase())
+        .map((ri) =>
+          `${ri.item?.name ?? ''} ${ri.item?.code ?? ''} ${
+            ri.item?.asset_codes?.join(' ') ?? ''
+          }`.toLowerCase()
+        )
         .join(' ')
 
       const matchesSearch =
@@ -117,7 +122,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
         <div className="grid md:grid-cols-3 gap-3">
           <input
             type="text"
-            placeholder="Buscar por solicitante, correo, propósito o ítem"
+            placeholder="Buscar por solicitante, correo, propósito, ítem o código patrimonial"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2"

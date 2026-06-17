@@ -9,6 +9,7 @@ type CatalogItem = {
   stock_available: number
   item_type: string | null
   category: string | null
+  asset_codes: string[]
 }
 
 const PAGE_SIZE = 24
@@ -41,6 +42,7 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
         !query ||
         normalize(item.name).includes(query) ||
         normalize(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalize(code).includes(query)) ||
         normalize(item.category).includes(query)
 
       return matchesCategory && matchesSearch
@@ -79,7 +81,7 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
             type="search"
             value={search}
             onChange={(event) => updateSearch(event.target.value)}
-            placeholder="Buscar por nombre, código o categoría"
+            placeholder="Buscar por nombre, código interno, código patrimonial o categoría"
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
 

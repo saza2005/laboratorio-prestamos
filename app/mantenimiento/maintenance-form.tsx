@@ -8,6 +8,7 @@ type MaintenanceItem = {
   name: string
   code: string
   category: string | null
+  asset_codes: string[]
 }
 
 const SELECT_OPTIONS_LIMIT = 100
@@ -45,6 +46,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
         !query ||
         normalize(item.name).includes(query) ||
         normalize(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalize(code).includes(query)) ||
         normalize(item.category).includes(query)
       return matchesCategory && matchesSearch
     })
@@ -72,7 +74,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Buscar equipo por nombre, código o categoría"
+          placeholder="Buscar equipo por nombre, código interno, código patrimonial o categoría"
           className="w-full rounded border p-2 text-sm"
         />
         <select

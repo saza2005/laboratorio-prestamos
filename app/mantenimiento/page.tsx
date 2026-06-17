@@ -34,7 +34,7 @@ export default async function MantenimientoPage() {
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, name, code, category')
+    .select('id, name, code, category, item_units(asset_code)')
     .eq('item_type', 'equipment')
     .eq('status', 'active')
     .order('name')
@@ -43,6 +43,15 @@ export default async function MantenimientoPage() {
   if (itemsError) {
     throw new Error(itemsError.message)
   }
+
+  const maintenanceItems =
+    items?.map((item) => ({
+      ...item,
+      asset_codes:
+        item.item_units
+          ?.map((unit) => unit.asset_code)
+          .filter((code): code is string => Boolean(code)) ?? [],
+    })) ?? []
 
   const { data: records, error: recordsError } = await supabase
     .from('maintenance_records')
@@ -81,7 +90,7 @@ export default async function MantenimientoPage() {
         <div className="bg-white rounded-2xl shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Registrar mantenimiento</h2>
 
-          <MaintenanceForm items={items ?? []} />
+          <MaintenanceForm items={maintenanceItems} />
         </div>
 
         {/* TABLA */}

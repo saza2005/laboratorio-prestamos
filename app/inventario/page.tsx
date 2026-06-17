@@ -43,7 +43,8 @@ export default async function InventarioPage() {
       stock_total,
       stock_available,
       status,
-      location
+      location,
+      item_units(asset_code)
     `)
     .order('created_at', { ascending: false })
     .limit(INVENTORY_CATALOG_LIMIT)
@@ -51,6 +52,15 @@ export default async function InventarioPage() {
   if (error) {
     throw new Error(error.message)
   }
+
+  const inventoryItems =
+    items?.map((item) => ({
+      ...item,
+      asset_codes:
+        item.item_units
+          ?.map((unit) => unit.asset_code)
+          .filter((code): code is string => Boolean(code)) ?? [],
+    })) ?? []
 
   const unitSelect = `
     id,
@@ -174,7 +184,7 @@ export default async function InventarioPage() {
           <ItemForm />
         </div>
 
-        <InventoryList items={items ?? []} />
+        <InventoryList items={inventoryItems} />
         <InventoryUnitsList units={units} />
         <MovementsTable data={normalizedMovements} limit={100} />
       </div>

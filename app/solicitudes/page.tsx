@@ -151,7 +151,15 @@ export default async function SolicitudesPage() {
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, name, code, stock_available, item_type, category')
+    .select(`
+      id,
+      name,
+      code,
+      stock_available,
+      item_type,
+      category,
+      item_units(asset_code)
+    `)
     .eq('status', 'active')
     .order('name', { ascending: true })
     .limit(INVENTORY_CATALOG_LIMIT)
@@ -159,6 +167,15 @@ export default async function SolicitudesPage() {
   if (itemsError) {
     throw new Error(itemsError.message)
   }
+
+  const requestItems =
+    items?.map((item) => ({
+      ...item,
+      asset_codes:
+        item.item_units
+          ?.map((unit) => unit.asset_code)
+          .filter((code): code is string => Boolean(code)) ?? [],
+    })) ?? []
 
   const canCreateGroups = canCreateGroupRequests(profile.role)
 
@@ -360,7 +377,7 @@ const loans =
             Crear solicitud individual
           </h2>
           <RequestForm
-            items={items ?? []}
+            items={requestItems}
             minScheduledReturnDate={getEcuadorDate()}
           />
         </div>
@@ -371,7 +388,7 @@ const loans =
               Crear solicitud grupal
             </h2>
             <RequestFormGroups
-              items={items ?? []}
+              items={requestItems}
               students={students ?? []}
               minScheduledReturnDate={getEcuadorDate()}
             />
@@ -600,7 +617,7 @@ const loans =
           </div>
         </div>
 
-        <ItemsCatalog items={items ?? []} />
+        <ItemsCatalog items={requestItems} />
       </div>
     </main>
   )

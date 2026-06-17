@@ -57,7 +57,8 @@ const { data: rawRequests, error } = await supabase
         name,
         code,
         stock_available,
-        track_individual
+        track_individual,
+        item_units(asset_code)
       )
     ),
 
@@ -72,7 +73,8 @@ const { data: rawRequests, error } = await supabase
           name,
           code,
           stock_available,
-          track_individual
+          track_individual,
+          item_units(asset_code)
         )
       )
     )
@@ -83,6 +85,13 @@ const { data: rawRequests, error } = await supabase
   if (error) {
     throw new Error(error.message)
   }
+
+const getAssetCodes = (
+  units: { asset_code?: string | null }[] | null | undefined
+) =>
+  units
+    ?.map((unit) => unit.asset_code)
+    .filter((code): code is string => Boolean(code)) ?? []
 
 const requests =
   rawRequests?.map((req) => ({
@@ -109,15 +118,22 @@ const requests =
         id: ri.id,
         quantity_requested: ri.quantity_requested,
         quantity_approved: ri.quantity_approved,
-        item: firstOrNull(ri.items) as
-          | {
-              id?: string
-              name?: string
-              code?: string
-              stock_available?: number
-              track_individual?: boolean
-            }
-          | null,
+        item: (() => {
+          const item = firstOrNull(ri.items) as
+            | {
+                id?: string
+                name?: string
+                code?: string
+                stock_available?: number
+                track_individual?: boolean
+                item_units?: { asset_code?: string | null }[]
+              }
+            | null
+
+          return item
+            ? { ...item, asset_codes: getAssetCodes(item.item_units) }
+            : null
+        })(),
       })) ?? [],
     request_groups:
       req.request_groups?.map((group) => ({
@@ -127,7 +143,22 @@ const requests =
         request_group_items:
           group.request_group_items?.map((gi) => ({
             quantity: gi.quantity,
-            item: firstOrNull(gi.items),
+            item: (() => {
+              const item = firstOrNull(gi.items) as
+                | {
+                    id?: string
+                    name?: string
+                    code?: string
+                    stock_available?: number
+                    track_individual?: boolean
+                    item_units?: { asset_code?: string | null }[]
+                  }
+                | null
+
+              return item
+                ? { ...item, asset_codes: getAssetCodes(item.item_units) }
+                : null
+            })(),
           })) ?? [],
       })) ?? [],
   })) ?? []

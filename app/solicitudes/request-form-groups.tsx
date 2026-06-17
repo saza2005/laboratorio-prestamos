@@ -9,6 +9,7 @@ type ItemOption = {
   code: string
   stock_available: number
   category: string | null
+  asset_codes: string[]
 }
 
 type Student = {
@@ -84,6 +85,7 @@ export function RequestFormGroups({
         !query ||
         normalize(item.name).includes(query) ||
         normalize(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalize(code).includes(query)) ||
         normalize(item.category).includes(query)
 
       return matchesCategory && matchesSearch
@@ -259,7 +261,7 @@ export function RequestFormGroups({
           type="search"
           value={itemSearch}
           onChange={(event) => setItemSearch(event.target.value)}
-          placeholder="Buscar ítem por nombre, código o categoría"
+          placeholder="Buscar ítem por nombre, código interno, código patrimonial o categoría"
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
 
