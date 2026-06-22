@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { LoginForm } from './login-form'
+import { GoogleLoginButton } from '../google-login-button'
 
 type LoginPageProps = {
   searchParams?: Promise<{
@@ -26,6 +27,18 @@ function getErrorMessage(error?: string) {
       return 'No se pudo iniciar sesión. Intente nuevamente.'
     case 'no_profile':
       return 'El usuario existe en autenticación, pero no tiene perfil registrado en el sistema.'
+    case 'email_not_confirmed':
+      return 'Debe confirmar su correo institucional antes de iniciar sesión.'
+    case 'invalid_domain':
+      return 'Solo se permite el acceso con cuentas @ucuenca.edu.ec.'
+    case 'google_auth_failed':
+      return 'No se pudo iniciar sesión con Google. Intente nuevamente.'
+    case 'password_login_disabled':
+      return 'El acceso con contraseña está reservado para administradores y laboratoristas. Use Google institucional.'
+    case 'profile_link_failed':
+      return 'No se pudo enlazar el perfil institucional. Si ya tenía solicitudes o préstamos de prueba, contacte al administrador.'
+    case 'google_link_required':
+      return 'Ya existe un perfil con ese correo. Inicie sesión con contraseña y use Vincular Google desde el dashboard.'
     default:
       return null
   }
@@ -44,7 +57,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </h1>
 
         <p className="text-slate-600 mb-6">
-          Accede al sistema de laboratorio
+          Accede con tu cuenta institucional @ucuenca.edu.ec
         </p>
 
         {registrationMessage && (
@@ -59,17 +72,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
         )}
 
-        <LoginForm />
+        <div className="space-y-5">
+          <GoogleLoginButton />
+
+          <div className="flex items-center gap-3 text-xs uppercase text-slate-400">
+            <span className="h-px flex-1 bg-slate-200" />
+            Cuentas existentes
+            <span className="h-px flex-1 bg-slate-200" />
+          </div>
+
+          <LoginForm />
+        </div>
 
         <div className="mt-6 space-y-2 text-center text-sm">
           <p className="text-slate-600">
-            ¿No tienes una cuenta?{' '}
-            <Link
-              href="/auth/register"
-              className="font-medium text-blue-700 hover:underline"
-            >
-              Regístrate
-            </Link>
+            Usuarios nuevos entran con Google institucional. Usuarios existentes pueden iniciar con contraseña y vincular Google desde el dashboard.
           </p>
           <Link
             href="/"

@@ -1,16 +1,16 @@
 import Link from 'next/link'
-import { RegisterForm } from './register-form'
+import { GoogleLoginButton } from '../google-login-button'
 
 export default function RegisterPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 sm:px-6">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow sm:p-8">
-        <h1 className="text-2xl font-bold mb-2">Registro</h1>
+        <h1 className="text-2xl font-bold mb-2">Registro institucional</h1>
         <p className="text-slate-600 mb-6">
-          Crea una cuenta para usar el sistema
+          Crea o accede a tu cuenta usando Google institucional @ucuenca.edu.ec.
         </p>
 
-        <RegisterForm />
+        <GoogleLoginButton />
 
         <div className="mt-6 space-y-2 text-center text-sm">
           <p className="text-slate-600">

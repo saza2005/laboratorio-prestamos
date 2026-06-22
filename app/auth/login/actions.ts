@@ -30,6 +30,12 @@ export async function loginUser(formData: FormData) {
     redirect('/auth/login?error=no_user')
   }
 
+  if (!user.email_confirmed_at) {
+    await supabase.auth.signOut({ scope: 'local' })
+    await clearSupabaseAuthCookies()
+    redirect('/auth/login?error=email_not_confirmed')
+  }
+
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('role')
