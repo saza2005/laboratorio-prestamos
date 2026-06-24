@@ -34,10 +34,22 @@ type LoanRow = {
   quantity: number
 }
 
-const SELECT_OPTIONS_LIMIT = 100
+const RESULTS_LIMIT = 12
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLocaleLowerCase('es') ?? ''
+}
+
+function formatAssetCodes(codes: string[]) {
+  if (codes.length === 0) return null
+  if (codes.length <= 2) return codes.join(', ')
+  return `${codes.slice(0, 2).join(', ')} +${codes.length - 2}`
+}
+
+function formatUnitLabel(unit: ItemUnit) {
+  const code = unit.asset_code || unit.serial_code || 'Sin código'
+  const details = [unit.brand, unit.model].filter(Boolean).join(' ')
+  return details ? `${code} - ${details}` : code
 }
 
 export function LoanForm({
@@ -55,9 +67,7 @@ export function LoanForm({
     error: null,
   })
   const [selectedUserId, setSelectedUserId] = useState('')
-  const [rows, setRows] = useState<LoanRow[]>([
-    { itemId: '', itemUnitId: '', quantity: 1 },
-  ])
+  const [rows, setRows] = useState<LoanRow[]>([])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
 
@@ -80,6 +90,10 @@ export function LoanForm({
 
   const filteredItems = useMemo(() => {
     const query = normalize(itemSearch)
+    const selectedNonTrackedIds = rows
+      .filter((row) => !itemMap.get(row.itemId)?.track_individual)
+      .map((row) => row.itemId)
+
     return items.filter((item) => {
       const matchesCategory = !categoryFilter || item.category === categoryFilter
       const matchesSearch =
@@ -88,11 +102,17 @@ export function LoanForm({
         normalize(item.code).includes(query) ||
         item.asset_codes.some((code) => normalize(code).includes(query)) ||
         normalize(item.category).includes(query)
-      return matchesCategory && matchesSearch
-    })
-  }, [categoryFilter, itemSearch, items])
 
-  const visibleItems = filteredItems.slice(0, SELECT_OPTIONS_LIMIT)
+      return (
+        matchesCategory &&
+        matchesSearch &&
+        item.stock_available > 0 &&
+        !selectedNonTrackedIds.includes(item.id)
+      )
+    })
+  }, [categoryFilter, itemMap, itemSearch, items, rows])
+
+  const visibleItems = filteredItems.slice(0, RESULTS_LIMIT)
   const selectedUnitIds = rows.map((row) => row.itemUnitId).filter(Boolean)
 
   const requestedTotals = useMemo(() => {
@@ -106,18 +126,45 @@ export function LoanForm({
     return totals
   }, [itemMap, rows])
 
-  const hasErrors = rows.some((row) => {
-    const item = itemMap.get(row.itemId)
-    if (!item) return true
-    const quantity = item.track_individual ? 1 : row.quantity
-    const total = requestedTotals.get(item.id) ?? 0
-    return (
-      !Number.isInteger(quantity) ||
-      quantity < 1 ||
-      total > item.stock_available ||
-      (item.track_individual && !row.itemUnitId)
-    )
-  }) || new Set(selectedUnitIds).size !== selectedUnitIds.length
+  const selectedRows = rows
+    .map((row) => ({ row, item: itemMap.get(row.itemId) }))
+    .filter((entry): entry is { row: LoanRow; item: Item } => Boolean(entry.item))
+
+  const hasErrors =
+    rows.length === 0 ||
+    selectedRows.length !== rows.length ||
+    selectedRows.some(({ row, item }) => {
+      const quantity = item.track_individual ? 1 : row.quantity
+      const total = requestedTotals.get(item.id) ?? 0
+      return (
+        !Number.isInteger(quantity) ||
+        quantity < 1 ||
+        total > item.stock_available ||
+        (item.track_individual && !row.itemUnitId)
+      )
+    }) ||
+    new Set(selectedUnitIds).size !== selectedUnitIds.length
+
+  function addItem(item: Item) {
+    const availableUnit = item.track_individual
+      ? availableUnits.find(
+          (unit) =>
+            unit.item_id === item.id && !selectedUnitIds.includes(unit.id)
+        )
+      : null
+
+    if (item.track_individual && !availableUnit) return
+
+    setRows((current) => [
+      ...current,
+      {
+        itemId: item.id,
+        itemUnitId: '',
+        quantity: 1,
+      },
+    ])
+    setItemSearch('')
+  }
 
   function updateRow(index: number, changes: Partial<LoanRow>) {
     setRows((current) =>
@@ -127,27 +174,13 @@ export function LoanForm({
     )
   }
 
-  function addRow() {
-    setRows((current) => [
-      ...current,
-      { itemId: '', itemUnitId: '', quantity: 1 },
-    ])
-  }
-
   function removeRow(index: number) {
-    setRows((current) =>
-      current.length === 1
-        ? current
-        : current.filter((_, rowIndex) => rowIndex !== index)
-    )
+    setRows((current) => current.filter((_, rowIndex) => rowIndex !== index))
   }
 
-  function getSelectableItems(selectedItemId: string) {
-    if (!selectedItemId || visibleItems.some((item) => item.id === selectedItemId)) {
-      return visibleItems
-    }
-    const selectedItem = itemMap.get(selectedItemId)
-    return selectedItem ? [selectedItem, ...visibleItems] : visibleItems
+  function clearFilters() {
+    setItemSearch('')
+    setCategoryFilter('')
   }
 
   const canSubmit = Boolean(selectedUserId) && !hasErrors && !isPending
@@ -183,7 +216,9 @@ export function LoanForm({
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">Fecha esperada de devolución</label>
+          <label className="mb-1 block text-sm font-medium">
+            Fecha esperada de devolución
+          </label>
           <input
             name="expected_return_date"
             type="date"
@@ -193,140 +228,203 @@ export function LoanForm({
         </div>
       </div>
 
-      <div className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 md:grid-cols-[minmax(240px,1fr)_minmax(190px,260px)]">
-        <input
-          type="search"
-          value={itemSearch}
-          onChange={(event) => setItemSearch(event.target.value)}
-          placeholder="Buscar material por nombre, código interno, código patrimonial o categoría"
-          className="rounded-lg border bg-white px-3 py-2 text-sm"
-        />
-        <select
-          value={categoryFilter}
-          onChange={(event) => setCategoryFilter(event.target.value)}
-          className="rounded-lg border bg-white px-3 py-2 text-sm"
-        >
-          <option value="">Todas las categorías</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>{category}</option>
-          ))}
-        </select>
-        <p className="text-xs text-slate-500 md:col-span-2">
-          Coincidencias: {filteredItems.length} de {items.length}.
-          {filteredItems.length > SELECT_OPTIONS_LIMIT
-            ? ` Mostrando las primeras ${SELECT_OPTIONS_LIMIT}; afine la búsqueda.`
+      <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_minmax(190px,260px)_auto]">
+          <input
+            type="search"
+            value={itemSearch}
+            onChange={(event) => setItemSearch(event.target.value)}
+            placeholder="Buscar material por nombre, código interno, código patrimonial o categoría"
+            className="rounded-lg border bg-white px-3 py-2 text-sm"
+          />
+          <select
+            value={categoryFilter}
+            onChange={(event) => setCategoryFilter(event.target.value)}
+            className="rounded-lg border bg-white px-3 py-2 text-sm"
+          >
+            <option value="">Todas las categorías</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm transition hover:bg-slate-50"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <p className="text-xs text-slate-500">
+          Coincidencias disponibles: {filteredItems.length} de {items.length}.
+          {filteredItems.length > RESULTS_LIMIT
+            ? ` Mostrando ${RESULTS_LIMIT}; afine la búsqueda.`
             : ''}
         </p>
+
+        {visibleItems.length > 0 ? (
+          <div className="grid gap-2 md:grid-cols-2">
+            {visibleItems.map((item) => {
+              const assetCodes = formatAssetCodes(item.asset_codes)
+              const availableUnitCount = availableUnits.filter(
+                (unit) =>
+                  unit.item_id === item.id && !selectedUnitIds.includes(unit.id)
+              ).length
+              const disabled = item.track_individual && availableUnitCount === 0
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => addItem(item)}
+                  disabled={disabled}
+                  className="rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-blue-300 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <span className="block font-medium text-slate-900">
+                    {item.name}
+                  </span>
+                  <span className="mt-1 block text-xs text-slate-500">
+                    Código interno: {item.code}
+                    {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
+                  </span>
+                  <span className="mt-1 block text-xs text-slate-600">
+                    Stock: {item.stock_available} | Categoría:{' '}
+                    {item.category || 'Sin categoría'}
+                  </span>
+                  {item.track_individual && (
+                    <span className="mt-1 block text-xs text-blue-700">
+                      Unidades disponibles: {availableUnitCount}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        ) : (
+          <p className="rounded-lg bg-white px-3 py-4 text-center text-sm text-slate-500">
+            No hay materiales disponibles que coincidan con la búsqueda.
+          </p>
+        )}
       </div>
 
       <div className="space-y-4">
-        {rows.map((row, index) => {
-          const item = itemMap.get(row.itemId)
-          const selectableItems = getSelectableItems(row.itemId)
-          const units = item?.track_individual
-            ? availableUnits.filter((unit) => unit.item_id === item.id)
-            : []
-          const quantity = item?.track_individual ? 1 : row.quantity
-          const total = item ? requestedTotals.get(item.id) ?? 0 : 0
-          const exceedsStock = Boolean(item && total > item.stock_available)
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="font-semibold">Materiales agregados</h3>
+          <p className="text-sm text-slate-500">Total: {selectedRows.length}</p>
+        </div>
 
-          return (
-            <div key={index} className="rounded-lg border border-slate-200 p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <h3 className="font-medium">Material {index + 1}</h3>
-                <button
-                  type="button"
-                  onClick={() => removeRow(index)}
-                  disabled={rows.length === 1}
-                  className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Quitar
-                </button>
-              </div>
+        {selectedRows.length > 0 ? (
+          selectedRows.map(({ row, item }, index) => {
+            const units = item.track_individual
+              ? availableUnits.filter((unit) => unit.item_id === item.id)
+              : []
+            const quantity = item.track_individual ? 1 : row.quantity
+            const total = requestedTotals.get(item.id) ?? 0
+            const exceedsStock = total > item.stock_available
+            const assetCodes = formatAssetCodes(item.asset_codes)
 
-              <div className="grid gap-3 md:grid-cols-12">
-                <div className="md:col-span-7">
-                  <label className="mb-1 block text-sm font-medium">Ítem</label>
-                  <select
-                    value={row.itemId}
-                    onChange={(event) =>
-                      updateRow(index, {
-                        itemId: event.target.value,
-                        itemUnitId: '',
-                        quantity: 1,
-                      })
-                    }
-                    className="w-full rounded-lg border px-3 py-2"
-                  >
-                    <option value="">Seleccione</option>
-                    {selectableItems.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.name} [{option.code}] - Stock: {option.stock_available}
-                      </option>
-                    ))}
-                  </select>
-                  <input type="hidden" name={`items[${index}][item_id]`} value={row.itemId} />
-                </div>
-
-                <div className="md:col-span-5">
-                  <label className="mb-1 block text-sm font-medium">Cantidad</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max={item?.stock_available || undefined}
-                    step="1"
-                    value={quantity}
-                    readOnly={item?.track_individual}
-                    onChange={(event) =>
-                      updateRow(index, { quantity: Math.max(1, Number(event.target.value) || 1) })
-                    }
-                    className="w-full rounded-lg border px-3 py-2 read-only:bg-slate-100"
-                  />
-                  <input type="hidden" name={`items[${index}][quantity]`} value={quantity} />
-                </div>
-
-                {item?.track_individual && (
-                  <div className="md:col-span-12">
-                    <label className="mb-1 block text-sm font-medium">Unidad patrimonial</label>
-                    <select
-                      value={row.itemUnitId}
-                      onChange={(event) => updateRow(index, { itemUnitId: event.target.value })}
-                      className="w-full rounded-lg border px-3 py-2"
-                    >
-                      <option value="">Seleccione una unidad disponible</option>
-                      {units.map((unit) => (
-                        <option
-                          key={unit.id}
-                          value={unit.id}
-                          disabled={selectedUnitIds.includes(unit.id) && row.itemUnitId !== unit.id}
-                        >
-                          {unit.asset_code || unit.serial_code || 'Sin código'}
-                          {unit.brand || unit.model ? ` - ${[unit.brand, unit.model].filter(Boolean).join(' ')}` : ''}
-                        </option>
-                      ))}
-                    </select>
-                    <input type="hidden" name={`items[${index}][item_unit_id]`} value={row.itemUnitId} />
+            return (
+              <div key={`${item.id}-${index}`} className="rounded-lg border border-slate-200 p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-medium">{item.name}</h3>
+                    <p className="mt-1 text-xs text-slate-500">
+                      Código interno: {item.code}
+                      {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
+                    </p>
                   </div>
-                )}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => removeRow(index)}
+                    className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 transition hover:bg-red-100"
+                  >
+                    Quitar
+                  </button>
+                </div>
 
-              {item && (
+                <div className="grid gap-3 md:grid-cols-12">
+                  <input
+                    type="hidden"
+                    name={`items[${index}][item_id]`}
+                    value={row.itemId}
+                  />
+
+                  <div className="md:col-span-5">
+                    <label className="mb-1 block text-sm font-medium">Cantidad</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max={item.stock_available}
+                      step="1"
+                      value={quantity}
+                      readOnly={item.track_individual}
+                      onChange={(event) =>
+                        updateRow(index, {
+                          quantity: Math.max(
+                            1,
+                            Number(event.target.value) || 1
+                          ),
+                        })
+                      }
+                      className="w-full rounded-lg border px-3 py-2 read-only:bg-slate-100"
+                    />
+                    <input
+                      type="hidden"
+                      name={`items[${index}][quantity]`}
+                      value={quantity}
+                    />
+                  </div>
+
+                  {item.track_individual && (
+                    <div className="md:col-span-7">
+                      <label className="mb-1 block text-sm font-medium">
+                        Unidad patrimonial
+                      </label>
+                      <select
+                        value={row.itemUnitId}
+                        onChange={(event) =>
+                          updateRow(index, { itemUnitId: event.target.value })
+                        }
+                        className="w-full rounded-lg border px-3 py-2"
+                      >
+                        <option value="">Seleccione una unidad disponible</option>
+                        {units.map((unit) => (
+                          <option
+                            key={unit.id}
+                            value={unit.id}
+                            disabled={
+                              selectedUnitIds.includes(unit.id) &&
+                              row.itemUnitId !== unit.id
+                            }
+                          >
+                            {formatUnitLabel(unit)}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="hidden"
+                        name={`items[${index}][item_unit_id]`}
+                        value={row.itemUnitId}
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <p className={`mt-2 text-sm ${exceedsStock ? 'text-red-600' : 'text-slate-600'}`}>
                   Solicitado en este préstamo: {total} de {item.stock_available} disponibles
                 </p>
-              )}
-            </div>
-          )
-        })}
+              </div>
+            )
+          })
+        ) : (
+          <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
+            Busca un material y selecciónalo para agregarlo al préstamo.
+          </p>
+        )}
       </div>
-
-      <button
-        type="button"
-        onClick={addRow}
-        className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700 hover:bg-blue-100"
-      >
-        Agregar otro material
-      </button>
 
       <div>
         <label className="mb-1 block text-sm font-medium">Notas</label>
@@ -344,7 +442,7 @@ export function LoanForm({
 
         {hasErrors && (
           <p className="mt-2 text-sm text-slate-500">
-            Complete los materiales, cantidades y unidades patrimoniales antes de guardar.
+            Selecciona usuario, agrega materiales y completa cantidades o unidades patrimoniales antes de guardar.
           </p>
         )}
         {state.error && (

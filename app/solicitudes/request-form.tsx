@@ -23,11 +23,17 @@ type RequestFormProps = {
   minScheduledReturnDate: string
 }
 
-const SELECT_OPTIONS_LIMIT = 100
+const RESULTS_LIMIT = 12
 const subscribeToHydration = () => () => {}
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? ''
+}
+
+function formatAssetCodes(codes: string[]) {
+  if (codes.length === 0) return null
+  if (codes.length <= 2) return codes.join(', ')
+  return `${codes.slice(0, 2).join(', ')} +${codes.length - 2}`
 }
 
 export function RequestForm({
@@ -37,9 +43,7 @@ export function RequestForm({
   const [state, formAction, isPending] = useActionState(createRequestWithState, {
     error: null,
   })
-  const [rows, setRows] = useState<RequestRow[]>([
-    { item_id: '', quantity_requested: 1 },
-  ])
+  const [rows, setRows] = useState<RequestRow[]>([])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const mounted = useSyncExternalStore(
@@ -48,7 +52,7 @@ export function RequestForm({
     () => false
   )
 
-  const selectedIds = rows.map((row) => row.item_id).filter(Boolean)
+  const selectedIds = rows.map((row) => row.item_id)
 
   const itemMap = useMemo(() => {
     return new Map(items.map((item) => [item.id, item]))
@@ -80,63 +84,60 @@ export function RequestForm({
     })
   }, [categoryFilter, itemSearch, items])
 
-  const visibleItems = filteredItems.slice(0, SELECT_OPTIONS_LIMIT)
-
-  const hasErrors = rows.some((row) => {
-    const item = items.find((i) => i.id === row.item_id)
-
-    return (
-      !row.item_id ||
-      !Number.isInteger(row.quantity_requested) ||
-      row.quantity_requested < 1 ||
-      (item ? row.quantity_requested > item.stock_available : true)
+  const availableResults = filteredItems.filter(
+    (item) => !selectedIds.includes(item.id) && item.stock_available > 0
+  )
+  const visibleResults = availableResults.slice(0, RESULTS_LIMIT)
+  const selectedRows = rows
+    .map((row) => ({ row, item: itemMap.get(row.item_id) }))
+    .filter((entry): entry is { row: RequestRow; item: ItemOption } =>
+      Boolean(entry.item)
     )
-  })
 
-  function updateRow(
-    index: number,
-    field: keyof RequestRow,
-    value: string | number
-  ) {
-    setRows((prev) =>
-      prev.map((row, i) =>
-        i === index
-          ? {
-              ...row,
-              [field]:
-                field === 'quantity_requested'
-                  ? Number(value) || 1
-                  : value,
-            }
+  const hasErrors =
+    rows.length === 0 ||
+    selectedRows.length !== rows.length ||
+    selectedRows.some(({ row, item }) => {
+      return (
+        !Number.isInteger(row.quantity_requested) ||
+        row.quantity_requested < 1 ||
+        row.quantity_requested > item.stock_available
+      )
+    })
+
+  function addItem(item: ItemOption) {
+    if (selectedIds.includes(item.id) || item.stock_available < 1) return
+
+    setRows((current) => [
+      ...current,
+      { item_id: item.id, quantity_requested: 1 },
+    ])
+    setItemSearch('')
+  }
+
+  function updateQuantity(itemId: string, value: string) {
+    setRows((current) =>
+      current.map((row) =>
+        row.item_id === itemId
+          ? { ...row, quantity_requested: Number(value) || 1 }
           : row
       )
     )
   }
 
-  function addRow() {
-    setRows((prev) => [...prev, { item_id: '', quantity_requested: 1 }])
+  function removeItem(itemId: string) {
+    setRows((current) => current.filter((row) => row.item_id !== itemId))
   }
 
-  function removeRow(index: number) {
-    setRows((prev) => {
-      if (prev.length === 1) return prev
-      return prev.filter((_, i) => i !== index)
-    })
-  }
-
-  function getSelectableItems(selectedItemId: string) {
-    if (!selectedItemId || visibleItems.some((item) => item.id === selectedItemId)) {
-      return visibleItems
-    }
-
-    const selectedItem = itemMap.get(selectedItemId)
-    return selectedItem ? [selectedItem, ...visibleItems] : visibleItems
+  function clearFilters() {
+    setItemSearch('')
+    setCategoryFilter('')
   }
 
   return (
-    <form action={formAction} className="grid md:grid-cols-2 gap-4">
+    <form action={formAction} className="grid gap-4 md:grid-cols-2">
       <div>
-        <label className="block text-sm font-medium mb-1">Propósito</label>
+        <label className="mb-1 block text-sm font-medium">Propósito</label>
         <input
           name="purpose"
           className="w-full rounded-lg border border-slate-300 px-3 py-2"
@@ -145,7 +146,7 @@ export function RequestForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
+        <label className="mb-1 block text-sm font-medium">
           Fecha estimada de devolución
         </label>
         <input
@@ -157,7 +158,7 @@ export function RequestForm({
       </div>
 
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium mb-1">Comentarios</label>
+        <label className="mb-1 block text-sm font-medium">Comentarios</label>
         <textarea
           name="comments"
           rows={3}
@@ -167,169 +168,155 @@ export function RequestForm({
       </div>
 
       <div className="md:col-span-2">
-        <h3 className="text-lg font-semibold mb-3">Ítems solicitados</h3>
+        <h3 className="mb-3 text-lg font-semibold">Ítems solicitados</h3>
 
-        <div className="mb-4 grid gap-3 rounded-xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)]">
-          <input
-            type="search"
-            value={itemSearch}
-            onChange={(event) => setItemSearch(event.target.value)}
-            placeholder="Buscar ítem por nombre, código interno, código patrimonial o categoría"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
+        <div className="mb-4 space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+          <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)_auto]">
+            <input
+              type="search"
+              value={itemSearch}
+              onChange={(event) => setItemSearch(event.target.value)}
+              placeholder="Buscar por nombre, código interno, código patrimonial o categoría"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
 
-          <select
-            value={categoryFilter}
-            onChange={(event) => setCategoryFilter(event.target.value)}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          >
-            <option value="">Todas las categorías</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+            <select
+              value={categoryFilter}
+              onChange={(event) => setCategoryFilter(event.target.value)}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="">Todas las categorías</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
 
-          <p className="text-sm text-slate-500 md:col-span-2">
-            Coincidencias: {filteredItems.length} de {items.length}.
-            {filteredItems.length > SELECT_OPTIONS_LIMIT
-              ? ` Mostrando las primeras ${SELECT_OPTIONS_LIMIT}; afine la búsqueda para encontrar otras.`
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50"
+            >
+              Limpiar
+            </button>
+          </div>
+
+          <div className="text-sm text-slate-500">
+            Coincidencias disponibles: {availableResults.length} de {items.length}.
+            {availableResults.length > RESULTS_LIMIT
+              ? ` Mostrando ${RESULTS_LIMIT}; afine la búsqueda para ver otras.`
               : ''}
-          </p>
+          </div>
+
+          {visibleResults.length > 0 ? (
+            <div className="grid gap-2 md:grid-cols-2">
+              {visibleResults.map((item) => {
+                const assetCodes = formatAssetCodes(item.asset_codes)
+
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => addItem(item)}
+                    className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-300 hover:bg-blue-50"
+                  >
+                    <span className="block font-medium text-slate-900">
+                      {item.name}
+                    </span>
+                    <span className="mt-1 block text-xs text-slate-500">
+                      Código interno: {item.code}
+                      {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
+                    </span>
+                    <span className="mt-1 block text-xs text-slate-600">
+                      Stock: {item.stock_available} | Categoría:{' '}
+                      {item.category || 'Sin categoría'}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
+              No hay ítems disponibles que coincidan con la búsqueda.
+            </p>
+          )}
         </div>
 
-        <div className="space-y-4">
-          {rows.map((row, index) => {
-            const selectedItem = items.find((item) => item.id === row.item_id)
-            const selectableItems = getSelectableItems(row.item_id)
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <p className="font-medium">Ítems agregados</p>
+            <p className="text-sm text-slate-500">Total: {selectedRows.length}</p>
+          </div>
 
-            return (
-              <div
-                key={index}
-                className="rounded-xl border border-slate-200 p-4 bg-slate-50"
-              >
-                <div className="grid md:grid-cols-12 gap-3 items-end">
-                  <div className="md:col-span-7">
-                    <label className="block text-sm font-medium mb-1">
-                      Ítem
-                    </label>
+          {selectedRows.length > 0 ? (
+            <div className="space-y-3">
+              {selectedRows.map(({ row, item }) => {
+                const exceedsStock = row.quantity_requested > item.stock_available
+                const assetCodes = formatAssetCodes(item.asset_codes)
 
-                    <select
-                      value={row.item_id}
-                      onChange={(e) =>
-                        updateRow(index, 'item_id', e.target.value)
-                      }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    >
-                      <option value="">Seleccione</option>
+                return (
+                  <div
+                    key={item.id}
+                    className="rounded-lg border border-slate-200 bg-white p-4"
+                  >
+                    <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_120px_auto] md:items-end">
+                      <div>
+                        <p className="font-medium text-slate-900">{item.name}</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          Código interno: {item.code}
+                          {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-600">
+                          Disponible: {item.stock_available}
+                        </p>
+                      </div>
 
-                      {selectableItems.map((item) => (
-                        <option
-                          key={item.id}
-                          value={item.id}
-                          disabled={
-                            selectedIds.includes(item.id) &&
-                            row.item_id !== item.id
+                      <div>
+                        <label className="mb-1 block text-sm font-medium">
+                          Cantidad
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          max={item.stock_available}
+                          step="1"
+                          value={row.quantity_requested}
+                          onChange={(event) =>
+                            updateQuantity(item.id, event.target.value)
                           }
-                        >
-                          {item.name} [{item.code}] - Stock:{' '}
-                          {item.stock_available}
-                        </option>
-                      ))}
-                    </select>
+                          className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                        />
+                      </div>
 
-                    <input type="hidden" name="item_id" value={row.item_id} />
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 transition hover:bg-red-100"
+                      >
+                        Quitar
+                      </button>
+                    </div>
 
-                  <div className="md:col-span-3">
-                    <label className="block text-sm font-medium mb-1">
-                      Cantidad
-                    </label>
-
-                    <input
-                      type="number"
-                      min="1"
-                      max={selectedItem?.stock_available ?? undefined}
-                      step="1"
-                      value={row.quantity_requested}
-                      onChange={(e) =>
-                        updateRow(index, 'quantity_requested', e.target.value)
-                      }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-
+                    <input type="hidden" name="item_id" value={item.id} />
                     <input
                       type="hidden"
                       name="quantity_requested"
                       value={row.quantity_requested}
                     />
-                  </div>
 
-                  <div className="md:col-span-2">
-                    {rows.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeRow(index)}
-                        className="w-full rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 hover:bg-red-100 transition"
-                      >
-                        Quitar
-                      </button>
+                    {exceedsStock && (
+                      <p className="mt-2 text-sm text-red-600">
+                        La cantidad excede el stock disponible.
+                      </p>
                     )}
                   </div>
-                </div>
-
-                {selectedItem && (
-                  <p className="mt-2 text-sm text-slate-600">
-                    Disponible:{' '}
-                    <span className="font-medium">
-                      {selectedItem.stock_available}
-                    </span>
-                  </p>
-                )}
-
-                {selectedItem &&
-                  row.quantity_requested > selectedItem.stock_available && (
-                    <p className="mt-1 text-sm text-red-600">
-                      La cantidad excede el stock disponible.
-                    </p>
-                  )}
-              </div>
-            )
-          })}
-        </div>
-
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={addRow}
-            className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700 hover:bg-blue-100 transition"
-          >
-            Agregar otro ítem
-          </button>
-        </div>
-
-        <div className="mt-4 rounded-lg bg-slate-100 p-4">
-          <p className="text-sm font-medium mb-2">Resumen de solicitud:</p>
-
-          {rows.some((row) => row.item_id) ? (
-            <ul className="text-sm space-y-1">
-              {rows.map((row, index) => {
-                const item = items.find((it) => it.id === row.item_id)
-
-                if (!item) return null
-
-                return (
-                  <li key={index}>
-                    {item.name} [{item.code}] - Cantidad:{' '}
-                    {row.quantity_requested}
-                  </li>
                 )
               })}
-            </ul>
+            </div>
           ) : (
-            <p className="text-sm text-slate-500">
-              Aún no has seleccionado ítems.
+            <p className="rounded-lg bg-white px-3 py-4 text-center text-sm text-slate-500">
+              Busca un ítem y selecciónalo para agregarlo a la solicitud.
             </p>
           )}
         </div>
@@ -342,7 +329,7 @@ export function RequestForm({
           disabled={!mounted || hasErrors || isPending}
           className={`w-full rounded-lg px-5 py-2.5 font-medium transition sm:w-auto ${
             hasErrors
-              ? 'bg-gray-400 text-white cursor-not-allowed'
+              ? 'cursor-not-allowed bg-gray-400 text-white'
               : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
         >
@@ -351,7 +338,7 @@ export function RequestForm({
 
         {hasErrors && (
           <p className="mt-2 text-sm text-slate-500">
-            Complete correctamente los ítems y cantidades antes de enviar.
+            Agrega al menos un ítem y verifica que las cantidades no excedan el stock disponible.
           </p>
         )}
 

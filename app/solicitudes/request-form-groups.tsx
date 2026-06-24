@@ -26,13 +26,31 @@ type Group = {
   group_name: string
   leader_student_id: string
   items: GroupItem[]
+  search: string
+  category: string
 }
 
-const SELECT_OPTIONS_LIMIT = 100
+const RESULTS_LIMIT = 8
 const subscribeToHydration = () => () => {}
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? ''
+}
+
+function formatAssetCodes(codes: string[]) {
+  if (codes.length === 0) return null
+  if (codes.length <= 2) return codes.join(', ')
+  return `${codes.slice(0, 2).join(', ')} +${codes.length - 2}`
+}
+
+function makeGroup(index: number): Group {
+  return {
+    group_name: `Grupo ${index + 1}`,
+    leader_student_id: '',
+    items: [],
+    search: '',
+    category: '',
+  }
 }
 
 export function RequestFormGroups({
@@ -47,15 +65,7 @@ export function RequestFormGroups({
   const [state, formAction, isPending] = useActionState(createRequestWithState, {
     error: null,
   })
-  const [groups, setGroups] = useState<Group[]>([
-    {
-      group_name: 'Grupo 1',
-      leader_student_id: '',
-      items: [{ item_id: '', quantity: 1 }],
-    },
-  ])
-  const [itemSearch, setItemSearch] = useState('')
-  const [categoryFilter, setCategoryFilter] = useState('')
+  const [groups, setGroups] = useState<Group[]>([makeGroup(0)])
   const mounted = useSyncExternalStore(
     subscribeToHydration,
     () => true,
@@ -76,29 +86,12 @@ export function RequestFormGroups({
     ).sort((a, b) => a.localeCompare(b, 'es'))
   }, [items])
 
-  const filteredItems = useMemo(() => {
-    const query = normalize(itemSearch)
-
-    return items.filter((item) => {
-      const matchesCategory = !categoryFilter || item.category === categoryFilter
-      const matchesSearch =
-        !query ||
-        normalize(item.name).includes(query) ||
-        normalize(item.code).includes(query) ||
-        item.asset_codes.some((code) => normalize(code).includes(query)) ||
-        normalize(item.category).includes(query)
-
-      return matchesCategory && matchesSearch
-    })
-  }, [categoryFilter, itemSearch, items])
-
-  const visibleItems = filteredItems.slice(0, SELECT_OPTIONS_LIMIT)
-
   const selectedLeaderIds = groups
     .map((group) => group.leader_student_id)
     .filter(Boolean)
 
-  const hasDuplicateLeaders = new Set(selectedLeaderIds).size !== selectedLeaderIds.length
+  const hasDuplicateLeaders =
+    new Set(selectedLeaderIds).size !== selectedLeaderIds.length
 
   const totalsByItem = useMemo(() => {
     return groups.reduce((acc, group) => {
@@ -111,34 +104,51 @@ export function RequestFormGroups({
     }, new Map<string, number>())
   }, [groups])
 
-  const hasErrors = hasDuplicateLeaders || groups.some((group) => {
-    if (!group.leader_student_id) return true
+  const hasErrors =
+    hasDuplicateLeaders ||
+    groups.some((group) => {
+      if (!group.leader_student_id || group.items.length === 0) return true
 
-    return group.items.some((groupItem) => {
-      const item = itemMap.get(groupItem.item_id)
-      const totalRequestedForItem = groupItem.item_id
-        ? totalsByItem.get(groupItem.item_id) ?? 0
-        : 0
+      return group.items.some((groupItem) => {
+        const item = itemMap.get(groupItem.item_id)
+        const totalRequestedForItem = groupItem.item_id
+          ? totalsByItem.get(groupItem.item_id) ?? 0
+          : 0
+
+        return (
+          !groupItem.item_id ||
+          !Number.isInteger(groupItem.quantity) ||
+          groupItem.quantity < 1 ||
+          !item ||
+          totalRequestedForItem > item.stock_available
+        )
+      })
+    })
+
+  function getFilteredItems(group: Group) {
+    const query = normalize(group.search)
+    const selectedIds = group.items.map((item) => item.item_id)
+
+    return items.filter((item) => {
+      const matchesCategory = !group.category || item.category === group.category
+      const matchesSearch =
+        !query ||
+        normalize(item.name).includes(query) ||
+        normalize(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalize(code).includes(query)) ||
+        normalize(item.category).includes(query)
 
       return (
-        !groupItem.item_id ||
-        !Number.isInteger(groupItem.quantity) ||
-        groupItem.quantity < 1 ||
-        !item ||
-        totalRequestedForItem > item.stock_available
+        matchesCategory &&
+        matchesSearch &&
+        item.stock_available > 0 &&
+        !selectedIds.includes(item.id)
       )
     })
-  })
+  }
 
   function addGroup() {
-    setGroups((prev) => [
-      ...prev,
-      {
-        group_name: `Grupo ${prev.length + 1}`,
-        leader_student_id: '',
-        items: [{ item_id: '', quantity: 1 }],
-      },
-    ])
+    setGroups((prev) => [...prev, makeGroup(prev.length)])
   }
 
   function removeGroup(groupIndex: number) {
@@ -156,69 +166,75 @@ export function RequestFormGroups({
 
   function updateGroup(
     index: number,
-    field: keyof Pick<Group, 'group_name' | 'leader_student_id'>,
+    field: keyof Pick<Group, 'leader_student_id' | 'search' | 'category'>,
     value: string
   ) {
     setGroups((prev) =>
-      prev.map((g, i) =>
-        i === index ? { ...g, [field]: value } : g
-      )
-    )
-  }
-  function updateItem(
-    groupIndex: number,
-    itemIndex: number,
-    field: keyof GroupItem,
-    value: string | number
-  ) {
-    setGroups((prev) =>
-      prev.map((g, i) => {
-        if (i !== groupIndex) return g
-
-        const newItems = g.items.map((it, j) =>
-          j === itemIndex
-            ? {
-                ...it,
-                [field]: field === 'quantity' ? Number(value) || 1 : value,
-              }
-            : it
-        )
-
-        return { ...g, items: newItems }
-      })
-    )
-  }
-
-  function addItem(groupIndex: number) {
-    setGroups((prev) =>
-      prev.map((g, i) =>
-        i === groupIndex
-          ? { ...g, items: [...g.items, { item_id: '', quantity: 1 }] }
-          : g
+      prev.map((group, currentIndex) =>
+        currentIndex === index ? { ...group, [field]: value } : group
       )
     )
   }
 
-  function removeItem(groupIndex: number, itemIndex: number) {
+  function addItem(groupIndex: number, item: ItemOption) {
     setGroups((prev) =>
-      prev.map((group, index) => {
-        if (index !== groupIndex || group.items.length === 1) return group
+      prev.map((group, currentIndex) => {
+        if (currentIndex !== groupIndex) return group
+        if (group.items.some((groupItem) => groupItem.item_id === item.id)) {
+          return group
+        }
 
         return {
           ...group,
-          items: group.items.filter((_, currentIndex) => currentIndex !== itemIndex),
+          search: '',
+          items: [...group.items, { item_id: item.id, quantity: 1 }],
         }
       })
     )
   }
 
-  function getSelectableItems(selectedItemId: string) {
-    if (!selectedItemId || visibleItems.some((item) => item.id === selectedItemId)) {
-      return visibleItems
-    }
+  function updateItemQuantity(
+    groupIndex: number,
+    itemId: string,
+    value: string
+  ) {
+    setGroups((prev) =>
+      prev.map((group, currentIndex) =>
+        currentIndex === groupIndex
+          ? {
+              ...group,
+              items: group.items.map((item) =>
+                item.item_id === itemId
+                  ? { ...item, quantity: Number(value) || 1 }
+                  : item
+              ),
+            }
+          : group
+      )
+    )
+  }
 
-    const selectedItem = itemMap.get(selectedItemId)
-    return selectedItem ? [selectedItem, ...visibleItems] : visibleItems
+  function removeItem(groupIndex: number, itemId: string) {
+    setGroups((prev) =>
+      prev.map((group, currentIndex) =>
+        currentIndex === groupIndex
+          ? {
+              ...group,
+              items: group.items.filter((item) => item.item_id !== itemId),
+            }
+          : group
+      )
+    )
+  }
+
+  function clearGroupFilters(groupIndex: number) {
+    setGroups((prev) =>
+      prev.map((group, currentIndex) =>
+        currentIndex === groupIndex
+          ? { ...group, search: '', category: '' }
+          : group
+      )
+    )
   }
 
   return (
@@ -256,174 +272,242 @@ export function RequestFormGroups({
         </div>
       </div>
 
-      <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)]">
-        <input
-          type="search"
-          value={itemSearch}
-          onChange={(event) => setItemSearch(event.target.value)}
-          placeholder="Buscar ítem por nombre, código interno, código patrimonial o categoría"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
+      {groups.map((group, groupIndex) => {
+        const filteredItems = getFilteredItems(group)
+        const visibleItems = filteredItems.slice(0, RESULTS_LIMIT)
+        const selectedItems = group.items
+          .map((groupItem) => ({ groupItem, item: itemMap.get(groupItem.item_id) }))
+          .filter(
+            (entry): entry is { groupItem: GroupItem; item: ItemOption } =>
+              Boolean(entry.item)
+          )
+        const duplicateLeader =
+          group.leader_student_id &&
+          selectedLeaderIds.filter((id) => id === group.leader_student_id).length > 1
 
-        <select
-          value={categoryFilter}
-          onChange={(event) => setCategoryFilter(event.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        >
-          <option value="">Todas las categorías</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
+        return (
+          <div key={groupIndex} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <input
+              type="hidden"
+              name={`groups[${groupIndex}][group_name]`}
+              value={group.group_name}
+            />
 
-        <p className="text-sm text-slate-500 md:col-span-2">
-          Coincidencias: {filteredItems.length} de {items.length}.
-            {filteredItems.length > SELECT_OPTIONS_LIMIT
-              ? ` Mostrando las primeras ${SELECT_OPTIONS_LIMIT}; afine la búsqueda para encontrar otras.`
-              : ''}
-        </p>
-      </div>
-
-      {groups.map((group, gIndex) => (
-        <div key={gIndex} className="border p-4 rounded-xl bg-slate-50">
-
-          <input
-            type="hidden"
-            name={`groups[${gIndex}][group_name]`}
-            value={group.group_name}
-          />
-
-          <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h3 className="font-semibold">{group.group_name}</h3>
-            <button
-              type="button"
-              onClick={() => removeGroup(gIndex)}
-              disabled={groups.length === 1}
-              className="w-full rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-            >
-              Quitar grupo
-            </button>
-          </div>
-
-          <select
-            value={group.leader_student_id}
-            onChange={(e) =>
-              updateGroup(gIndex, 'leader_student_id', e.target.value)
-            }
-            className="border p-2 rounded w-full mb-3"
-          >
-            <option value="">Seleccionar jefe de grupo</option>
-            {students.map((s) => (
-              <option
-                key={s.id}
-                value={s.id}
-                disabled={selectedLeaderIds.includes(s.id) && group.leader_student_id !== s.id}
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="font-semibold">{group.group_name}</h3>
+              <button
+                type="button"
+                onClick={() => removeGroup(groupIndex)}
+                disabled={groups.length === 1}
+                className="w-full rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
-                {s.full_name}
-              </option>
-            ))}
-          </select>
+                Quitar grupo
+              </button>
+            </div>
 
-          <input
-            type="hidden"
-            name={`groups[${gIndex}][leader_student_id]`}
-            value={group.leader_student_id}
-          />
-
-          {group.items.map((item, iIndex) => {
-            const selectableItems = getSelectableItems(item.item_id)
-
-            return (
-            <div key={iIndex} className="grid gap-2 mb-2 md:grid-cols-[minmax(0,1fr)_96px_auto]">
-
+            <div className="mb-4">
+              <label className="mb-1 block text-sm font-medium">Jefe de grupo</label>
               <select
-                value={item.item_id}
-                onChange={(e) =>
-                  updateItem(gIndex, iIndex, 'item_id', e.target.value)
+                value={group.leader_student_id}
+                onChange={(event) =>
+                  updateGroup(groupIndex, 'leader_student_id', event.target.value)
                 }
-                className="border p-2 rounded w-full"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2"
               >
-                <option value="">Seleccione equipo</option>
-                {selectableItems.map((it) => (
-                  <option key={it.id} value={it.id}>
-                    {it.name} [{it.code}] - Stock: {it.stock_available}
+                <option value="">Seleccionar jefe de grupo</option>
+                {students.map((student) => (
+                  <option
+                    key={student.id}
+                    value={student.id}
+                    disabled={
+                      selectedLeaderIds.includes(student.id) &&
+                      group.leader_student_id !== student.id
+                    }
+                  >
+                    {student.full_name}
                   </option>
                 ))}
               </select>
-
-              <input
-                type="number"
-                value={item.quantity}
-                min={1}
-                step={1}
-                max={
-                  item.item_id
-                    ? itemMap.get(item.item_id)?.stock_available
-                    : undefined
-                }
-                onChange={(e) =>
-                  updateItem(gIndex, iIndex, 'quantity', e.target.value)
-                }
-                className="border p-2 rounded w-full"
-              />
-
-              <button
-                type="button"
-                onClick={() => removeItem(gIndex, iIndex)}
-                disabled={group.items.length === 1}
-                className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 hover:bg-red-100 transition disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Quitar
-              </button>
-
               <input
                 type="hidden"
-                name={`groups[${gIndex}][items][${iIndex}][item_id]`}
-                value={item.item_id}
+                name={`groups[${groupIndex}][leader_student_id]`}
+                value={group.leader_student_id}
               />
-
-              <input
-                type="hidden"
-                name={`groups[${gIndex}][items][${iIndex}][quantity]`}
-                value={item.quantity}
-              />
-
+              {duplicateLeader && (
+                <p className="mt-2 text-sm text-red-600">
+                  Este jefe de grupo ya fue seleccionado en otro grupo.
+                </p>
+              )}
             </div>
-            )
-          })}
 
-          {group.items.some((groupItem) => {
-            const selectedItem = itemMap.get(groupItem.item_id)
-            const totalRequestedForItem = groupItem.item_id
-              ? totalsByItem.get(groupItem.item_id) ?? 0
-              : 0
+            <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+              <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_minmax(180px,240px)_auto]">
+                <input
+                  type="search"
+                  value={group.search}
+                  onChange={(event) =>
+                    updateGroup(groupIndex, 'search', event.target.value)
+                  }
+                  placeholder="Buscar por nombre, código interno, código patrimonial o categoría"
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
 
-            return selectedItem && totalRequestedForItem > selectedItem.stock_available
-          }) && (
-            <p className="text-sm text-red-600">
-              La cantidad total solicitada supera el stock disponible.
-            </p>
-          )}
+                <select
+                  value={group.category}
+                  onChange={(event) =>
+                    updateGroup(groupIndex, 'category', event.target.value)
+                  }
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                >
+                  <option value="">Todas las categorías</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
 
-          {group.leader_student_id &&
-            selectedLeaderIds.filter((id) => id === group.leader_student_id).length > 1 && (
-              <p className="text-sm text-red-600">
-                Este jefe de grupo ya fue seleccionado en otro grupo.
+                <button
+                  type="button"
+                  onClick={() => clearGroupFilters(groupIndex)}
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50"
+                >
+                  Limpiar
+                </button>
+              </div>
+
+              <p className="text-sm text-slate-500">
+                Coincidencias disponibles: {filteredItems.length} de {items.length}.
+                {filteredItems.length > RESULTS_LIMIT
+                  ? ` Mostrando ${RESULTS_LIMIT}; afine la búsqueda para ver otras.`
+                  : ''}
               </p>
-            )}
 
-          <button
-            type="button"
-            onClick={() => addItem(gIndex)}
-            className="text-blue-600 text-sm"
-          >
-            + agregar ítem
-          </button>
+              {visibleItems.length > 0 ? (
+                <div className="grid gap-2 md:grid-cols-2">
+                  {visibleItems.map((item) => {
+                    const assetCodes = formatAssetCodes(item.asset_codes)
 
-        </div>
-      ))}
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => addItem(groupIndex, item)}
+                        className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-blue-300 hover:bg-blue-50"
+                      >
+                        <span className="block font-medium text-slate-900">
+                          {item.name}
+                        </span>
+                        <span className="mt-1 block text-xs text-slate-500">
+                          Código interno: {item.code}
+                          {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
+                        </span>
+                        <span className="mt-1 block text-xs text-slate-600">
+                          Stock: {item.stock_available} | Categoría:{' '}
+                          {item.category || 'Sin categoría'}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
+                  No hay ítems disponibles que coincidan con la búsqueda.
+                </p>
+              )}
+            </div>
+
+            <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+              <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                <p className="font-medium">Ítems de {group.group_name}</p>
+                <p className="text-sm text-slate-500">Total: {selectedItems.length}</p>
+              </div>
+
+              {selectedItems.length > 0 ? (
+                <div className="space-y-3">
+                  {selectedItems.map(({ groupItem, item }, itemIndex) => {
+                    const totalRequestedForItem =
+                      totalsByItem.get(groupItem.item_id) ?? 0
+                    const exceedsStock = totalRequestedForItem > item.stock_available
+                    const assetCodes = formatAssetCodes(item.asset_codes)
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="rounded-lg border border-slate-200 bg-slate-50 p-4"
+                      >
+                        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_120px_auto] md:items-end">
+                          <div>
+                            <p className="font-medium text-slate-900">{item.name}</p>
+                            <p className="mt-1 text-xs text-slate-500">
+                              Código interno: {item.code}
+                              {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
+                            </p>
+                            <p className="mt-1 text-xs text-slate-600">
+                              Disponible: {item.stock_available} | Total solicitado:{' '}
+                              {totalRequestedForItem}
+                            </p>
+                          </div>
+
+                          <div>
+                            <label className="mb-1 block text-sm font-medium">
+                              Cantidad
+                            </label>
+                            <input
+                              type="number"
+                              value={groupItem.quantity}
+                              min={1}
+                              step={1}
+                              max={item.stock_available}
+                              onChange={(event) =>
+                                updateItemQuantity(
+                                  groupIndex,
+                                  item.id,
+                                  event.target.value
+                                )
+                              }
+                              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                            />
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => removeItem(groupIndex, item.id)}
+                            className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 transition hover:bg-red-100"
+                          >
+                            Quitar
+                          </button>
+                        </div>
+
+                        <input
+                          type="hidden"
+                          name={`groups[${groupIndex}][items][${itemIndex}][item_id]`}
+                          value={item.id}
+                        />
+                        <input
+                          type="hidden"
+                          name={`groups[${groupIndex}][items][${itemIndex}][quantity]`}
+                          value={groupItem.quantity}
+                        />
+
+                        {exceedsStock && (
+                          <p className="mt-2 text-sm text-red-600">
+                            La cantidad total solicitada supera el stock disponible.
+                          </p>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
+                  Busca un ítem y selecciónalo para agregarlo a este grupo.
+                </p>
+              )}
+            </div>
+          </div>
+        )
+      })}
 
       <button
         type="button"
@@ -434,11 +518,13 @@ export function RequestFormGroups({
       </button>
 
       <div className="rounded-xl border border-slate-200 bg-white p-4">
-        <p className="text-sm font-medium mb-2">Resumen de solicitud grupal</p>
-        {groups.some((group) => group.items.some((item) => item.item_id)) ? (
+        <p className="mb-2 text-sm font-medium">Resumen de solicitud grupal</p>
+        {groups.some((group) => group.items.length > 0) ? (
           <div className="space-y-3 text-sm">
             {groups.map((group, groupIndex) => {
-              const leader = students.find((student) => student.id === group.leader_student_id)
+              const leader = students.find(
+                (student) => student.id === group.leader_student_id
+              )
 
               return (
                 <div key={groupIndex}>
@@ -453,7 +539,8 @@ export function RequestFormGroups({
 
                       return (
                         <li key={itemIndex}>
-                          {item.name} [{item.code}] - Cantidad: {groupItem.quantity}
+                          {item.name} [{item.code}] - Cantidad:{' '}
+                          {groupItem.quantity}
                         </li>
                       )
                     })}
@@ -478,6 +565,12 @@ export function RequestFormGroups({
         >
           {isPending ? 'Enviando...' : 'Enviar solicitud con grupos'}
         </button>
+
+        {hasErrors && (
+          <p className="mt-2 text-sm text-slate-500">
+            Selecciona jefe de grupo, agrega al menos un ítem por grupo y verifica el stock disponible.
+          </p>
+        )}
 
         {state.error && (
           <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

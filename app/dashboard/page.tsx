@@ -301,13 +301,6 @@ export default async function DashboardPage({
             </p>
           </div>
 
-          <Link
-            href="/auth/change-password"
-            className="w-full rounded-lg bg-slate-800 px-4 py-2 text-center font-medium text-white transition hover:bg-slate-900 sm:w-auto"
-          >
-            Cambiar contraseña
-          </Link>
-
           <LinkGoogleButton className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 sm:w-auto" />
 
           <LogoutButton className="w-full rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700 sm:w-auto" />
