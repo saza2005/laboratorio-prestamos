@@ -43,7 +43,28 @@ function hasChartData(data: { value: number }[]) {
 }
 
 function ChartFrame({ children }: { children: React.ReactNode }) {
-  return <div className="h-80 min-h-80 overflow-x-auto"><div className="mx-auto w-[520px]">{children}</div></div>
+  return (
+    <div className="h-80 min-h-80 overflow-x-auto">
+      <div className="mx-auto w-[520px]">{children}</div>
+    </div>
+  )
+}
+
+function ChartPanel({
+  title,
+  children,
+  wide = false,
+}: {
+  title: string
+  children: React.ReactNode
+  wide?: boolean
+}) {
+  return (
+    <div className={`min-w-0 rounded-lg border border-slate-200 p-4 ${wide ? 'xl:col-span-2' : ''}`}>
+      <h3 className="mb-4 font-semibold">{title}</h3>
+      {children}
+    </div>
+  )
 }
 
 function EmptyChartState() {
@@ -64,9 +85,8 @@ export function DashboardCharts({
   const hasMaintenanceData = maintenanceData ? hasChartData(maintenanceData) : false
 
   return (
-    <div className="grid min-w-0 xl:grid-cols-2 gap-8 mb-8">
-      <div className="min-w-0 rounded-2xl bg-white shadow p-4 sm:p-6">
-        <h2 className="text-xl font-semibold mb-4">Préstamos por estado</h2>
+    <div className="grid min-w-0 gap-4 xl:grid-cols-2">
+      <ChartPanel title="Préstamos por estado">
         <ChartFrame>
           {hasLoanStatusData ? (
             <PieChart width={520} height={320}>
@@ -93,15 +113,11 @@ export function DashboardCharts({
             <EmptyChartState />
           )}
         </ChartFrame>
-      </div>
+      </ChartPanel>
 
-  {maintenanceData && (
-    <div className="min-w-0 rounded-2xl bg-white shadow p-4 sm:p-6 xl:col-span-2">
-      <h2 className="text-xl font-semibold mb-4">
-        Mantenimiento Preventivo vs Correctivo
-      </h2>
-
-      <ChartFrame>
+      {maintenanceData && (
+        <ChartPanel title="Mantenimiento preventivo vs correctivo" wide>
+          <ChartFrame>
         {hasMaintenanceData && maintenanceData ? (
           <PieChart width={520} height={320}>
               <Pie
@@ -127,12 +143,11 @@ export function DashboardCharts({
         ) : (
           <EmptyChartState />
         )}
-      </ChartFrame>
-    </div>
-  )}
+          </ChartFrame>
+        </ChartPanel>
+      )}
 
-      <div className="min-w-0 rounded-2xl bg-white shadow p-4 sm:p-6">
-        <h2 className="text-xl font-semibold mb-4">Movimientos por tipo</h2>
+      <ChartPanel title="Movimientos por tipo">
         <ChartFrame>
           {hasMovementTypeData ? (
             <BarChart width={520} height={320} data={movementTypeData}>
@@ -147,7 +162,7 @@ export function DashboardCharts({
             <EmptyChartState />
           )}
         </ChartFrame>
-      </div>
+      </ChartPanel>
     </div>
   )
 }
