@@ -1,0 +1,268 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import { formatDateTime } from '@/lib/format-date'
+
+type LoanItem = {
+  id: string
+  quantity: number
+  returned_quantity: number
+  damaged_quantity: number
+  missing_quantity: number
+  pending: number
+  item: {
+    id?: string
+    name?: string
+    code?: string
+  } | null
+}
+
+type LoanGroupItem = {
+  quantity: number
+  item: {
+    name?: string
+    code?: string
+  } | null
+}
+
+type LoanGroup = {
+  id: string
+  group_name: string
+  leader: {
+    full_name?: string
+  } | null
+  loan_group_items: LoanGroupItem[]
+}
+
+type LoanRow = {
+  id: string
+  status: string
+  delivery_date: string
+  expected_return_date: string | null
+  returned_at: string | null
+  loan_items: LoanItem[]
+  loan_groups: LoanGroup[]
+}
+
+type LoansListProps = {
+  loans: LoanRow[]
+}
+
+function formatLoanStatus(status: string) {
+  const labels: Record<string, string> = {
+    active: 'Activo',
+    returned: 'Devuelto',
+    partial_return: 'Devolución parcial',
+    overdue: 'Vencido',
+    cancelled: 'Cancelado',
+  }
+
+  return labels[status] ?? status
+}
+
+function loanStatusBadgeClass(status: string) {
+  const classes: Record<string, string> = {
+    active: 'bg-blue-100 text-blue-700',
+    returned: 'bg-green-100 text-green-700',
+    partial_return: 'bg-amber-100 text-amber-700',
+    overdue: 'bg-red-100 text-red-700',
+    cancelled: 'bg-slate-100 text-slate-700',
+  }
+
+  return classes[status] ?? 'bg-slate-100 text-slate-700'
+}
+
+function getLoanType(loan: LoanRow) {
+  return loan.loan_groups.length > 0 ? 'Grupal' : 'Individual'
+}
+
+function getItemCount(loan: LoanRow) {
+  if (loan.loan_groups.length > 0) {
+    return loan.loan_groups.reduce(
+      (total, group) => total + group.loan_group_items.length,
+      0
+    )
+  }
+
+  return loan.loan_items.length
+}
+
+function getPendingCount(loan: LoanRow) {
+  return loan.loan_items.reduce((total, item) => total + Math.max(0, item.pending), 0)
+}
+
+function getPreviewText(loan: LoanRow) {
+  if (loan.loan_groups.length > 0) {
+    return `${loan.loan_groups.length} grupo(s), ${getItemCount(loan)} ítem(s)`
+  }
+
+  const firstItem = loan.loan_items[0]?.item?.name
+  if (!firstItem) return `${getItemCount(loan)} ítem(s)`
+
+  return loan.loan_items.length > 1
+    ? `${firstItem} +${loan.loan_items.length - 1}`
+    : firstItem
+}
+
+export function LoansList({ loans }: LoansListProps) {
+  const [selectedLoanId, setSelectedLoanId] = useState(loans[0]?.id ?? '')
+
+  const selectedLoan = useMemo(() => {
+    return loans.find((loan) => loan.id === selectedLoanId) ?? loans[0] ?? null
+  }, [loans, selectedLoanId])
+
+  if (loans.length === 0) {
+    return <p className="text-slate-500">No tienes préstamos registrados.</p>
+  }
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="overflow-hidden rounded-lg border border-slate-200">
+        <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+          <span>Entrega</span>
+          <span>Tipo</span>
+          <span>Resumen</span>
+          <span>Pendiente</span>
+          <span>Estado</span>
+        </div>
+
+        <div className="divide-y divide-slate-200">
+          {loans.map((loan) => {
+            const selected = selectedLoan?.id === loan.id
+            const pendingCount = getPendingCount(loan)
+
+            return (
+              <button
+                key={loan.id}
+                type="button"
+                onClick={() => setSelectedLoanId(loan.id)}
+                className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[112px_116px_minmax(0,1fr)_120px_124px] md:items-center md:gap-3 ${
+                  selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                }`}
+              >
+                <span className="text-slate-500">
+                  {formatDateTime(loan.delivery_date)}
+                </span>
+                <span className="font-medium text-slate-800">
+                  {getLoanType(loan)}
+                </span>
+                <span className="min-w-0 text-slate-700 md:truncate">
+                  {getPreviewText(loan)}
+                </span>
+                <span className={pendingCount > 0 ? 'text-amber-700' : 'text-green-700'}>
+                  {pendingCount}
+                </span>
+                <span>
+                  <span
+                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${loanStatusBadgeClass(
+                      loan.status
+                    )}`}
+                  >
+                    {formatLoanStatus(loan.status)}
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <aside className="rounded-lg border border-slate-200 bg-white p-4 lg:sticky lg:top-4 lg:self-start">
+        {selectedLoan ? (
+          <div>
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm text-slate-500">
+                  Entregado: {formatDateTime(selectedLoan.delivery_date)}
+                </p>
+                <h3 className="mt-1 text-lg font-semibold">
+                  Préstamo {getLoanType(selectedLoan).toLowerCase()}
+                </h3>
+              </div>
+              <span
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
+                  selectedLoan.status
+                )}`}
+              >
+                {formatLoanStatus(selectedLoan.status)}
+              </span>
+            </div>
+
+            <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
+              <div>
+                <p className="font-medium text-slate-700">Devolución esperada</p>
+                <p className="mt-1 text-slate-600">
+                  {selectedLoan.expected_return_date || '-'}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium text-slate-700">Fecha de devolución</p>
+                <p className="mt-1 text-slate-600">
+                  {selectedLoan.returned_at ? formatDateTime(selectedLoan.returned_at) : '-'}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium text-slate-700">Ítems</p>
+                <p className="mt-1 text-slate-600">
+                  {getItemCount(selectedLoan)} registrado(s)
+                </p>
+              </div>
+              <div>
+                <p className="font-medium text-slate-700">Pendiente total</p>
+                <p className="mt-1 text-slate-600">{getPendingCount(selectedLoan)}</p>
+              </div>
+            </div>
+
+            <div className="mt-5 border-t border-slate-200 pt-4">
+              <p className="mb-3 font-medium">Detalle de materiales</p>
+
+              {selectedLoan.loan_groups.length > 0 ? (
+                <div className="space-y-3">
+                  {selectedLoan.loan_groups.map((group) => (
+                    <div key={group.id} className="rounded-lg bg-slate-50 p-3">
+                      <p className="text-sm font-medium">
+                        {group.group_name} - {group.leader?.full_name ?? 'Sin asignar'}
+                      </p>
+                      <ul className="mt-2 space-y-1 text-sm text-slate-600">
+                        {group.loan_group_items.map((groupItem, index) => (
+                          <li key={index}>
+                            {groupItem.item?.name ?? 'Ítem'} - {groupItem.quantity}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <ul className="space-y-2 text-sm text-slate-600">
+                  {selectedLoan.loan_items.map((loanItem) => (
+                    <li key={loanItem.id} className="rounded-lg bg-slate-50 px-3 py-2">
+                      <span className="font-medium text-slate-800">
+                        {loanItem.item?.name ?? 'Ítem'}
+                      </span>
+                      <span className="block text-xs text-slate-500">
+                        {loanItem.item?.code ?? '-'} | Cantidad: {loanItem.quantity}
+                      </span>
+                      <span className="mt-1 grid grid-cols-4 gap-2 text-xs text-slate-600">
+                        <span>Devuelto: {loanItem.returned_quantity}</span>
+                        <span>Dañado: {loanItem.damaged_quantity}</span>
+                        <span>Perdido: {loanItem.missing_quantity}</span>
+                        <span>Pendiente: {loanItem.pending}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {['active', 'partial_return', 'overdue'].includes(selectedLoan.status) && (
+              <p className="mt-4 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+                Debe entregar físicamente estos materiales al laboratorio para que el personal registre la devolución.
+              </p>
+            )}
+          </div>
+        ) : null}
+      </aside>
+    </div>
+  )
+}

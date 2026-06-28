@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useMemo, useState } from 'react'
+import { useActionState, useEffect, useMemo, useState } from 'react'
 import { createLoanWithState } from './actions'
 
 type Item = {
@@ -70,6 +70,7 @@ export function LoanForm({
   const [rows, setRows] = useState<LoanRow[]>([])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
+  const [addedItemName, setAddedItemName] = useState('')
 
   const itemMap = useMemo(
     () => new Map(items.map((item) => [item.id, item])),
@@ -163,6 +164,7 @@ export function LoanForm({
         quantity: 1,
       },
     ])
+    setAddedItemName(item.name)
     setItemSearch('')
   }
 
@@ -185,6 +187,13 @@ export function LoanForm({
 
   const canSubmit = Boolean(selectedUserId) && !hasErrors && !isPending
 
+  useEffect(() => {
+    if (!addedItemName) return
+
+    const timeout = window.setTimeout(() => setAddedItemName(''), 2200)
+    return () => window.clearTimeout(timeout)
+  }, [addedItemName])
+
   return (
     <form
       action={formAction}
@@ -195,6 +204,13 @@ export function LoanForm({
         }
       }}
     >
+      {addedItemName && (
+        <div className="fixed left-4 top-24 z-50 max-w-xs rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg">
+          <p className="font-medium">Ítem agregado en la parte inferior</p>
+          <p className="mt-1 truncate">{addedItemName}</p>
+        </div>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-1 block text-sm font-medium">Usuario</label>

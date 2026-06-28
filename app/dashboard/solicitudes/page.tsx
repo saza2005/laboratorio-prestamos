@@ -52,6 +52,7 @@ const { data: rawRequests, error } = await supabase
       id,
       quantity_requested,
       quantity_approved,
+      quantity_delivered,
       items (
         id,
         name,
@@ -118,6 +119,7 @@ const requests =
         id: ri.id,
         quantity_requested: ri.quantity_requested,
         quantity_approved: ri.quantity_approved,
+        quantity_delivered: ri.quantity_delivered,
         item: (() => {
           const item = firstOrNull(ri.items) as
             | {

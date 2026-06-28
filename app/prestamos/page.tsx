@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { LoanForm } from './loan-form'
+import { LoansList } from './loans-list'
 import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
-import { formatDateTime } from '@/lib/format-date'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
@@ -13,40 +13,6 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   }
 
   return value ?? null
-}
-
-function formatLoanStatus(status: string) {
-  switch (status) {
-    case 'active':
-      return 'Activo'
-    case 'returned':
-      return 'Devuelto'
-    case 'partial_return':
-      return 'Devolución parcial'
-    case 'overdue':
-      return 'Vencido'
-    case 'cancelled':
-      return 'Cancelado'
-    default:
-      return status
-  }
-}
-
-function loanStatusBadgeClass(status: string) {
-  switch (status) {
-    case 'active':
-      return 'bg-blue-100 text-blue-700'
-    case 'returned':
-      return 'bg-green-100 text-green-700'
-    case 'partial_return':
-      return 'bg-amber-100 text-amber-700'
-    case 'overdue':
-      return 'bg-red-100 text-red-700'
-    case 'cancelled':
-      return 'bg-slate-100 text-slate-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
 }
 
 export default async function PrestamosPage() {
@@ -321,173 +287,16 @@ export default async function PrestamosPage() {
           />
         </div>
 
-        <div className="rounded-2xl bg-white shadow overflow-hidden">
-          <div className="p-6 border-b">
+        <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
+          <div className="mb-4">
             <h2 className="text-xl font-semibold">Préstamos registrados</h2>
             <p className="mt-1 text-sm text-slate-500">
-              Mostrando los últimos 50 préstamos registrados
+              Selecciona un préstamo para revisar materiales, usuario, grupos y estado de devolución.
             </p>
           </div>
 
-          <div className="p-6 space-y-6">
-            {loans.length > 0 ? (
-              loans.map((loan) => (
-                <div
-                  key={loan.id}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
-                >
-                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        {loan.borrower_name}
-                      </h3>
-                      <p className="text-sm text-slate-600">
-                        {loan.borrower_email}
-                      </p>
-
-                      <div className="mt-3 grid gap-1 text-sm text-slate-700">
-                        <p>
-                          <span className="font-medium">Entrega:</span>{' '}
-                          {loan.delivery_date
-                            ? formatDateTime(loan.delivery_date)
-                            : '-'}
-                        </p>
-                        <p>
-                          <span className="font-medium">
-                            Devolución esperada:
-                          </span>{' '}
-                          {loan.expected_return_date || '-'}
-                        </p>
-                        <p>
-                          <span className="font-medium">Devuelto:</span>{' '}
-                          {loan.returned_at
-                            ? formatDateTime(loan.returned_at)
-                            : '-'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span
-                      className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
-                        loan.status
-                      )}`}
-                    >
-                      {formatLoanStatus(loan.status)}
-                    </span>
-                  </div>
-
-                  {loan.notes && (
-                    <p className="mt-3 text-sm text-slate-600">
-                      <span className="font-medium">Notas:</span> {loan.notes}
-                    </p>
-                  )}
-
-                  <div className="mt-5">
-                    <h4 className="font-semibold mb-3">Materiales prestados</h4>
-
-                    <div className="overflow-x-auto rounded-xl border">
-                      <table className="min-w-[840px] text-sm">
-                        <thead className="bg-slate-100 text-slate-700">
-                          <tr>
-                            <th className="text-left px-4 py-3">Ítem</th>
-                            <th className="text-left px-4 py-3">Código</th>
-                            <th className="text-left px-4 py-3">Unidad patrimonial</th>
-                            <th className="text-left px-4 py-3">Cantidad</th>
-                            <th className="text-left px-4 py-3">Devuelto</th>
-                            <th className="text-left px-4 py-3">Dañado</th>
-                            <th className="text-left px-4 py-3">Faltante</th>
-                            <th className="text-left px-4 py-3">Pendiente</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {loan.loan_items.length > 0 ? (
-                            loan.loan_items.map((li) => (
-                              <tr key={li.id} className="border-t">
-                                <td className="px-4 py-3">
-                                  {li.item?.name ?? '-'}
-                                </td>
-                                <td className="px-4 py-3">
-                                  {li.item?.code ?? '-'}
-                                </td>
-                                <td className="px-4 py-3">
-                                  {li.unit?.asset_code || li.unit?.serial_code || '-'}
-                                </td>
-                                <td className="px-4 py-3">{li.quantity}</td>
-                                <td className="px-4 py-3">
-                                  {li.returned_quantity}
-                                </td>
-                                <td className="px-4 py-3">
-                                  {li.damaged_quantity}
-                                </td>
-                                <td className="px-4 py-3">
-                                  {li.missing_quantity}
-                                </td>
-                                <td className="px-4 py-3 font-medium">
-                                  {li.pending}
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td
-                                colSpan={8}
-                                className="px-4 py-6 text-center text-slate-500"
-                              >
-                                No hay materiales registrados para este préstamo.
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {loan.loan_groups.length > 0 && (
-                    <div className="mt-5">
-                      <h4 className="font-semibold mb-3">
-                        Distribución por grupos
-                      </h4>
-
-                      <div className="space-y-3">
-                        {loan.loan_groups.map((group) => (
-                          <div
-                            key={group.id}
-                            className="rounded-xl border bg-slate-50 p-4"
-                          >
-                            <div className="mb-3">
-                              <p className="font-medium">
-                                {group.group_name}
-                              </p>
-                              <p className="text-sm text-slate-600">
-                                Jefe de grupo: {group.leader_name}
-                              </p>
-                              <p className="text-xs text-slate-500">
-                                {group.leader_email}
-                              </p>
-                            </div>
-
-                            <ul className="space-y-1 text-sm">
-                              {group.loan_group_items.map((gi) => (
-                                <li key={gi.id}>
-                                  {gi.item?.name ?? 'Ítem'} [
-                                  {gi.item?.code ?? '-'}] — {gi.quantity}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p className="text-slate-500">
-                No hay préstamos registrados todavía.
-              </p>
-            )}
-          </div>
-        </div>
+          <LoansList loans={loans} />
+        </section>
       </div>
     </main>
   )

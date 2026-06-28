@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useMemo, useState, useSyncExternalStore } from 'react'
+import { useActionState, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -66,6 +66,7 @@ export function RequestFormGroups({
     error: null,
   })
   const [groups, setGroups] = useState<Group[]>([makeGroup(0)])
+  const [addedItemMessage, setAddedItemMessage] = useState('')
   const mounted = useSyncExternalStore(
     subscribeToHydration,
     () => true,
@@ -125,6 +126,16 @@ export function RequestFormGroups({
       })
     })
 
+  useEffect(() => {
+    if (!addedItemMessage) return
+
+    const timeout = window.setTimeout(() => {
+      setAddedItemMessage('')
+    }, 2600)
+
+    return () => window.clearTimeout(timeout)
+  }, [addedItemMessage])
+
   function getFilteredItems(group: Group) {
     const query = normalize(group.search)
     const selectedIds = group.items.map((item) => item.item_id)
@@ -177,20 +188,24 @@ export function RequestFormGroups({
   }
 
   function addItem(groupIndex: number, item: ItemOption) {
-    setGroups((prev) =>
-      prev.map((group, currentIndex) => {
-        if (currentIndex !== groupIndex) return group
-        if (group.items.some((groupItem) => groupItem.item_id === item.id)) {
-          return group
-        }
+    const group = groups[groupIndex]
 
-        return {
-          ...group,
-          search: '',
-          items: [...group.items, { item_id: item.id, quantity: 1 }],
-        }
-      })
+    if (!group || group.items.some((groupItem) => groupItem.item_id === item.id)) {
+      return
+    }
+
+    setGroups((prev) =>
+      prev.map((currentGroup, currentIndex) =>
+        currentIndex === groupIndex
+          ? {
+              ...currentGroup,
+              search: '',
+              items: [...currentGroup.items, { item_id: item.id, quantity: 1 }],
+            }
+          : currentGroup
+      )
     )
+    setAddedItemMessage(`${item.name} agregado a ${group.group_name}`)
   }
 
   function updateItemQuantity(
@@ -239,6 +254,12 @@ export function RequestFormGroups({
 
   return (
     <form action={formAction} className="space-y-6">
+      {addedItemMessage && (
+        <div className="fixed left-4 top-24 z-50 max-w-[calc(100vw-2rem)] rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg sm:max-w-sm" role="status" aria-live="polite">
+          <p className="font-medium">Ítem agregado en la parte inferior</p>
+          <p className="mt-1 truncate">{addedItemMessage}</p>
+        </div>
+      )}
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-1 block text-sm font-medium">Propósito</label>

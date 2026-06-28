@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useMemo, useState, useSyncExternalStore } from 'react'
+import { useActionState, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -46,6 +46,7 @@ export function RequestForm({
   const [rows, setRows] = useState<RequestRow[]>([])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
+  const [addedItemName, setAddedItemName] = useState('')
   const mounted = useSyncExternalStore(
     subscribeToHydration,
     () => true,
@@ -105,6 +106,16 @@ export function RequestForm({
       )
     })
 
+  useEffect(() => {
+    if (!addedItemName) return
+
+    const timeout = window.setTimeout(() => {
+      setAddedItemName('')
+    }, 2600)
+
+    return () => window.clearTimeout(timeout)
+  }, [addedItemName])
+
   function addItem(item: ItemOption) {
     if (selectedIds.includes(item.id) || item.stock_available < 1) return
 
@@ -113,6 +124,7 @@ export function RequestForm({
       { item_id: item.id, quantity_requested: 1 },
     ])
     setItemSearch('')
+    setAddedItemName(item.name)
   }
 
   function updateQuantity(itemId: string, value: string) {
@@ -136,6 +148,12 @@ export function RequestForm({
 
   return (
     <form action={formAction} className="grid gap-4 md:grid-cols-2">
+      {addedItemName && (
+        <div className="fixed left-4 top-24 z-50 max-w-[calc(100vw-2rem)] rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg sm:max-w-sm" role="status" aria-live="polite">
+          <p className="font-medium">Ítem agregado en la parte inferior</p>
+          <p className="mt-1 truncate">{addedItemName}</p>
+        </div>
+      )}
       <div>
         <label className="mb-1 block text-sm font-medium">Propósito</label>
         <input

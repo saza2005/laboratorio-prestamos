@@ -94,6 +94,31 @@ async function persistDeliverRequest(formData: FormData): Promise<void> {
     }
   })
 
+  const deliveryItemIds = formData
+    .getAll('delivery_item_id')
+    .map((value) => String(value || '').trim())
+  const deliveryItemItemIds = formData
+    .getAll('delivery_item_item_id')
+    .map((value) => String(value || '').trim())
+  const deliveryQuantities = formData
+    .getAll('delivery_item_quantity')
+    .map((value) => parseNonNegativeInt(value))
+
+  if (
+    deliveryItemIds.length !== deliveryItemItemIds.length ||
+    deliveryItemIds.length !== deliveryQuantities.length
+  ) {
+    throw new Error('Las cantidades de entrega enviadas no son válidas.')
+  }
+
+  const items = deliveryItemItemIds
+    .map((itemId, index) => ({
+      request_item_id: deliveryItemIds[index] || null,
+      item_id: itemId,
+      quantity: deliveryQuantities[index] ?? 0,
+    }))
+    .filter((item) => item.item_id && item.quantity > 0)
+
   if (units.some((unit) => !unit.item_id || !unit.item_unit_id)) {
     throw new Error('Una de las unidades patrimoniales seleccionadas no es válida.')
   }
@@ -102,9 +127,14 @@ async function persistDeliverRequest(formData: FormData): Promise<void> {
     throw new Error('Solicitud inválida.')
   }
 
+  if (items.length === 0) {
+    throw new Error('Debe entregar al menos un material con stock disponible.')
+  }
+
   const { error } = await supabase.rpc('deliver_approved_request_with_units', {
     p_request_id: requestId,
     p_units: units,
+    p_items: items,
     p_delivered_by: user.id,
     p_notes: notes || null,
   })

@@ -8,6 +8,7 @@ type StaffRequestItem = {
   id: string
   quantity_requested: number
   quantity_approved: number
+  quantity_delivered: number
   item: {
     id?: string
     name?: string
@@ -15,6 +16,24 @@ type StaffRequestItem = {
     stock_available?: number
     asset_codes?: string[]
   } | null
+}
+
+type StaffRequestGroup = {
+  id: string
+  group_name: string
+  leader: {
+    full_name?: string
+  } | null
+  request_group_items: Array<{
+    quantity: number
+    item: {
+      id?: string
+      name?: string
+      code?: string
+      stock_available?: number
+      track_individual?: boolean
+    } | null
+  }>
 }
 
 type StaffRequestRow = {
@@ -36,6 +55,7 @@ type StaffRequestRow = {
     expected_return_date?: string
   } | null
   request_items: StaffRequestItem[]
+  request_groups: StaffRequestGroup[]
   actions: React.ReactNode
 }
 
@@ -75,14 +95,47 @@ function statusBadgeClass(status: string) {
       return 'bg-red-100 text-red-700'
     case 'delivered':
       return 'bg-green-100 text-green-700'
+    case 'partial_return':
+      return 'bg-orange-100 text-orange-700'
+    case 'cancelled':
+      return 'bg-slate-100 text-slate-700'
     default:
       return 'bg-slate-100 text-slate-700'
   }
 }
 
+function getRequestType(req: StaffRequestRow) {
+  return req.request_groups.length > 0 ? 'Grupal' : 'Individual'
+}
+
+function getItemCount(req: StaffRequestRow) {
+  if (req.request_groups.length > 0) {
+    return req.request_groups.reduce(
+      (total, group) => total + group.request_group_items.length,
+      0
+    )
+  }
+
+  return req.request_items.length
+}
+
+function getPreviewText(req: StaffRequestRow) {
+  if (req.request_groups.length > 0) {
+    return `${req.request_groups.length} grupo(s), ${getItemCount(req)} ítem(s)`
+  }
+
+  const firstItem = req.request_items[0]?.item?.name
+  if (!firstItem) return `${getItemCount(req)} ítem(s)`
+
+  return req.request_items.length > 1
+    ? `${firstItem} +${req.request_items.length - 1}`
+    : firstItem
+}
+
 export function RequestsTable({ requests, limit }: RequestsTableProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [selectedRequestId, setSelectedRequestId] = useState(requests[0]?.id ?? '')
 
   const filteredRequests = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -96,13 +149,20 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
       const requesterEmail = req.requester?.email?.toLowerCase() ?? ''
       const purpose = req.purpose?.toLowerCase() ?? ''
       const comments = req.comments?.toLowerCase() ?? ''
-      const itemsText = req.request_items
-        .map((ri) =>
+      const itemsText = [
+        ...req.request_items.map((ri) =>
           `${ri.item?.name ?? ''} ${ri.item?.code ?? ''} ${
             ri.item?.asset_codes?.join(' ') ?? ''
-          }`.toLowerCase()
-        )
+          }`
+        ),
+        ...req.request_groups.flatMap((group) =>
+          group.request_group_items.map((gi) =>
+            `${gi.item?.name ?? ''} ${gi.item?.code ?? ''}`
+          )
+        ),
+      ]
         .join(' ')
+        .toLowerCase()
 
       const matchesSearch =
         !term ||
@@ -116,10 +176,15 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
     })
   }, [requests, search, statusFilter])
 
+  const selectedRequest =
+    filteredRequests.find((req) => req.id === selectedRequestId) ??
+    filteredRequests[0] ??
+    null
+
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-white shadow p-4 sm:p-6">
-        <div className="grid md:grid-cols-3 gap-3">
+      <div className="rounded-2xl bg-white p-4 shadow sm:p-6">
+        <div className="grid gap-3 md:grid-cols-3">
           <input
             type="text"
             placeholder="Buscar por solicitante, correo, propósito, ítem o código patrimonial"
@@ -150,150 +215,193 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {filteredRequests.length > 0 ? (
-          filteredRequests.map((req) => (
-            <div
-              key={req.id}
-              className="rounded-2xl bg-white shadow p-4 space-y-4 sm:p-6"
-            >
-              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p className="text-sm text-slate-500">
-                    {formatDateTime(req.requested_at)}
-                  </p>
-                  <p className="font-semibold">
-                    Solicitante: {req.requester?.full_name ?? 'Sin nombre'}
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    {req.requester?.email ?? '-'}
-                  </p>
+      {filteredRequests.length > 0 ? (
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_440px]">
+          <div className="overflow-hidden rounded-2xl bg-white shadow">
+            <div className="hidden grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <span>Fecha</span>
+              <span>Solicitante</span>
+              <span>Tipo</span>
+              <span>Resumen</span>
+              <span>Estado</span>
+            </div>
+
+            <div className="divide-y divide-slate-200">
+              {filteredRequests.map((req) => {
+                const selected = selectedRequest?.id === req.id
+
+                return (
+                  <button
+                    key={req.id}
+                    type="button"
+                    onClick={() => setSelectedRequestId(req.id)}
+                    className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_124px] md:items-center md:gap-3 ${
+                      selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="text-slate-500">
+                      {formatDateTime(req.requested_at)}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium text-slate-800">
+                        {req.requester?.full_name ?? 'Sin nombre'}
+                      </span>
+                      <span className="block truncate text-xs text-slate-500">
+                        {req.requester?.email ?? '-'}
+                      </span>
+                    </span>
+                    <span className="font-medium text-slate-700">
+                      {getRequestType(req)}
+                    </span>
+                    <span className="min-w-0 truncate text-slate-700">
+                      {req.purpose || getPreviewText(req)}
+                    </span>
+                    <span>
+                      <span
+                        className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass(
+                          req.status
+                        )}`}
+                      >
+                        {formatRequestStatus(req.status)}
+                      </span>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <aside className="rounded-2xl bg-white p-4 shadow xl:sticky xl:top-4 xl:self-start sm:p-5">
+            {selectedRequest ? (
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm text-slate-500">
+                      {formatDateTime(selectedRequest.requested_at)}
+                    </p>
+                    <h3 className="mt-1 text-lg font-semibold">
+                      {selectedRequest.requester?.full_name ?? 'Sin nombre'}
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      {selectedRequest.requester?.email ?? '-'}
+                    </p>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
+                      selectedRequest.status
+                    )}`}
+                  >
+                    {formatRequestStatus(selectedRequest.status)}
+                  </span>
                 </div>
 
-                <span
-                  className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
-                    req.status
-                  )}`}
-                >
-                  {formatRequestStatus(req.status)}
-                </span>
-              </div>
-
-              {req.purpose && (
-                <p className="text-sm">
-                  <span className="font-medium">Propósito:</span> {req.purpose}
-                </p>
-              )}
-
-              {req.comments && (
-                <p className="text-sm">
-                  <span className="font-medium">Comentarios:</span> {req.comments}
-                </p>
-              )}
-
-              {req.scheduled_return_date && (
-                <p className="text-sm">
-                  <span className="font-medium">Devolución estimada:</span>{' '}
-                  {req.scheduled_return_date}
-                </p>
-              )}
-
-              {req.status === 'rejected' && req.rejection_reason && (
-                <p className="text-sm text-red-700">
-                  <span className="font-medium">Motivo de rechazo:</span>{' '}
-                  {req.rejection_reason}
-                </p>
-              )}
-
-                {req.loan && (
-                <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
-                    <p className="font-medium text-green-800">Préstamo generado</p>
-                    <p className="text-green-700">
-                    ID: {req.loan.id ?? '-'}
+                <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-1">
+                  <div>
+                    <p className="font-medium text-slate-700">Tipo</p>
+                    <p className="mt-1 text-slate-600">{getRequestType(selectedRequest)}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-700">Devolución estimada</p>
+                    <p className="mt-1 text-slate-600">
+                      {selectedRequest.scheduled_return_date || '-'}
                     </p>
-                    <p className="text-green-700">
-                    Estado del préstamo: {req.loan.status ?? '-'}
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-700">Propósito</p>
+                    <p className="mt-1 text-slate-600">
+                      {selectedRequest.purpose || '-'}
                     </p>
-                    <p className="text-green-700">
-                    Fecha de entrega:{' '}
-                    {req.loan.delivery_date
-                        ? formatDateTime(req.loan.delivery_date)
-                        : '-'}
-                    </p>
-
-                    <div className="mt-3">
-                    <Link
-                        href="/prestamos"
-                        className="inline-block rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700 transition"
-                    >
-                        Ver préstamos
-                    </Link>
+                  </div>
+                  {selectedRequest.comments && (
+                    <div>
+                      <p className="font-medium text-slate-700">Comentarios</p>
+                      <p className="mt-1 text-slate-600">{selectedRequest.comments}</p>
                     </div>
+                  )}
                 </div>
+
+                {selectedRequest.status === 'rejected' && selectedRequest.rejection_reason && (
+                  <p className="rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    <span className="font-medium">Motivo de rechazo:</span>{' '}
+                    {selectedRequest.rejection_reason}
+                  </p>
                 )}
 
-              <div className="space-y-2 md:hidden">
-                {req.request_items.map((requestItem) => (
-                  <div key={requestItem.id} className="rounded-lg border bg-slate-50 p-3 text-sm">
-                    <p className="font-medium">
-                      {requestItem.item?.name ?? '-'} [{requestItem.item?.code ?? '-'}]
+                {selectedRequest.loan && (
+                  <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
+                    <p className="font-medium text-green-800">Préstamo generado</p>
+                    <p className="text-green-700">ID: {selectedRequest.loan.id ?? '-'}</p>
+                    <p className="text-green-700">
+                      Estado del préstamo: {selectedRequest.loan.status ?? '-'}
                     </p>
-                    <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-                      <p>
-                        <span className="block text-xs text-slate-500">Solicitado</span>
-                        {requestItem.quantity_requested}
-                      </p>
-                      <p>
-                        <span className="block text-xs text-slate-500">Aprobado</span>
-                        {requestItem.quantity_approved}
-                      </p>
-                      <p>
-                        <span className="block text-xs text-slate-500">Disponible</span>
-                        {requestItem.item?.stock_available ?? 0}
-                      </p>
-                    </div>
+                    <p className="text-green-700">
+                      Fecha de entrega:{' '}
+                      {selectedRequest.loan.delivery_date
+                        ? formatDateTime(selectedRequest.loan.delivery_date)
+                        : '-'}
+                    </p>
+                    <Link
+                      href="/prestamos"
+                      className="mt-3 inline-block rounded-lg bg-green-600 px-4 py-2 text-white transition hover:bg-green-700"
+                    >
+                      Ver préstamos
+                    </Link>
                   </div>
-                ))}
-              </div>
+                )}
 
-              <div className="hidden overflow-x-auto md:block">
-                <table className="min-w-[680px] text-sm">
-                  <thead className="bg-slate-100 text-slate-700">
-                    <tr>
-                      <th className="text-left px-4 py-3">Ítem</th>
-                      <th className="text-left px-4 py-3">Código</th>
-                      <th className="text-left px-4 py-3">Solicitado</th>
-                      <th className="text-left px-4 py-3">Aprobado</th>
-                      <th className="text-left px-4 py-3">Disponible</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {req.request_items.map((ri) => (
-                      <tr key={ri.id} className="border-t">
-                        <td className="px-4 py-3">{ri.item?.name ?? '-'}</td>
-                        <td className="px-4 py-3">{ri.item?.code ?? '-'}</td>
-                        <td className="px-4 py-3">{ri.quantity_requested}</td>
-                        <td className="px-4 py-3">{ri.quantity_approved}</td>
-                        <td className="px-4 py-3">
-                          {ri.item?.stock_available ?? 0}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                <div className="border-t border-slate-200 pt-4">
+                  <p className="mb-3 font-medium">Materiales solicitados</p>
 
-              {req.actions}
-            </div>
-          ))
-        ) : (
-          <div className="rounded-2xl bg-white shadow p-6">
-            <p className="text-slate-500">
-              No hay solicitudes que coincidan con los filtros.
-            </p>
-          </div>
-        )}
-      </div>
+                  {selectedRequest.request_groups.length > 0 ? (
+                    <div className="space-y-3">
+                      {selectedRequest.request_groups.map((group) => (
+                        <div key={group.id} className="rounded-lg bg-slate-50 p-3">
+                          <p className="text-sm font-medium">
+                            {group.group_name} - {group.leader?.full_name ?? 'Sin asignar'}
+                          </p>
+                          <ul className="mt-2 space-y-1 text-sm text-slate-600">
+                            {group.request_group_items.map((groupItem, index) => (
+                              <li key={index}>
+                                {groupItem.item?.name ?? 'Ítem'} [{groupItem.item?.code ?? '-'}] - {groupItem.quantity}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <ul className="space-y-2 text-sm text-slate-600">
+                      {selectedRequest.request_items.map((requestItem) => (
+                        <li key={requestItem.id} className="rounded-lg bg-slate-50 px-3 py-2">
+                          <span className="font-medium text-slate-800">
+                            {requestItem.item?.name ?? 'Ítem'}
+                          </span>
+                          <span className="block text-xs text-slate-500">
+                            {requestItem.item?.code ?? '-'} | Disponible: {requestItem.item?.stock_available ?? 0}
+                          </span>
+                          <span className="mt-1 grid grid-cols-3 gap-2 text-xs">
+                            <span>Solicitado: {requestItem.quantity_requested}</span>
+                            <span>Aprobado: {requestItem.quantity_approved}</span>
+                            <span>Entregado: {requestItem.quantity_delivered}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                {selectedRequest.actions}
+              </div>
+            ) : null}
+          </aside>
+        </div>
+      ) : (
+        <div className="rounded-2xl bg-white p-6 shadow">
+          <p className="text-slate-500">
+            No hay solicitudes que coincidan con los filtros.
+          </p>
+        </div>
+      )}
     </div>
   )
 }
