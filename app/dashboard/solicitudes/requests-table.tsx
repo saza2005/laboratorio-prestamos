@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 
 type StaffRequestItem = {
@@ -135,7 +136,7 @@ function getPreviewText(req: StaffRequestRow) {
 export function RequestsTable({ requests, limit }: RequestsTableProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
-  const [selectedRequestId, setSelectedRequestId] = useState(requests[0]?.id ?? '')
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
   const filteredRequests = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -176,10 +177,18 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
     })
   }, [requests, search, statusFilter])
 
-  const selectedRequest =
-    filteredRequests.find((req) => req.id === selectedRequestId) ??
-    filteredRequests[0] ??
-    null
+  const selectedRequest = selectedRequestId
+    ? filteredRequests.find((req) => req.id === selectedRequestId) ?? null
+    : null
+
+
+  function openRequest(requestId: string) {
+    setSelectedRequestId(requestId)
+  }
+
+  function closeRequest() {
+    setSelectedRequestId(null)
+  }
 
   return (
     <div className="space-y-4">
@@ -216,7 +225,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
       </div>
 
       {filteredRequests.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_440px]">
+        <>
           <div className="overflow-hidden rounded-2xl bg-white shadow">
             <div className="hidden grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Fecha</span>
@@ -234,7 +243,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                   <button
                     key={req.id}
                     type="button"
-                    onClick={() => setSelectedRequestId(req.id)}
+                    onClick={() => openRequest(req.id)}
                     className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_124px] md:items-center md:gap-3 ${
                       selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
                     }`}
@@ -271,11 +280,11 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
             </div>
           </div>
 
-          <aside className="rounded-2xl bg-white p-4 shadow xl:sticky xl:top-4 xl:self-start sm:p-5">
-            {selectedRequest ? (
+          <DetailDrawer isOpen={Boolean(selectedRequest)} onClose={closeRequest}>
+            {selectedRequest && (
               <div className="space-y-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
                     <p className="text-sm text-slate-500">
                       {formatDateTime(selectedRequest.requested_at)}
                     </p>
@@ -285,17 +294,26 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                     <p className="text-sm text-slate-600">
                       {selectedRequest.requester?.email ?? '-'}
                     </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
+                          selectedRequest.status
+                        )}`}
+                      >
+                        {formatRequestStatus(selectedRequest.status)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={closeRequest}
+                        className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                      >
+                        Cerrar
+                      </button>
+                    </div>
                   </div>
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
-                      selectedRequest.status
-                    )}`}
-                  >
-                    {formatRequestStatus(selectedRequest.status)}
-                  </span>
-                </div>
 
-                <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-1">
+                  <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <p className="font-medium text-slate-700">Tipo</p>
                     <p className="mt-1 text-slate-600">{getRequestType(selectedRequest)}</p>
@@ -320,14 +338,14 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                   )}
                 </div>
 
-                {selectedRequest.status === 'rejected' && selectedRequest.rejection_reason && (
+                  {selectedRequest.status === 'rejected' && selectedRequest.rejection_reason && (
                   <p className="rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
                     <span className="font-medium">Motivo de rechazo:</span>{' '}
                     {selectedRequest.rejection_reason}
                   </p>
                 )}
 
-                {selectedRequest.loan && (
+                  {selectedRequest.loan && (
                   <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
                     <p className="font-medium text-green-800">Préstamo generado</p>
                     <p className="text-green-700">ID: {selectedRequest.loan.id ?? '-'}</p>
@@ -349,7 +367,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                   </div>
                 )}
 
-                <div className="border-t border-slate-200 pt-4">
+                  <div className="border-t border-slate-200 pt-4">
                   <p className="mb-3 font-medium">Materiales solicitados</p>
 
                   {selectedRequest.request_groups.length > 0 ? (
@@ -390,11 +408,13 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                   )}
                 </div>
 
-                {selectedRequest.actions}
+                  <div className="border-t border-slate-200 pt-4">
+                    {selectedRequest.actions}
+                  </div>
               </div>
-            ) : null}
-          </aside>
-        </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <div className="rounded-2xl bg-white p-6 shadow">
           <p className="text-slate-500">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 
 type InventoryUnit = {
   id: string
@@ -58,6 +59,7 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
   const [condition, setCondition] = useState('')
   const [availability, setAvailability] = useState('')
   const [page, setPage] = useState(1)
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null)
 
   const filteredUnits = useMemo(() => {
     const query = normalize(search)
@@ -86,9 +88,13 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   )
+  const selectedUnit = selectedUnitId
+    ? filteredUnits.find((unit) => unit.id === selectedUnitId) ?? null
+    : null
 
   function resetPage() {
     setPage(1)
+    setSelectedUnitId(null)
   }
 
   return (
@@ -146,7 +152,7 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
       </div>
 
       {pageUnits.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
+        <>
           <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="hidden grid-cols-[minmax(0,1.2fr)_132px_132px_minmax(0,1fr)_118px_132px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Equipo</span>
@@ -162,11 +168,10 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                 <button
                   key={unit.id}
                   type="button"
-                  className="grid w-full gap-2 bg-white px-4 py-3 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[minmax(0,1.2fr)_132px_132px_minmax(0,1fr)_118px_132px] md:items-center md:gap-3"
-                  onClick={() => {
-                    const element = document.getElementById(`unit-detail-${unit.id}`)
-                    element?.scrollIntoView({ block: 'nearest' })
-                  }}
+                  className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[minmax(0,1.2fr)_132px_132px_minmax(0,1fr)_118px_132px] md:items-center md:gap-3 ${
+                    selectedUnit?.id === unit.id ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                  }`}
+                  onClick={() => setSelectedUnitId(unit.id)}
                 >
                   <span className="min-w-0">
                     <span className="block truncate font-medium text-slate-800">{unit.item_name}</span>
@@ -188,37 +193,58 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
-            <p className="mb-3 text-sm font-medium text-slate-700">Detalle de unidad</p>
-            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
-              {pageUnits.map((unit) => (
-                <div
-                  key={unit.id}
-                  id={`unit-detail-${unit.id}`}
-                  className="rounded-lg bg-slate-50 p-3 text-sm"
-                >
+          <DetailDrawer isOpen={Boolean(selectedUnit)} onClose={() => setSelectedUnitId(null)}>
+            {selectedUnit && (
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-semibold text-slate-900">{unit.item_name}</p>
-                    <p className="text-xs text-slate-500">{unit.item_code}</p>
+                    <p className="text-sm text-slate-500">{selectedUnit.item_code}</p>
+                    <h3 className="mt-1 text-lg font-semibold text-slate-900">
+                      {selectedUnit.item_name}
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      {[selectedUnit.brand, selectedUnit.model].filter(Boolean).join(' / ') || '-'}
+                    </p>
                   </div>
-                  <div className="mt-3 grid grid-cols-2 gap-2 text-center">
-                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Condición</span>{formatCondition(unit.condition)}</p>
-                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Disponibilidad</span>{formatAvailability(unit.availability_status)}</p>
-                  </div>
-                  <div className="mt-3 space-y-1 text-slate-600">
-                    <p><span className="font-medium text-slate-700">Patrimonial:</span> {unit.asset_code || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Código anterior:</span> {unit.old_code || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Serie:</span> {unit.serial_code || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Marca:</span> {unit.brand || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Modelo:</span> {unit.model || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Ingreso:</span> {unit.entry_date || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Asignación:</span> {unit.assignment_date || '-'}</p>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedUnitId(null)}
+                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    Cerrar
+                  </button>
                 </div>
-              ))}
-            </div>
-          </aside>
-        </div>
+
+                <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Condición</span>
+                    <span className="font-semibold">{formatCondition(selectedUnit.condition)}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Disponibilidad</span>
+                    <span className="font-semibold">{formatAvailability(selectedUnit.availability_status)}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Patrimonial</span>
+                    <span className="font-semibold">{selectedUnit.asset_code || '-'}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Serie</span>
+                    <span className="font-semibold">{selectedUnit.serial_code || '-'}</span>
+                  </p>
+                </div>
+
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
+                  <p><span className="font-medium text-slate-700">Código anterior:</span> {selectedUnit.old_code || '-'}</p>
+                  <p><span className="font-medium text-slate-700">Marca:</span> {selectedUnit.brand || '-'}</p>
+                  <p><span className="font-medium text-slate-700">Modelo:</span> {selectedUnit.model || '-'}</p>
+                  <p><span className="font-medium text-slate-700">Ingreso:</span> {selectedUnit.entry_date || '-'}</p>
+                  <p><span className="font-medium text-slate-700">Asignación:</span> {selectedUnit.assignment_date || '-'}</p>
+                </div>
+              </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
           No hay unidades que coincidan con los filtros.

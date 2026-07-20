@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 
 type LoanItem = {
@@ -105,10 +106,11 @@ function getPreviewText(loan: LoanRow) {
 }
 
 export function LoansList({ loans }: LoansListProps) {
-  const [selectedLoanId, setSelectedLoanId] = useState(loans[0]?.id ?? '')
+  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null)
 
   const selectedLoan = useMemo(() => {
-    return loans.find((loan) => loan.id === selectedLoanId) ?? loans[0] ?? null
+    if (!selectedLoanId) return null
+    return loans.find((loan) => loan.id === selectedLoanId) ?? null
   }, [loans, selectedLoanId])
 
   if (loans.length === 0) {
@@ -116,7 +118,7 @@ export function LoansList({ loans }: LoansListProps) {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="space-y-4">
       <div className="overflow-hidden rounded-lg border border-slate-200">
         <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
           <span>Entrega</span>
@@ -167,8 +169,8 @@ export function LoansList({ loans }: LoansListProps) {
         </div>
       </div>
 
-      <aside className="rounded-lg border border-slate-200 bg-white p-4 lg:sticky lg:top-4 lg:self-start">
-        {selectedLoan ? (
+      <DetailDrawer isOpen={Boolean(selectedLoan)} onClose={() => setSelectedLoanId(null)}>
+        {selectedLoan && (
           <div>
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
@@ -179,16 +181,25 @@ export function LoansList({ loans }: LoansListProps) {
                   Préstamo {getLoanType(selectedLoan).toLowerCase()}
                 </h3>
               </div>
-              <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
-                  selectedLoan.status
-                )}`}
-              >
-                {formatLoanStatus(selectedLoan.status)}
-              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
+                    selectedLoan.status
+                  )}`}
+                >
+                  {formatLoanStatus(selectedLoan.status)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedLoanId(null)}
+                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
 
-            <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
+            <div className="grid gap-3 text-sm sm:grid-cols-2">
               <div>
                 <p className="font-medium text-slate-700">Devolución esperada</p>
                 <p className="mt-1 text-slate-600">
@@ -261,8 +272,8 @@ export function LoansList({ loans }: LoansListProps) {
               </p>
             )}
           </div>
-        ) : null}
-      </aside>
+        )}
+      </DetailDrawer>
     </div>
   )
 }

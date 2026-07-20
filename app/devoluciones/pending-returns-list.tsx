@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 
 type PendingLoanItem = {
@@ -109,7 +110,7 @@ function getMatchingGroups(item: PendingLoanItem) {
 export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
-  const [selectedId, setSelectedId] = useState(loanItems[0]?.id ?? '')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filteredItems = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -139,8 +140,13 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
     })
   }, [loanItems, search, statusFilter])
 
-  const selectedItem =
-    filteredItems.find((item) => item.id === selectedId) ?? filteredItems[0] ?? null
+  const selectedItem = selectedId
+    ? filteredItems.find((item) => item.id === selectedId) ?? null
+    : null
+
+  function closeItem() {
+    setSelectedId(null)
+  }
 
   return (
     <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
@@ -173,7 +179,7 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
       </div>
 
       {filteredItems.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
+        <>
           <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="hidden grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_120px_92px_132px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Usuario</span>
@@ -229,8 +235,8 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
-            {selectedItem ? (
+          <DetailDrawer isOpen={Boolean(selectedItem)} onClose={closeItem}>
+            {selectedItem && (
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -241,16 +247,25 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
                       {selectedItem.items?.code ?? '-'} | Unidad: {getUnitCode(selectedItem)}
                     </p>
                   </div>
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
-                      selectedItem.loans?.status
-                    )}`}
-                  >
-                    {formatLoanStatus(selectedItem.loans?.status)}
-                  </span>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
+                        selectedItem.loans?.status
+                      )}`}
+                    >
+                      {formatLoanStatus(selectedItem.loans?.status)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={closeItem}
+                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
                 </div>
 
-                <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-1">
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <p className="font-medium text-slate-700">Usuario</p>
                     <p className="mt-1 text-slate-600">
@@ -308,9 +323,9 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
                   Para registrar la devolución, selecciona este ítem en el formulario superior.
                 </p>
               </div>
-            ) : null}
-          </aside>
-        </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
           No hay préstamos pendientes que coincidan con los filtros.

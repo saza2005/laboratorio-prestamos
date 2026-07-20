@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useMemo, useState } from 'react'
+import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createMaintenanceWithState } from './actions'
 
 type MaintenanceItem = {
@@ -32,6 +33,11 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Registrar mantenimiento',
+    message: 'Confirma que deseas registrar este mantenimiento.',
+    confirmLabel: 'Registrar',
+  })
 
   const categories = useMemo(
     () =>
@@ -93,12 +99,9 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
     <form
       action={formAction}
       className="grid gap-4 md:grid-cols-2"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas registrar este mantenimiento?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       {addedItemName && (
         <div className="fixed left-4 top-24 z-50 max-w-xs rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg">
           <p className="font-medium">Ítem agregado en la parte inferior</p>

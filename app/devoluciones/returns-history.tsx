@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 
 type ReturnHistoryEntry = {
@@ -37,7 +38,7 @@ function getResultLabel(entry: ReturnHistoryEntry) {
 
 export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
   const [search, setSearch] = useState('')
-  const [selectedId, setSelectedId] = useState(entries[0]?.id ?? '')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filteredEntries = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -56,10 +57,13 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
     })
   }, [entries, search])
 
-  const selectedEntry =
-    filteredEntries.find((entry) => entry.id === selectedId) ??
-    filteredEntries[0] ??
-    null
+  const selectedEntry = selectedId
+    ? filteredEntries.find((entry) => entry.id === selectedId) ?? null
+    : null
+
+  function closeEntry() {
+    setSelectedId(null)
+  }
 
   return (
     <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
@@ -82,7 +86,7 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
       </div>
 
       {filteredEntries.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
+        <>
           <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="hidden grid-cols-[128px_minmax(0,1fr)_minmax(0,1fr)_96px_minmax(0,1fr)] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Fecha</span>
@@ -127,22 +131,31 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
-            {selectedEntry ? (
+          <DetailDrawer isOpen={Boolean(selectedEntry)} onClose={closeEntry}>
+            {selectedEntry && (
               <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-slate-500">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm text-slate-500">
                     {selectedEntry.created_at ? formatDateTime(selectedEntry.created_at) : '-'}
                   </p>
                   <h3 className="mt-1 text-lg font-semibold">
                     {selectedEntry.item_name}
                   </h3>
-                  <p className="text-sm text-slate-500">
-                    {selectedEntry.item_code} | Unidad: {selectedEntry.unit_code || '-'}
-                  </p>
+                    <p className="text-sm text-slate-500">
+                      {selectedEntry.item_code} | Unidad: {selectedEntry.unit_code || '-'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeEntry}
+                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    Cerrar
+                  </button>
                 </div>
 
-                <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-1">
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <p className="font-medium text-slate-700">Usuario</p>
                     <p className="mt-1 text-slate-600">{selectedEntry.borrower_name}</p>
@@ -170,9 +183,9 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
                   </div>
                 )}
               </div>
-            ) : null}
-          </aside>
-        </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
           No se encontraron resultados para la búsqueda.

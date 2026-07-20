@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useConfirmSubmit } from '@/components/confirm-submit'
 import { cancelOwnRequestWithState } from './actions'
 
 type CancelRequestButtonProps = {
@@ -11,17 +12,19 @@ export function CancelRequestButton({ requestId }: CancelRequestButtonProps) {
   const [state, formAction, isPending] = useActionState(cancelOwnRequestWithState, {
     error: null,
   })
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Cancelar solicitud',
+    message: 'Confirma que deseas cancelar esta solicitud.',
+    confirmLabel: 'Cancelar solicitud',
+  })
 
   return (
     <form
       action={formAction}
       className="mt-4"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas cancelar esta solicitud?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       <input type="hidden" name="request_id" value={requestId} />
       <button
         type="submit"

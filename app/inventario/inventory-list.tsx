@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 
 type InventoryItem = {
   id: string
@@ -40,6 +41,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
   const [category, setCategory] = useState('')
   const [status, setStatus] = useState('')
   const [page, setPage] = useState(1)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
 
   const categories = useMemo(
     () =>
@@ -77,20 +79,26 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   )
+  const selectedItem = selectedItemId
+    ? filteredItems.find((item) => item.id === selectedItemId) ?? null
+    : null
 
   function updateSearch(value: string) {
     setSearch(value)
     setPage(1)
+    setSelectedItemId(null)
   }
 
   function updateCategory(value: string) {
     setCategory(value)
     setPage(1)
+    setSelectedItemId(null)
   }
 
   function updateStatus(value: string) {
     setStatus(value)
     setPage(1)
+    setSelectedItemId(null)
   }
 
   return (
@@ -139,7 +147,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
       </div>
 
       {pageItems.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <>
           <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="hidden grid-cols-[132px_minmax(0,1.3fr)_minmax(0,1fr)_96px_108px_108px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Código</span>
@@ -155,11 +163,10 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
                 <button
                   key={item.id}
                   type="button"
-                  className="grid w-full gap-2 bg-white px-4 py-3 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[132px_minmax(0,1.3fr)_minmax(0,1fr)_96px_108px_108px] md:items-center md:gap-3"
-                  onClick={() => {
-                    const element = document.getElementById(`inventory-detail-${item.id}`)
-                    element?.scrollIntoView({ block: 'nearest' })
-                  }}
+                  className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[132px_minmax(0,1.3fr)_minmax(0,1fr)_96px_108px_108px] md:items-center md:gap-3 ${
+                    selectedItem?.id === item.id ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                  }`}
+                  onClick={() => setSelectedItemId(item.id)}
                 >
                   <span className="font-medium text-slate-800">{item.code}</span>
                   <span className="min-w-0 truncate text-slate-800">{item.name}</span>
@@ -176,42 +183,82 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
-            <p className="mb-3 text-sm font-medium text-slate-700">Detalle rápido</p>
-            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
-              {pageItems.map((item) => (
-                <div
-                  key={item.id}
-                  id={`inventory-detail-${item.id}`}
-                  className="rounded-lg bg-slate-50 p-3 text-sm"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold text-slate-900">{item.name}</p>
-                      <p className="text-xs text-slate-500">{item.code}</p>
-                    </div>
-                    <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-700">
-                      {formatStatus(item.status)}
+          <DetailDrawer isOpen={Boolean(selectedItem)} onClose={() => setSelectedItemId(null)}>
+            {selectedItem && (
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm text-slate-500">{selectedItem.code}</p>
+                    <h3 className="mt-1 text-lg font-semibold text-slate-900">
+                      {selectedItem.name}
+                    </h3>
+                    <p className="text-sm text-slate-600">{selectedItem.category || '-'}</p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                      {formatStatus(selectedItem.status)}
                     </span>
-                  </div>
-                  <div className="mt-3 grid grid-cols-2 gap-2 text-center">
-                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Total</span>{item.stock_total}</p>
-                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Disponible</span>{item.stock_available}</p>
-                  </div>
-                  <div className="mt-3 space-y-1 text-slate-600">
-                    <p><span className="font-medium text-slate-700">Categoría:</span> {item.category || '-'}</p>
-                    <p><span className="font-medium text-slate-700">Tipo:</span> {item.item_type}</p>
-                    <p><span className="font-medium text-slate-700">Seguimiento:</span> {item.track_individual ? 'Individual' : 'Por cantidad'}</p>
-                    <p><span className="font-medium text-slate-700">Ubicación:</span> {item.location || '-'}</p>
-                    {item.asset_codes.length > 0 && (
-                      <p><span className="font-medium text-slate-700">Patrimoniales:</span> {item.asset_codes.slice(0, 4).join(', ')}{item.asset_codes.length > 4 ? ` +${item.asset_codes.length - 4}` : ''}</p>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedItemId(null)}
+                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                      Cerrar
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          </aside>
-        </div>
+
+                <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Total</span>
+                    <span className="font-semibold">{selectedItem.stock_total}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Disponible</span>
+                    <span className="font-semibold text-green-700">{selectedItem.stock_available}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Tipo</span>
+                    <span className="font-semibold">{selectedItem.item_type}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Seguimiento</span>
+                    <span className="font-semibold">
+                      {selectedItem.track_individual ? 'Individual' : 'Cantidad'}
+                    </span>
+                  </p>
+                </div>
+
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
+                  <div>
+                    <p className="font-medium text-slate-700">Ubicación</p>
+                    <p className="mt-1 text-slate-600">{selectedItem.location || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-700">Categoría</p>
+                    <p className="mt-1 text-slate-600">{selectedItem.category || '-'}</p>
+                  </div>
+                </div>
+
+                {selectedItem.asset_codes.length > 0 && (
+                  <div className="border-t border-slate-200 pt-4">
+                    <p className="font-medium text-slate-700">Códigos patrimoniales</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedItem.asset_codes.map((code) => (
+                        <span
+                          key={code}
+                          className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
+                        >
+                          {code}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
           No hay ítems que coincidan con los filtros.

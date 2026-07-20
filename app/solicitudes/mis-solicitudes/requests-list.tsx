@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { CancelRequestButton } from '../cancel-request-button'
 import { formatDateTime } from '@/lib/format-date'
 
@@ -102,16 +103,11 @@ function getPreviewText(request: RequestRow) {
 }
 
 export function RequestsList({ requests }: RequestsListProps) {
-  const [selectedRequestId, setSelectedRequestId] = useState(
-    requests[0]?.id ?? ''
-  )
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
   const selectedRequest = useMemo(() => {
-    return (
-      requests.find((request) => request.id === selectedRequestId) ??
-      requests[0] ??
-      null
-    )
+    if (!selectedRequestId) return null
+    return requests.find((request) => request.id === selectedRequestId) ?? null
   }, [requests, selectedRequestId])
 
   if (requests.length === 0) {
@@ -119,7 +115,7 @@ export function RequestsList({ requests }: RequestsListProps) {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
+    <div className="space-y-4">
       <div className="overflow-hidden rounded-lg border border-slate-200">
         <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_112px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
           <span>Fecha</span>
@@ -169,8 +165,8 @@ export function RequestsList({ requests }: RequestsListProps) {
         </div>
       </div>
 
-      <aside className="rounded-lg border border-slate-200 bg-white p-4 lg:sticky lg:top-4 lg:self-start">
-        {selectedRequest ? (
+      <DetailDrawer isOpen={Boolean(selectedRequest)} onClose={() => setSelectedRequestId(null)}>
+        {selectedRequest && (
           <div>
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
@@ -181,13 +177,22 @@ export function RequestsList({ requests }: RequestsListProps) {
                   Solicitud {getRequestType(selectedRequest).toLowerCase()}
                 </h3>
               </div>
-              <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
-                  selectedRequest.status
-                )}`}
-              >
-                {formatRequestStatus(selectedRequest.status)}
-              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
+                    selectedRequest.status
+                  )}`}
+                >
+                  {formatRequestStatus(selectedRequest.status)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRequestId(null)}
+                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
 
             <div className="space-y-3 text-sm">
@@ -198,7 +203,7 @@ export function RequestsList({ requests }: RequestsListProps) {
                 </p>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <p className="font-medium text-slate-700">Devolución estimada</p>
                   <p className="mt-1 text-slate-600">
@@ -272,8 +277,8 @@ export function RequestsList({ requests }: RequestsListProps) {
               <CancelRequestButton requestId={selectedRequest.id} />
             )}
           </div>
-        ) : null}
-      </aside>
+        )}
+      </DetailDrawer>
     </div>
   )
 }

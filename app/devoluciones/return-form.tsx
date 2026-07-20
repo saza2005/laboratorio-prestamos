@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useMemo, useState } from 'react'
+import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createReturnWithState } from '@/app/devoluciones/actions'
 
 type LoanItemOption = {
@@ -46,6 +47,11 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
   const [quantityOk, setQuantityOk] = useState(0)
   const [quantityDamaged, setQuantityDamaged] = useState(0)
   const [quantityMissing, setQuantityMissing] = useState(0)
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Registrar devolución',
+    message: 'Confirma que deseas registrar esta devolución.',
+    confirmLabel: 'Registrar',
+  })
 
   const selectedLoanItem = useMemo(
     () => loanItems.find((li) => li.id === selectedId),
@@ -73,12 +79,9 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
     <form
       action={formAction}
       className="grid md:grid-cols-2 gap-4"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas registrar esta devolución?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       <div className="md:col-span-2">
         <label className="block text-sm font-medium mb-1">
           Ítem prestado

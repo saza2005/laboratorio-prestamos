@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useMemo, useState } from 'react'
+import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createLoanWithState } from './actions'
 
 type Item = {
@@ -71,6 +72,11 @@ export function LoanForm({
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Registrar préstamo',
+    message: 'Confirma que deseas registrar este préstamo con los ítems seleccionados.',
+    confirmLabel: 'Registrar',
+  })
 
   const itemMap = useMemo(
     () => new Map(items.map((item) => [item.id, item])),
@@ -198,12 +204,9 @@ export function LoanForm({
     <form
       action={formAction}
       className="space-y-5"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas registrar este préstamo?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       {addedItemName && (
         <div className="fixed left-4 top-24 z-50 max-w-xs rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg">
           <p className="font-medium">Ítem agregado en la parte inferior</p>

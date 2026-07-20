@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 
 type LoanItem = {
@@ -123,7 +124,7 @@ function getPreviewText(loan: LoanRow) {
 export function LoansList({ loans }: LoansListProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
-  const [selectedLoanId, setSelectedLoanId] = useState(loans[0]?.id ?? '')
+  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null)
 
   const filteredLoans = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -152,10 +153,17 @@ export function LoansList({ loans }: LoansListProps) {
     })
   }, [loans, search, statusFilter])
 
-  const selectedLoan =
-    filteredLoans.find((loan) => loan.id === selectedLoanId) ??
-    filteredLoans[0] ??
-    null
+  const selectedLoan = selectedLoanId
+    ? filteredLoans.find((loan) => loan.id === selectedLoanId) ?? null
+    : null
+
+  function openLoan(loanId: string) {
+    setSelectedLoanId(loanId)
+  }
+
+  function closeLoan() {
+    setSelectedLoanId(null)
+  }
 
   return (
     <div className="space-y-4">
@@ -187,7 +195,7 @@ export function LoansList({ loans }: LoansListProps) {
       </div>
 
       {filteredLoans.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_460px]">
+        <>
           <div className="overflow-hidden rounded-2xl bg-white shadow">
             <div className="hidden grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_112px_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Entrega</span>
@@ -207,7 +215,7 @@ export function LoansList({ loans }: LoansListProps) {
                   <button
                     key={loan.id}
                     type="button"
-                    onClick={() => setSelectedLoanId(loan.id)}
+                    onClick={() => openLoan(loan.id)}
                     className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_112px_124px] md:items-center md:gap-3 ${
                       selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
                     }`}
@@ -247,8 +255,8 @@ export function LoansList({ loans }: LoansListProps) {
             </div>
           </div>
 
-          <aside className="rounded-2xl bg-white p-4 shadow xl:sticky xl:top-4 xl:self-start sm:p-5">
-            {selectedLoan ? (
+          <DetailDrawer isOpen={Boolean(selectedLoan)} onClose={closeLoan}>
+            {selectedLoan && (
               <div className="space-y-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -258,16 +266,25 @@ export function LoansList({ loans }: LoansListProps) {
                     <h3 className="mt-1 text-lg font-semibold">{selectedLoan.borrower_name}</h3>
                     <p className="text-sm text-slate-600">{selectedLoan.borrower_email}</p>
                   </div>
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
-                      selectedLoan.status
-                    )}`}
-                  >
-                    {formatLoanStatus(selectedLoan.status)}
-                  </span>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${loanStatusBadgeClass(
+                        selectedLoan.status
+                      )}`}
+                    >
+                      {formatLoanStatus(selectedLoan.status)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={closeLoan}
+                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
                 </div>
 
-                <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-1">
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <p className="font-medium text-slate-700">Tipo</p>
                     <p className="mt-1 text-slate-600">{getLoanType(selectedLoan)}</p>
@@ -345,9 +362,9 @@ export function LoansList({ loans }: LoansListProps) {
                   </div>
                 )}
               </div>
-            ) : null}
-          </aside>
-        </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <div className="rounded-2xl bg-white p-6 shadow">
           <p className="text-slate-500">No hay préstamos que coincidan con los filtros.</p>

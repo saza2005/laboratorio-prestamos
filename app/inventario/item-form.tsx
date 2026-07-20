@@ -1,23 +1,26 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createItemWithState } from './actions'
 
 export function ItemForm() {
   const [state, formAction, isPending] = useActionState(createItemWithState, {
     error: null,
   })
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Agregar ítem',
+    message: 'Confirma que deseas agregar este ítem al inventario.',
+    confirmLabel: 'Agregar',
+  })
 
   return (
     <form
       action={formAction}
       className="grid gap-4 md:grid-cols-2"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas agregar este ítem al inventario?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       <div>
         <label className="block text-sm font-medium mb-1">Código</label>
         <input

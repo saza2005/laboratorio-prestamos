@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 
 type Movement = {
@@ -44,6 +45,7 @@ export function MovementsTable({
   const [typeFilter, setTypeFilter] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const [selectedMovementId, setSelectedMovementId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     return data.filter((m) => {
@@ -70,6 +72,14 @@ export function MovementsTable({
       return matchesSearch && matchesType && matchesFrom && matchesTo
     })
   }, [data, search, typeFilter, fromDate, toDate])
+
+  const selectedMovement = selectedMovementId
+    ? filtered.find((movement) => movement.id === selectedMovementId) ?? null
+    : null
+
+  function closeMovement() {
+    setSelectedMovementId(null)
+  }
 
   return (
     <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
@@ -120,7 +130,7 @@ export function MovementsTable({
       </div>
 
       {filtered.length > 0 ? (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <>
           <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="hidden grid-cols-[128px_132px_minmax(0,1.2fr)_92px_minmax(0,1fr)] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Fecha</span>
@@ -135,11 +145,10 @@ export function MovementsTable({
                 <button
                   key={movement.id}
                   type="button"
-                  className="grid w-full gap-2 bg-white px-4 py-3 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[128px_132px_minmax(0,1.2fr)_92px_minmax(0,1fr)] md:items-center md:gap-3"
-                  onClick={() => {
-                    const element = document.getElementById(`movement-detail-${movement.id}`)
-                    element?.scrollIntoView({ block: 'nearest' })
-                  }}
+                  className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[128px_132px_minmax(0,1.2fr)_92px_minmax(0,1fr)] md:items-center md:gap-3 ${
+                    selectedMovement?.id === movement.id ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                  }`}
+                  onClick={() => setSelectedMovementId(movement.id)}
                 >
                   <span className="text-slate-500">{formatDateTime(movement.created_at)}</span>
                   <span className="font-medium text-slate-800">{formatMovementType(movement.type)}</span>
@@ -154,31 +163,53 @@ export function MovementsTable({
             </div>
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
-            <p className="mb-3 text-sm font-medium text-slate-700">Detalle de movimiento</p>
-            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
-              {filtered.map((movement) => (
-                <div
-                  key={movement.id}
-                  id={`movement-detail-${movement.id}`}
-                  className="rounded-lg bg-slate-50 p-3 text-sm"
-                >
-                  <p className="text-xs text-slate-500">{formatDateTime(movement.created_at)}</p>
-                  <h3 className="mt-1 font-semibold text-slate-900">{movement.item_name}</h3>
-                  <p className="text-xs text-slate-500">{movement.item_code}</p>
-                  <div className="mt-3 grid grid-cols-2 gap-2 text-center">
-                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Tipo</span>{formatMovementType(movement.type)}</p>
-                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Cantidad</span>{movement.quantity}</p>
+          <DetailDrawer isOpen={Boolean(selectedMovement)} onClose={closeMovement}>
+            {selectedMovement && (
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm text-slate-500">
+                      {formatDateTime(selectedMovement.created_at)}
+                    </p>
+                    <h3 className="mt-1 text-lg font-semibold text-slate-900">
+                      {selectedMovement.item_name}
+                    </h3>
+                    <p className="text-sm text-slate-500">{selectedMovement.item_code}</p>
                   </div>
-                  <div className="mt-3 space-y-1 text-slate-600">
-                    <p><span className="font-medium text-slate-700">Usuario:</span> {movement.user_name}</p>
-                    <p><span className="font-medium text-slate-700">Notas:</span> {movement.notes || '-'}</p>
+                  <button
+                    type="button"
+                    onClick={closeMovement}
+                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Tipo</span>
+                    <span className="font-semibold">{formatMovementType(selectedMovement.type)}</span>
+                  </p>
+                  <p className="rounded-lg bg-slate-50 px-3 py-3">
+                    <span className="block text-xs text-slate-500">Cantidad</span>
+                    <span className="font-semibold">{selectedMovement.quantity}</span>
+                  </p>
+                </div>
+
+                <div className="grid gap-3 text-sm sm:grid-cols-2">
+                  <div>
+                    <p className="font-medium text-slate-700">Usuario</p>
+                    <p className="mt-1 text-slate-600">{selectedMovement.user_name}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-700">Notas</p>
+                    <p className="mt-1 text-slate-600">{selectedMovement.notes || '-'}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </aside>
-        </div>
+              </div>
+            )}
+          </DetailDrawer>
+        </>
       ) : (
         <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
           No hay movimientos que coincidan con los filtros.

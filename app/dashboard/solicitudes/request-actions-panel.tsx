@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useMemo, useState } from 'react'
+import { useConfirmSubmit } from '@/components/confirm-submit'
 import {
   approveRequestWithState,
   deliverRequestWithState,
@@ -103,17 +104,19 @@ function ApproveForm({ request }: { request: StaffRequest }) {
     error: null,
   })
   const hasGroups = request.request_groups.length > 0
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Aprobar solicitud',
+    message: 'Confirma que deseas aprobar esta solicitud.',
+    confirmLabel: 'Aprobar',
+  })
 
   return (
     <form
       action={formAction}
       className="space-y-4 rounded-xl border p-4"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas aprobar esta solicitud?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       <h3 className="font-semibold">
         {hasGroups ? 'Aprobar solicitud por grupos' : 'Aprobar solicitud'}
       </h3>
@@ -188,17 +191,19 @@ function RejectForm({ requestId }: { requestId: string }) {
   const [state, formAction, isPending] = useActionState(rejectRequestWithState, {
     error: null,
   })
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Rechazar solicitud',
+    message: 'Confirma que deseas rechazar esta solicitud.',
+    confirmLabel: 'Rechazar',
+  })
 
   return (
     <form
       action={formAction}
       className="space-y-4 rounded-xl border p-4"
-      onSubmit={(event) => {
-        if (!confirm('¿Seguro que deseas rechazar esta solicitud?')) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       <h3 className="font-semibold">Rechazar solicitud</h3>
 
       <input type="hidden" name="request_id" value={requestId} />
@@ -332,21 +337,21 @@ function DeliverForm({
     return quantity < 0 || quantity > getMaxDeliverable(requirement)
   })
   const canSubmit = totalToDeliver > 0 && !hasInvalidSelection
+  const confirmSubmit = useConfirmSubmit({
+    title: isPartialDelivery ? 'Confirmar entrega parcial' : 'Confirmar entrega',
+    message: isPartialDelivery
+      ? 'Confirma que deseas crear el préstamo solo con lo disponible ahora.'
+      : 'Confirma que deseas entregar esta solicitud y crear el préstamo.',
+    confirmLabel: isPartialDelivery ? 'Entregar parcial' : 'Entregar',
+  })
 
   return (
     <form
       action={formAction}
       className="rounded-xl border p-4 space-y-4"
-      onSubmit={(event) => {
-        const message = isPartialDelivery
-          ? '¿Seguro que deseas confirmar una entrega parcial y crear el préstamo solo con lo disponible?'
-          : '¿Seguro que deseas entregar esta solicitud y crear el préstamo?'
-
-        if (!confirm(message)) {
-          event.preventDefault()
-        }
-      }}
+      onSubmit={confirmSubmit.onSubmit}
     >
+      {confirmSubmit.dialog}
       <div>
         <h3 className="font-semibold">Registrar entrega</h3>
         <p className="mt-1 text-sm text-slate-600">
