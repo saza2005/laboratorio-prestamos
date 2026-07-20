@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { formatLoanStatus, loanStatusBadgeClass as statusBadgeClass } from '@/lib/status-format'
 
 type PendingLoanItem = {
   id: string
@@ -57,36 +58,6 @@ type PendingLoanItem = {
 
 type PendingReturnsListProps = {
   loanItems: PendingLoanItem[]
-}
-
-function formatLoanStatus(status: string | undefined) {
-  switch (status) {
-    case 'active':
-      return 'Activo'
-    case 'partial_return':
-      return 'Devolución parcial'
-    case 'overdue':
-      return 'Vencido'
-    case 'returned':
-      return 'Devuelto'
-    default:
-      return status ?? '-'
-  }
-}
-
-function statusBadgeClass(status: string | undefined) {
-  switch (status) {
-    case 'active':
-      return 'bg-blue-100 text-blue-700'
-    case 'partial_return':
-      return 'bg-amber-100 text-amber-700'
-    case 'overdue':
-      return 'bg-red-100 text-red-700'
-    case 'returned':
-      return 'bg-green-100 text-green-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
 }
 
 function getPending(item: PendingLoanItem) {

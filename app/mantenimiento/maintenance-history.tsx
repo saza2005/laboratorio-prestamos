@@ -2,6 +2,10 @@
 
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
+import {
+  formatMaintenanceType,
+  maintenanceTypeBadgeClass as typeBadgeClass,
+} from '@/lib/status-format'
 
 type MaintenanceRecord = {
   id: string
@@ -19,28 +23,6 @@ type MaintenanceRecord = {
 type MaintenanceHistoryProps = {
   records: MaintenanceRecord[]
   limit?: number
-}
-
-function formatMaintenanceType(type: string) {
-  switch (type) {
-    case 'preventive':
-      return 'Preventivo'
-    case 'corrective':
-      return 'Correctivo'
-    default:
-      return type
-  }
-}
-
-function typeBadgeClass(type: string) {
-  switch (type) {
-    case 'preventive':
-      return 'bg-blue-100 text-blue-700'
-    case 'corrective':
-      return 'bg-amber-100 text-amber-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
 }
 
 function getItemName(record: MaintenanceRecord) {

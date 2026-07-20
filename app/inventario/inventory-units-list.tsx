@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
+import { formatUnitAvailability, formatUnitCondition } from '@/lib/status-format'
 
 type InventoryUnit = {
   id: string
@@ -22,36 +23,6 @@ const PAGE_SIZE = 50
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLocaleLowerCase('es') ?? ''
-}
-
-function formatCondition(value: string) {
-  switch (value) {
-    case 'good':
-      return 'Bueno'
-    case 'damaged':
-      return 'Dañado'
-    case 'maintenance':
-      return 'Mantenimiento'
-    case 'retired':
-      return 'Retirado'
-    default:
-      return value
-  }
-}
-
-function formatAvailability(value: string) {
-  switch (value) {
-    case 'available':
-      return 'Disponible'
-    case 'loaned':
-      return 'Prestado'
-    case 'maintenance':
-      return 'Mantenimiento'
-    case 'unavailable':
-      return 'No disponible'
-    default:
-      return value
-  }
 }
 
 export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
@@ -183,10 +154,10 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                     {[unit.brand, unit.model].filter(Boolean).join(' / ') || '-'}
                   </span>
                   <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
-                    {formatCondition(unit.condition)}
+                    {formatUnitCondition(unit.condition)}
                   </span>
                   <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
-                    {formatAvailability(unit.availability_status)}
+                    {formatUnitAvailability(unit.availability_status)}
                   </span>
                 </button>
               ))}
@@ -218,11 +189,11 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                 <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Condición</span>
-                    <span className="font-semibold">{formatCondition(selectedUnit.condition)}</span>
+                    <span className="font-semibold">{formatUnitCondition(selectedUnit.condition)}</span>
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Disponibilidad</span>
-                    <span className="font-semibold">{formatAvailability(selectedUnit.availability_status)}</span>
+                    <span className="font-semibold">{formatUnitAvailability(selectedUnit.availability_status)}</span>
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Patrimonial</span>

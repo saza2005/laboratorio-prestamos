@@ -13,6 +13,7 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
 import { parseReportPeriod } from '@/lib/report-period'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
+import { formatMovementType, loanStatusBadgeClass as statusBadgeClass } from '@/lib/status-format'
 
 function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -20,40 +21,6 @@ function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   }
 
   return value ?? null
-}
-
-function formatMovementType(type: string) {
-  switch (type) {
-    case 'loan_out':
-      return 'Préstamo'
-    case 'return_ok':
-      return 'Devolución OK'
-    case 'return_damaged':
-      return 'Devuelto dañado'
-    case 'return_missing':
-      return 'Reportado faltante'
-    case 'adjustment_up':
-      return 'Ajuste positivo'
-    case 'adjustment_down':
-      return 'Ajuste negativo'
-    default:
-      return type
-  }
-}
-
-function statusBadgeClass(status: string) {
-  switch (status) {
-    case 'active':
-      return 'bg-blue-100 text-blue-700'
-    case 'partial_return':
-      return 'bg-amber-100 text-amber-700'
-    case 'returned':
-      return 'bg-green-100 text-green-700'
-    case 'overdue':
-      return 'bg-red-100 text-red-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
 }
 
 export default async function DashboardPage({

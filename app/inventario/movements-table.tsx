@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { formatMovementType } from '@/lib/status-format'
 
 type Movement = {
   id: string
@@ -13,25 +14,6 @@ type Movement = {
   item_name: string
   item_code: string
   user_name: string
-}
-
-function formatMovementType(type: string) {
-  switch (type) {
-    case 'loan_out':
-      return 'Préstamo'
-    case 'return_ok':
-      return 'Devolución OK'
-    case 'return_damaged':
-      return 'Devuelto dañado'
-    case 'return_missing':
-      return 'Reportado faltante'
-    case 'adjustment_up':
-      return 'Ajuste positivo'
-    case 'adjustment_down':
-      return 'Ajuste negativo'
-    default:
-      return type
-  }
 }
 
 export function MovementsTable({

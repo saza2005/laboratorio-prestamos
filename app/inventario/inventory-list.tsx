@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
+import { formatInventoryStatus } from '@/lib/status-format'
 
 type InventoryItem = {
   id: string
@@ -21,19 +22,6 @@ const PAGE_SIZE = 50
 
 function normalize(value: string | null | undefined) {
   return value?.trim().toLocaleLowerCase('es') ?? ''
-}
-
-function formatStatus(status: string) {
-  switch (status) {
-    case 'active':
-      return 'Activo'
-    case 'inactive':
-      return 'Inactivo'
-    case 'maintenance':
-      return 'Mantenimiento'
-    default:
-      return status
-  }
 }
 
 export function InventoryList({ items }: { items: InventoryItem[] }) {
@@ -176,7 +164,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
                   </span>
                   <span className="text-slate-600">{item.stock_total}</span>
                   <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
-                    {formatStatus(item.status)}
+                    {formatInventoryStatus(item.status)}
                   </span>
                 </button>
               ))}
@@ -196,7 +184,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                      {formatStatus(selectedItem.status)}
+                      {formatInventoryStatus(selectedItem.status)}
                     </span>
                     <button
                       type="button"

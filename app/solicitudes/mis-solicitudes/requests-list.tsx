@@ -4,6 +4,10 @@ import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { CancelRequestButton } from '../cancel-request-button'
 import { formatDateTime } from '@/lib/format-date'
+import {
+  formatRequestStatus,
+  requestStatusBadgeClass as statusBadgeClass,
+} from '@/lib/status-format'
 
 type RequestItem = {
   id: string
@@ -44,34 +48,6 @@ type RequestRow = {
 
 type RequestsListProps = {
   requests: RequestRow[]
-}
-
-function formatRequestStatus(status: string) {
-  const labels: Record<string, string> = {
-    pending: 'Pendiente',
-    approved: 'Aprobada',
-    rejected: 'Rechazada',
-    delivered: 'Entregada',
-    cancelled: 'Cancelada',
-    returned: 'Devuelta',
-    partial_return: 'Devolución parcial',
-  }
-
-  return labels[status] ?? status
-}
-
-function statusBadgeClass(status: string) {
-  const classes: Record<string, string> = {
-    pending: 'bg-amber-100 text-amber-800',
-    approved: 'bg-blue-100 text-blue-800',
-    rejected: 'bg-red-100 text-red-800',
-    delivered: 'bg-indigo-100 text-indigo-700',
-    cancelled: 'bg-slate-200 text-slate-700',
-    returned: 'bg-green-100 text-green-700',
-    partial_return: 'bg-orange-100 text-orange-700',
-  }
-
-  return classes[status] ?? 'bg-slate-100 text-slate-700'
 }
 
 function getRequestType(request: RequestRow) {

@@ -3,6 +3,12 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
 import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { getEffectiveLoanStatus } from '@/lib/loan-status'
+export {
+  formatLoanStatus,
+  formatRequestStatus,
+  loanStatusBadgeClass,
+  requestStatusBadgeClass as statusBadgeClass,
+} from '@/lib/status-format'
 
 export function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
@@ -10,82 +16,6 @@ export function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
   }
 
   return value ?? null
-}
-
-export function formatRequestStatus(status: string) {
-  switch (status) {
-    case 'pending':
-      return 'Pendiente'
-    case 'approved':
-      return 'Aprobada'
-    case 'rejected':
-      return 'Rechazada'
-    case 'cancelled':
-      return 'Cancelada'
-    case 'delivered':
-      return 'Entregada'
-    case 'returned':
-      return 'Devuelta'
-    case 'partial_return':
-      return 'Devolución parcial'
-    default:
-      return status
-  }
-}
-
-export function statusBadgeClass(status: string) {
-  switch (status) {
-    case 'pending':
-      return 'bg-amber-100 text-amber-700'
-    case 'approved':
-      return 'bg-blue-100 text-blue-700'
-    case 'rejected':
-      return 'bg-red-100 text-red-700'
-    case 'cancelled':
-      return 'bg-slate-100 text-slate-700'
-    case 'delivered':
-      return 'bg-indigo-100 text-indigo-700'
-    case 'returned':
-      return 'bg-green-100 text-green-700'
-    case 'partial_return':
-      return 'bg-orange-100 text-orange-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
-}
-
-export function formatLoanStatus(status: string) {
-  switch (status) {
-    case 'active':
-      return 'Activo'
-    case 'returned':
-      return 'Devuelto'
-    case 'partial_return':
-      return 'Devolución parcial'
-    case 'overdue':
-      return 'Vencido'
-    case 'cancelled':
-      return 'Cancelado'
-    default:
-      return status
-  }
-}
-
-export function loanStatusBadgeClass(status: string) {
-  switch (status) {
-    case 'active':
-      return 'bg-blue-100 text-blue-700'
-    case 'returned':
-      return 'bg-green-100 text-green-700'
-    case 'partial_return':
-      return 'bg-amber-100 text-amber-700'
-    case 'overdue':
-      return 'bg-red-100 text-red-700'
-    case 'cancelled':
-      return 'bg-slate-100 text-slate-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
 }
 
 export async function getRequestPortalAuth() {

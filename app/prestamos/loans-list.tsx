@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { formatLoanStatus, loanStatusBadgeClass } from '@/lib/status-format'
 
 type LoanItem = {
   id: string
@@ -53,40 +54,6 @@ type LoanRow = {
 
 type LoansListProps = {
   loans: LoanRow[]
-}
-
-function formatLoanStatus(status: string) {
-  switch (status) {
-    case 'active':
-      return 'Activo'
-    case 'returned':
-      return 'Devuelto'
-    case 'partial_return':
-      return 'Devolución parcial'
-    case 'overdue':
-      return 'Vencido'
-    case 'cancelled':
-      return 'Cancelado'
-    default:
-      return status
-  }
-}
-
-function loanStatusBadgeClass(status: string) {
-  switch (status) {
-    case 'active':
-      return 'bg-blue-100 text-blue-700'
-    case 'returned':
-      return 'bg-green-100 text-green-700'
-    case 'partial_return':
-      return 'bg-amber-100 text-amber-700'
-    case 'overdue':
-      return 'bg-red-100 text-red-700'
-    case 'cancelled':
-      return 'bg-slate-100 text-slate-700'
-    default:
-      return 'bg-slate-100 text-slate-700'
-  }
 }
 
 function getLoanType(loan: LoanRow) {
