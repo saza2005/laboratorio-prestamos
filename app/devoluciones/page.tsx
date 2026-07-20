@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ReturnForm } from '@/app/devoluciones/return-form'
+import { PendingReturnsList } from './pending-returns-list'
 import { ReturnsHistory } from './returns-history'
 import { canManageReturns, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
@@ -130,6 +131,43 @@ export default async function DevolucionesPage() {
 
       return pendiente > 0 && isReturnableLoan
     }) ?? []
+  const normalizedActiveLoanItems = activeLoanItems.map((li) => {
+    const normalizedLoanUser =
+      Array.isArray(li.loan_user) ? li.loan_user[0] ?? null : li.loan_user
+    const normalizedLoan = Array.isArray(li.loans) ? li.loans[0] ?? null : li.loans
+
+    return {
+      ...li,
+      items: Array.isArray(li.items) ? li.items[0] ?? null : li.items,
+      item_units: Array.isArray(li.item_units)
+        ? li.item_units[0] ?? null
+        : li.item_units,
+      loans: normalizedLoan
+        ? {
+            ...normalizedLoan,
+            loan_groups:
+              normalizedLoan.loan_groups?.map((group) => ({
+                ...group,
+                leader: firstOrNull(group.leader),
+                loan_group_items:
+                  group.loan_group_items?.map((groupItem) => ({
+                    ...groupItem,
+                    items: firstOrNull(groupItem.items),
+                  })) ?? [],
+              })) ?? [],
+          }
+        : null,
+      loan_user: normalizedLoanUser
+        ? {
+            ...normalizedLoanUser,
+            profiles: Array.isArray(normalizedLoanUser.profiles)
+              ? normalizedLoanUser.profiles[0] ?? null
+              : normalizedLoanUser.profiles,
+          }
+        : null,
+    }
+  })
+
   const normalizedReturnHistory =
     returnHistory?.map((entry) => {
       const returnData = firstOrNull(entry.returns)
@@ -185,171 +223,10 @@ export default async function DevolucionesPage() {
         <div className="mb-8 rounded-2xl bg-white shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Registrar devolución</h2>
 
-          <ReturnForm
-            loanItems={activeLoanItems.map((li) => {
-              const normalizedLoanUser =
-                Array.isArray(li.loan_user) ? li.loan_user[0] ?? null : li.loan_user
-
-              return {
-                ...li,
-                items: Array.isArray(li.items) ? li.items[0] ?? null : li.items,
-                item_units: Array.isArray(li.item_units) ? li.item_units[0] ?? null : li.item_units,
-                loans: Array.isArray(li.loans) ? li.loans[0] ?? null : li.loans,
-                loan_user: normalizedLoanUser
-                  ? {
-                      ...normalizedLoanUser,
-                      profiles: Array.isArray(normalizedLoanUser.profiles)
-                        ? normalizedLoanUser.profiles[0] ?? null
-                        : normalizedLoanUser.profiles,
-                    }
-                  : null,
-              }
-            })}
-          />
+          <ReturnForm loanItems={normalizedActiveLoanItems} />
         </div>
 
-        <div className="rounded-2xl bg-white shadow overflow-hidden">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">Préstamos pendientes</h2>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="min-w-[900px] text-sm">
-              <thead className="bg-slate-100 text-slate-700">
-                <tr>
-                  <th className="text-left px-4 py-3">Usuario</th>
-                  <th className="text-left px-4 py-3">Ítem</th>
-                  <th className="text-left px-4 py-3">Unidad</th>
-                  <th className="text-left px-4 py-3">Cantidad</th>
-                  <th className="text-left px-4 py-3">Devuelto</th>
-                  <th className="text-left px-4 py-3">Perdido</th>
-                  <th className="text-left px-4 py-3">Pendiente</th>
-                  <th className="text-left px-4 py-3">Estado préstamo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeLoanItems.length > 0 ? (
-                  activeLoanItems.map((li) => {
-
-                  const itemData = firstOrNull(li.items) as
-                    | { id?: string; name?: string; code?: string }
-                    | null
-
-                  const loanData = firstOrNull(li.loans) as
-                    | {
-                        id?: string
-                        status?: string
-                        user_id?: string
-                        delivery_date?: string
-                        expected_return_date?: string
-                        loan_groups?: {
-                          id: string
-                          group_name: string
-                          leader?: {
-                            full_name?: string
-                            email?: string
-                          } | null
-                          loan_group_items?: {
-                            id: string
-                            item_id?: string
-                            quantity: number
-                            items?: {
-                              id?: string
-                              name?: string
-                              code?: string
-                            } | null
-                          }[]
-                        }[]
-                      }
-                    | null
-
-                  const loanUserRaw = firstOrNull(li.loan_user) as
-                    | {
-                        user_id?: string
-                        profiles?: { full_name?: string; email?: string } | { full_name?: string; email?: string }[] | null
-                      }
-                    | null
-
-                  const loanUserData = loanUserRaw
-                    ? {
-                        ...loanUserRaw,
-                        profiles: firstOrNull(loanUserRaw.profiles),
-                      }
-                    : null
-
-                    const perdido = li.missing_quantity ?? 0
-                    const pendiente =
-                      li.quantity -
-                      li.returned_quantity -
-                      perdido
-
-                    return (
-                      <tr key={li.id} className="border-t hover:bg-slate-50">
-                        <td className="px-4 py-3">
-                          {loanUserData?.profiles?.full_name ?? '-'}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div>
-                            <p className="font-medium">
-                              {itemData?.name ?? '-'} [{itemData?.code ?? '-'}]
-                            </p>
-                            {Array.isArray(loanData?.loan_groups) &&
-                              loanData.loan_groups.length > 0 && (
-                                <div className="mt-2 space-y-1">
-                                  {loanData.loan_groups.map((group) => {
-                                    const matchingItems =
-                                      group.loan_group_items?.filter(
-                                        (gi) => gi.item_id === li.item_id
-                                      ) ?? []
-
-                                    if (matchingItems.length === 0) {
-                                      return null
-                                    }
-
-                                    return (
-                                      <div
-                                        key={group.id}
-                                        className="rounded-lg bg-slate-50 border px-3 py-2 text-xs text-slate-600"
-                                      >
-                                        <p className="font-medium text-slate-700">
-                                          {group.group_name} — jefe:{' '}
-                                          {group.leader?.full_name ?? 'Sin asignar'}
-                                        </p>
-
-                                        {matchingItems.map((gi) => (
-                                          <p key={gi.id}>
-                                            Cantidad asignada a este grupo: {gi.quantity}
-                                          </p>
-                                        ))}
-                                      </div>
-                                    )
-                                  })}
-                                </div>
-                              )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          {firstOrNull(li.item_units)?.asset_code || firstOrNull(li.item_units)?.serial_code || '-'}
-                        </td>
-                        <td className="px-4 py-3">{li.quantity}</td>
-                        <td className="px-4 py-3">{li.returned_quantity}</td>
-                        <td className="px-4 py-3">{perdido}</td>
-                        <td className="px-4 py-3">{pendiente}</td>
-                        <td className="px-4 py-3">{loanData?.status ?? '-'}</td>
-                      </tr>
-                    )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={8} className="px-4 py-6 text-center text-slate-500">
-                      No hay préstamos pendientes.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <PendingReturnsList loanItems={normalizedActiveLoanItems} />
         <ReturnsHistory entries={normalizedReturnHistory} limit={50} />
       </div>
     </main>

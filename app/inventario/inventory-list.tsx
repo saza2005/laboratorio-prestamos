@@ -94,8 +94,8 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg bg-white shadow">
-      <div className="space-y-4 border-b p-4 sm:p-6">
+    <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
+      <div className="mb-4 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Ítems registrados</h2>
           <p className="mt-1 text-sm text-slate-500">
@@ -138,77 +138,88 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
         </div>
       </div>
 
-      <div className="divide-y md:hidden">
-        {pageItems.length > 0 ? (
-          pageItems.map((item) => (
-            <div key={item.id} className="space-y-2 p-4 text-sm">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-slate-500">{item.code}</p>
-                </div>
-                <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
-                  {formatStatus(item.status)}
-                </span>
-              </div>
-              <p><span className="font-medium">Categoría:</span> {item.category || '-'}</p>
-              <p><span className="font-medium">Tipo:</span> {item.item_type}</p>
-              <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-50 p-3 text-center">
-                <p><span className="block text-xs text-slate-500">Stock total</span>{item.stock_total}</p>
-                <p><span className="block text-xs text-slate-500">Disponible</span>{item.stock_available}</p>
-              </div>
-              <p><span className="font-medium">Seguimiento:</span> {item.track_individual ? 'Sí' : 'No'}</p>
-              <p><span className="font-medium">Ubicación:</span> {item.location || '-'}</p>
+      {pageItems.length > 0 ? (
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="overflow-hidden rounded-lg border border-slate-200">
+            <div className="hidden grid-cols-[132px_minmax(0,1.3fr)_minmax(0,1fr)_96px_108px_108px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <span>Código</span>
+              <span>Nombre</span>
+              <span>Categoría</span>
+              <span>Disponible</span>
+              <span>Total</span>
+              <span>Estado</span>
             </div>
-          ))
-        ) : (
-          <p className="p-6 text-center text-slate-500">No hay ítems que coincidan con los filtros.</p>
-        )}
-      </div>
 
-      <div className="hidden overflow-x-auto md:block">
-        <table className="min-w-[1080px] text-sm">
-          <thead className="bg-slate-100 text-slate-700">
-            <tr>
-              <th className="px-4 py-3 text-left">Código</th>
-              <th className="px-4 py-3 text-left">Nombre</th>
-              <th className="px-4 py-3 text-left">Categoría</th>
-              <th className="px-4 py-3 text-left">Tipo</th>
-              <th className="px-4 py-3 text-left">Seguimiento</th>
-              <th className="px-4 py-3 text-left">Stock total</th>
-              <th className="px-4 py-3 text-left">Disponible</th>
-              <th className="px-4 py-3 text-left">Estado</th>
-              <th className="px-4 py-3 text-left">Ubicación</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pageItems.length > 0 ? (
-              pageItems.map((item) => (
-                <tr key={item.id} className="border-t hover:bg-slate-50">
-                  <td className="px-4 py-3">{item.code}</td>
-                  <td className="px-4 py-3">{item.name}</td>
-                  <td className="px-4 py-3">{item.category || '-'}</td>
-                  <td className="px-4 py-3">{item.item_type}</td>
-                  <td className="px-4 py-3">{item.track_individual ? 'Sí' : 'No'}</td>
-                  <td className="px-4 py-3">{item.stock_total}</td>
-                  <td className="px-4 py-3">{item.stock_available}</td>
-                  <td className="px-4 py-3">{formatStatus(item.status)}</td>
-                  <td className="px-4 py-3">{item.location || '-'}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={9} className="px-4 py-6 text-center text-slate-500">
-                  No hay ítems que coincidan con los filtros.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            <div className="divide-y divide-slate-200">
+              {pageItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="grid w-full gap-2 bg-white px-4 py-3 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[132px_minmax(0,1.3fr)_minmax(0,1fr)_96px_108px_108px] md:items-center md:gap-3"
+                  onClick={() => {
+                    const element = document.getElementById(`inventory-detail-${item.id}`)
+                    element?.scrollIntoView({ block: 'nearest' })
+                  }}
+                >
+                  <span className="font-medium text-slate-800">{item.code}</span>
+                  <span className="min-w-0 truncate text-slate-800">{item.name}</span>
+                  <span className="min-w-0 truncate text-slate-600">{item.category || '-'}</span>
+                  <span className={item.stock_available > 0 ? 'font-semibold text-green-700' : 'font-semibold text-red-700'}>
+                    {item.stock_available}
+                  </span>
+                  <span className="text-slate-600">{item.stock_total}</span>
+                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                    {formatStatus(item.status)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
+            <p className="mb-3 text-sm font-medium text-slate-700">Detalle rápido</p>
+            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
+              {pageItems.map((item) => (
+                <div
+                  key={item.id}
+                  id={`inventory-detail-${item.id}`}
+                  className="rounded-lg bg-slate-50 p-3 text-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-slate-900">{item.name}</p>
+                      <p className="text-xs text-slate-500">{item.code}</p>
+                    </div>
+                    <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-700">
+                      {formatStatus(item.status)}
+                    </span>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Total</span>{item.stock_total}</p>
+                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Disponible</span>{item.stock_available}</p>
+                  </div>
+                  <div className="mt-3 space-y-1 text-slate-600">
+                    <p><span className="font-medium text-slate-700">Categoría:</span> {item.category || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Tipo:</span> {item.item_type}</p>
+                    <p><span className="font-medium text-slate-700">Seguimiento:</span> {item.track_individual ? 'Individual' : 'Por cantidad'}</p>
+                    <p><span className="font-medium text-slate-700">Ubicación:</span> {item.location || '-'}</p>
+                    {item.asset_codes.length > 0 && (
+                      <p><span className="font-medium text-slate-700">Patrimoniales:</span> {item.asset_codes.slice(0, 4).join(', ')}{item.asset_codes.length > 4 ? ` +${item.asset_codes.length - 4}` : ''}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      ) : (
+        <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+          No hay ítems que coincidan con los filtros.
+        </p>
+      )}
 
       {filteredItems.length > PAGE_SIZE && (
-        <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="mt-4 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-500">
             Página {currentPage} de {totalPages}
           </p>
@@ -232,6 +243,6 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
           </div>
         </div>
       )}
-    </div>
+    </section>
   )
 }

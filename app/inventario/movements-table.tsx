@@ -72,25 +72,29 @@ export function MovementsTable({
   }, [data, search, typeFilter, fromDate, toDate])
 
   return (
-    <div className="mt-8 rounded-2xl bg-white shadow overflow-hidden">
-      <div className="p-6 border-b space-y-4">
-        <h2 className="text-xl font-semibold">Movimientos de inventario</h2>
+    <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
+      <div className="mb-4 space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold">Movimientos de inventario</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Resultados: {filtered.length}
+            {limit ? ` de los últimos ${limit} movimientos` : ''}
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-4 gap-3">
-          {/* 🔎 búsqueda */}
+        <div className="grid gap-3 md:grid-cols-4">
           <input
             type="text"
-            placeholder="Buscar..."
+            placeholder="Buscar por ítem, código, usuario o notas"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
 
-          {/* 🎯 tipo */}
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           >
             <option value="">Todos</option>
             <option value="loan_out">Préstamo</option>
@@ -99,106 +103,87 @@ export function MovementsTable({
             <option value="return_missing">Faltante</option>
           </select>
 
-          {/* 📅 desde */}
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
 
-          {/* 📅 hasta */}
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
         </div>
-
-        <p className="text-sm text-slate-500">
-          Resultados: {filtered.length}
-          {limit ? ` de los últimos ${limit} movimientos` : ''}
-        </p>
       </div>
 
-      <div className="divide-y md:hidden">
-        {filtered.length > 0 ? (
-          filtered.map((movement) => (
-            <div key={movement.id} className="space-y-2 p-4 text-sm">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-medium">
-                    {movement.item_name} [{movement.item_code}]
-                  </p>
-                  <p className="text-slate-500">
-                    {formatDateTime(movement.created_at)}
-                  </p>
-                </div>
-                <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
-                  {formatMovementType(movement.type)}
-                </span>
-              </div>
-              <p><span className="font-medium">Cantidad:</span> {movement.quantity}</p>
-              <p><span className="font-medium">Usuario:</span> {movement.user_name}</p>
-              {movement.notes && (
-                <p className="text-slate-600">
-                  <span className="font-medium">Notas:</span> {movement.notes}
-                </p>
-              )}
+      {filtered.length > 0 ? (
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="overflow-hidden rounded-lg border border-slate-200">
+            <div className="hidden grid-cols-[128px_132px_minmax(0,1.2fr)_92px_minmax(0,1fr)] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <span>Fecha</span>
+              <span>Tipo</span>
+              <span>Ítem</span>
+              <span>Cantidad</span>
+              <span>Usuario</span>
             </div>
-          ))
-        ) : (
-          <p className="p-6 text-center text-slate-500">No hay resultados</p>
-        )}
-      </div>
 
-      <div className="hidden overflow-x-auto md:block">
-        <table className="min-w-[840px] text-sm">
-          <thead className="bg-slate-100 text-slate-700">
-            <tr>
-              <th className="px-4 py-3 text-left">Fecha</th>
-              <th className="px-4 py-3 text-left">Tipo</th>
-              <th className="px-4 py-3 text-left">Ítem</th>
-              <th className="px-4 py-3 text-left">Cantidad</th>
-              <th className="px-4 py-3 text-left">Usuario</th>
-              <th className="px-4 py-3 text-left">Notas</th>
-            </tr>
-          </thead>
+            <div className="divide-y divide-slate-200">
+              {filtered.map((movement) => (
+                <button
+                  key={movement.id}
+                  type="button"
+                  className="grid w-full gap-2 bg-white px-4 py-3 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[128px_132px_minmax(0,1.2fr)_92px_minmax(0,1fr)] md:items-center md:gap-3"
+                  onClick={() => {
+                    const element = document.getElementById(`movement-detail-${movement.id}`)
+                    element?.scrollIntoView({ block: 'nearest' })
+                  }}
+                >
+                  <span className="text-slate-500">{formatDateTime(movement.created_at)}</span>
+                  <span className="font-medium text-slate-800">{formatMovementType(movement.type)}</span>
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium text-slate-800">{movement.item_name}</span>
+                    <span className="block truncate text-xs text-slate-500">{movement.item_code}</span>
+                  </span>
+                  <span className="font-semibold text-slate-800">{movement.quantity}</span>
+                  <span className="truncate text-slate-600">{movement.user_name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((m) => (
-                <tr key={m.id} className="border-t hover:bg-slate-50">
-                  <td className="px-4 py-3">
-                    {formatDateTime(m.created_at)}
-                  </td>
-
-                  <td className="px-4 py-3 font-medium">
-                    {formatMovementType(m.type)}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {m.item_name} [{m.item_code}]
-                  </td>
-
-                  <td className="px-4 py-3">{m.quantity}</td>
-
-                  <td className="px-4 py-3">{m.user_name}</td>
-
-                  <td className="px-4 py-3">{m.notes || '-'}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center py-6 text-slate-500">
-                  No hay resultados
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
+            <p className="mb-3 text-sm font-medium text-slate-700">Detalle de movimiento</p>
+            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
+              {filtered.map((movement) => (
+                <div
+                  key={movement.id}
+                  id={`movement-detail-${movement.id}`}
+                  className="rounded-lg bg-slate-50 p-3 text-sm"
+                >
+                  <p className="text-xs text-slate-500">{formatDateTime(movement.created_at)}</p>
+                  <h3 className="mt-1 font-semibold text-slate-900">{movement.item_name}</h3>
+                  <p className="text-xs text-slate-500">{movement.item_code}</p>
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Tipo</span>{formatMovementType(movement.type)}</p>
+                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Cantidad</span>{movement.quantity}</p>
+                  </div>
+                  <div className="mt-3 space-y-1 text-slate-600">
+                    <p><span className="font-medium text-slate-700">Usuario:</span> {movement.user_name}</p>
+                    <p><span className="font-medium text-slate-700">Notas:</span> {movement.notes || '-'}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      ) : (
+        <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+          No hay movimientos que coincidan con los filtros.
+        </p>
+      )}
+    </section>
   )
 }

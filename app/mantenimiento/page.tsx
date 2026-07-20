@@ -6,16 +6,8 @@ import {
   getHomeRouteByRole,
 } from '@/lib/supabase/auth/roles'
 import { MaintenanceForm } from './maintenance-form'
+import { MaintenanceHistory } from './maintenance-history'
 import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
-
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) return value[0] ?? null
-  return value ?? null
-}
-
-function formatMaintenanceType(type: string) {
-  return type === 'preventive' ? 'Preventivo' : 'Correctivo'
-}
 
 export default async function MantenimientoPage() {
   let auth
@@ -71,6 +63,17 @@ export default async function MantenimientoPage() {
     throw new Error(recordsError.message)
   }
 
+  const normalizedRecords =
+    records?.map((record) => ({
+      id: record.id,
+      activity: record.activity,
+      responsible: record.responsible,
+      maintenance_date: record.maintenance_date,
+      maintenance_type: record.maintenance_type,
+      observations: record.observations,
+      item: Array.isArray(record.items) ? record.items[0] ?? null : record.items,
+    })) ?? []
+
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -93,82 +96,7 @@ export default async function MantenimientoPage() {
           <MaintenanceForm items={maintenanceItems} />
         </div>
 
-        {/* TABLA */}
-        <div className="bg-white rounded-2xl shadow overflow-hidden">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">Historial</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Mostrando los últimos 100 mantenimientos registrados
-            </p>
-          </div>
-
-          <div className="divide-y md:hidden">
-            {records && records.length > 0 ? (
-              records.map((record) => {
-                const item = firstOrNull(record.items)
-
-                return (
-                  <div key={record.id} className="space-y-2 p-4 text-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-medium">{item?.name ?? 'Trabajo general'}</p>
-                        <p className="text-slate-500">{record.maintenance_date}</p>
-                      </div>
-                      <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium">
-                        {formatMaintenanceType(record.maintenance_type)}
-                      </span>
-                    </div>
-                    <p><span className="font-medium">Actividad:</span> {record.activity}</p>
-                    <p><span className="font-medium">Responsable:</span> {record.responsible}</p>
-                    {record.observations && (
-                      <p className="text-slate-600"><span className="font-medium">Observaciones:</span> {record.observations}</p>
-                    )}
-                  </div>
-                )
-              })
-            ) : (
-              <p className="p-6 text-center text-slate-500">No hay mantenimientos registrados.</p>
-            )}
-          </div>
-
-          <div className="hidden overflow-x-auto md:block">
-            <table className="min-w-[760px] text-sm">
-              <thead className="bg-slate-100 text-slate-700">
-                <tr>
-                  <th className="px-4 py-3 text-left">Equipo</th>
-                  <th className="px-4 py-3 text-left">Actividad</th>
-                  <th className="px-4 py-3 text-left">Responsable</th>
-                  <th className="px-4 py-3 text-left">Fecha</th>
-                  <th className="px-4 py-3 text-left">Tipo</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {records && records.length > 0 ? (
-                  records.map((r) => {
-                    const item = firstOrNull(r.items)
-
-                    return (
-                      <tr key={r.id} className="border-t hover:bg-slate-50">
-                        <td className="px-4 py-3">{item?.name ?? 'Trabajo general'}</td>
-                        <td className="px-4 py-3">{r.activity}</td>
-                        <td className="px-4 py-3">{r.responsible}</td>
-                        <td className="px-4 py-3">{r.maintenance_date}</td>
-                        <td className="px-4 py-3">{formatMaintenanceType(r.maintenance_type)}</td>
-                      </tr>
-                    )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-6 text-center text-slate-500">
-                      No hay mantenimientos registrados.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <MaintenanceHistory records={normalizedRecords} limit={100} />
 
       </div>
     </main>

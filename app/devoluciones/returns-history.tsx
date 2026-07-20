@@ -22,8 +22,22 @@ type ReturnsHistoryProps = {
   limit?: number
 }
 
+function getTotal(entry: ReturnHistoryEntry) {
+  return entry.quantity_ok + entry.quantity_damaged + entry.quantity_missing
+}
+
+function getResultLabel(entry: ReturnHistoryEntry) {
+  const labels = []
+  if (entry.quantity_ok > 0) labels.push(`OK: ${entry.quantity_ok}`)
+  if (entry.quantity_damaged > 0) labels.push(`Dañado: ${entry.quantity_damaged}`)
+  if (entry.quantity_missing > 0) labels.push(`Faltante: ${entry.quantity_missing}`)
+
+  return labels.length > 0 ? labels.join(' | ') : 'Sin cantidades'
+}
+
 export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
   const [search, setSearch] = useState('')
+  const [selectedId, setSelectedId] = useState(entries[0]?.id ?? '')
 
   const filteredEntries = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -42,110 +56,128 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
     })
   }, [entries, search])
 
+  const selectedEntry =
+    filteredEntries.find((entry) => entry.id === selectedId) ??
+    filteredEntries[0] ??
+    null
+
   return (
-    <div className="mt-8 rounded-2xl bg-white shadow overflow-hidden">
-      <div className="p-6 border-b">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-semibold">Historial de devoluciones</h2>
-            <p className="text-sm text-slate-500 mt-1">
-              Resultados: {filteredEntries.length}
-              {limit ? ` de los últimos ${limit} registros` : ''}
-            </p>
-          </div>
-
-          <div className="w-full md:w-96">
-            <input
-              type="text"
-              placeholder="Buscar por usuario, ítem, código, recibido por o notas"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="divide-y md:hidden">
-        {filteredEntries.length > 0 ? (
-          filteredEntries.map((entry) => (
-            <div key={entry.id} className="space-y-2 p-4 text-sm">
-              <div>
-                <p className="font-medium">
-                  {entry.item_name} [{entry.item_code}]
-                </p>
-                <p className="text-slate-500">
-                  {entry.created_at ? formatDateTime(entry.created_at) : '-'}
-                </p>
-              </div>
-              {entry.unit_code && (
-                <p><span className="font-medium">Unidad:</span> {entry.unit_code}</p>
-              )}
-              <p><span className="font-medium">Usuario:</span> {entry.borrower_name}</p>
-              <div className="grid grid-cols-3 gap-2 rounded-lg bg-slate-50 p-3 text-center">
-                <p><span className="block text-xs text-slate-500">OK</span>{entry.quantity_ok}</p>
-                <p><span className="block text-xs text-slate-500">Dañado</span>{entry.quantity_damaged}</p>
-                <p><span className="block text-xs text-slate-500">Faltante</span>{entry.quantity_missing}</p>
-              </div>
-              <p><span className="font-medium">Recibido por:</span> {entry.receiver_name}</p>
-              {entry.notes && (
-                <p className="text-slate-600"><span className="font-medium">Notas:</span> {entry.notes}</p>
-              )}
-            </div>
-          ))
-        ) : (
-          <p className="p-6 text-center text-slate-500">
-            No se encontraron resultados para la búsqueda.
+    <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold">Historial de devoluciones</h2>
+          <p className="text-sm text-slate-500">
+            Resultados: {filteredEntries.length}
+            {limit ? ` de los últimos ${limit} registros` : ''}
           </p>
-        )}
+        </div>
+
+        <input
+          type="text"
+          placeholder="Buscar por usuario, ítem, código, recibido por o notas"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm lg:w-96"
+        />
       </div>
 
-      <div className="hidden overflow-x-auto md:block">
-        <table className="min-w-[980px] text-sm">
-          <thead className="bg-slate-100 text-slate-700">
-            <tr>
-              <th className="text-left px-4 py-3">Fecha</th>
-              <th className="text-left px-4 py-3">Usuario</th>
-              <th className="text-left px-4 py-3">Ítem</th>
-              <th className="text-left px-4 py-3">Unidad</th>
-              <th className="text-left px-4 py-3">OK</th>
-              <th className="text-left px-4 py-3">Dañado</th>
-              <th className="text-left px-4 py-3">Faltante</th>
-              <th className="text-left px-4 py-3">Recibido por</th>
-              <th className="text-left px-4 py-3">Notas</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEntries.length > 0 ? (
-              filteredEntries.map((entry) => (
-                <tr key={entry.id} className="border-t hover:bg-slate-50">
-                  <td className="px-4 py-3">
-                    {entry.created_at
-                      ? formatDateTime(entry.created_at)
-                      : '-'}
-                  </td>
-                  <td className="px-4 py-3">{entry.borrower_name}</td>
-                  <td className="px-4 py-3">
-                    {entry.item_name} [{entry.item_code}]
-                  </td>
-                  <td className="px-4 py-3">{entry.unit_code || '-'}</td>
-                  <td className="px-4 py-3">{entry.quantity_ok}</td>
-                  <td className="px-4 py-3">{entry.quantity_damaged}</td>
-                  <td className="px-4 py-3">{entry.quantity_missing}</td>
-                  <td className="px-4 py-3">{entry.receiver_name}</td>
-                  <td className="px-4 py-3">{entry.notes || '-'}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={9} className="px-4 py-6 text-center text-slate-500">
-                  No se encontraron resultados para la búsqueda.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+      {filteredEntries.length > 0 ? (
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="overflow-hidden rounded-lg border border-slate-200">
+            <div className="hidden grid-cols-[128px_minmax(0,1fr)_minmax(0,1fr)_96px_minmax(0,1fr)] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <span>Fecha</span>
+              <span>Usuario</span>
+              <span>Ítem</span>
+              <span>Total</span>
+              <span>Recibido por</span>
+            </div>
+
+            <div className="divide-y divide-slate-200">
+              {filteredEntries.map((entry) => {
+                const selected = selectedEntry?.id === entry.id
+
+                return (
+                  <button
+                    key={entry.id}
+                    type="button"
+                    onClick={() => setSelectedId(entry.id)}
+                    className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[128px_minmax(0,1fr)_minmax(0,1fr)_96px_minmax(0,1fr)] md:items-center md:gap-3 ${
+                      selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="text-slate-500">
+                      {entry.created_at ? formatDateTime(entry.created_at) : '-'}
+                    </span>
+                    <span className="truncate font-medium text-slate-800">
+                      {entry.borrower_name}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium text-slate-800">
+                        {entry.item_name}
+                      </span>
+                      <span className="block truncate text-xs text-slate-500">
+                        {entry.item_code}
+                      </span>
+                    </span>
+                    <span className="font-semibold text-slate-800">{getTotal(entry)}</span>
+                    <span className="truncate text-slate-600">{entry.receiver_name}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
+            {selectedEntry ? (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-slate-500">
+                    {selectedEntry.created_at ? formatDateTime(selectedEntry.created_at) : '-'}
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold">
+                    {selectedEntry.item_name}
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    {selectedEntry.item_code} | Unidad: {selectedEntry.unit_code || '-'}
+                  </p>
+                </div>
+
+                <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-1">
+                  <div>
+                    <p className="font-medium text-slate-700">Usuario</p>
+                    <p className="mt-1 text-slate-600">{selectedEntry.borrower_name}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-700">Recibido por</p>
+                    <p className="mt-1 text-slate-600">{selectedEntry.receiver_name}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 rounded-lg bg-slate-50 p-3 text-center text-sm">
+                  <p><span className="block text-xs text-slate-500">OK</span>{selectedEntry.quantity_ok}</p>
+                  <p><span className="block text-xs text-slate-500">Dañado</span>{selectedEntry.quantity_damaged}</p>
+                  <p><span className="block text-xs text-slate-500">Faltante</span>{selectedEntry.quantity_missing}</p>
+                </div>
+
+                <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                  {getResultLabel(selectedEntry)}
+                </p>
+
+                {selectedEntry.notes && (
+                  <div>
+                    <p className="font-medium text-slate-700">Notas</p>
+                    <p className="mt-1 text-sm text-slate-600">{selectedEntry.notes}</p>
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </aside>
+        </div>
+      ) : (
+        <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+          No se encontraron resultados para la búsqueda.
+        </p>
+      )}
+    </section>
   )
 }

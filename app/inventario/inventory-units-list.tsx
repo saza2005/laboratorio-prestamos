@@ -92,8 +92,8 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
   }
 
   return (
-    <div className="mt-8 overflow-hidden rounded-lg bg-white shadow">
-      <div className="space-y-4 border-b p-4 sm:p-6">
+    <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
+      <div className="mb-4 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Unidades individuales</h2>
           <p className="mt-1 text-sm text-slate-500">
@@ -145,73 +145,88 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
         </div>
       </div>
 
-      <div className="divide-y md:hidden">
-        {pageUnits.length > 0 ? (
-          pageUnits.map((unit) => (
-            <div key={unit.id} className="space-y-2 p-4 text-sm">
-              <div>
-                <p className="font-medium">{unit.item_name}</p>
-                <p className="text-slate-500">{unit.item_code}</p>
-              </div>
-              <p><span className="font-medium">Patrimonial:</span> {unit.asset_code || '-'}</p>
-              <p><span className="font-medium">Serie:</span> {unit.serial_code || '-'}</p>
-              <p><span className="font-medium">Marca / modelo:</span> {[unit.brand, unit.model].filter(Boolean).join(' / ') || '-'}</p>
-              <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-50 p-3">
-                <p><span className="block text-xs text-slate-500">Condición</span>{formatCondition(unit.condition)}</p>
-                <p><span className="block text-xs text-slate-500">Disponibilidad</span>{formatAvailability(unit.availability_status)}</p>
-              </div>
+      {pageUnits.length > 0 ? (
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="overflow-hidden rounded-lg border border-slate-200">
+            <div className="hidden grid-cols-[minmax(0,1.2fr)_132px_132px_minmax(0,1fr)_118px_132px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <span>Equipo</span>
+              <span>Patrimonial</span>
+              <span>Serie</span>
+              <span>Marca / modelo</span>
+              <span>Condición</span>
+              <span>Disponibilidad</span>
             </div>
-          ))
-        ) : (
-          <p className="p-6 text-center text-slate-500">No hay unidades que coincidan con los filtros.</p>
-        )}
-      </div>
 
-      <div className="hidden overflow-x-auto md:block">
-        <table className="min-w-[1240px] text-sm">
-          <thead className="bg-slate-100 text-slate-700">
-            <tr>
-              <th className="px-4 py-3 text-left">Equipo</th>
-              <th className="px-4 py-3 text-left">Código</th>
-              <th className="px-4 py-3 text-left">Patrimonial</th>
-              <th className="px-4 py-3 text-left">Código anterior</th>
-              <th className="px-4 py-3 text-left">Serie</th>
-              <th className="px-4 py-3 text-left">Marca</th>
-              <th className="px-4 py-3 text-left">Modelo</th>
-              <th className="px-4 py-3 text-left">Condición</th>
-              <th className="px-4 py-3 text-left">Disponibilidad</th>
-              <th className="px-4 py-3 text-left">Ingreso</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pageUnits.length > 0 ? (
-              pageUnits.map((unit) => (
-                <tr key={unit.id} className="border-t hover:bg-slate-50">
-                  <td className="px-4 py-3">{unit.item_name}</td>
-                  <td className="px-4 py-3">{unit.item_code}</td>
-                  <td className="px-4 py-3">{unit.asset_code || '-'}</td>
-                  <td className="px-4 py-3">{unit.old_code || '-'}</td>
-                  <td className="px-4 py-3">{unit.serial_code || '-'}</td>
-                  <td className="px-4 py-3">{unit.brand || '-'}</td>
-                  <td className="px-4 py-3">{unit.model || '-'}</td>
-                  <td className="px-4 py-3">{formatCondition(unit.condition)}</td>
-                  <td className="px-4 py-3">{formatAvailability(unit.availability_status)}</td>
-                  <td className="px-4 py-3">{unit.entry_date || '-'}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={10} className="px-4 py-6 text-center text-slate-500">
-                  No hay unidades que coincidan con los filtros.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            <div className="divide-y divide-slate-200">
+              {pageUnits.map((unit) => (
+                <button
+                  key={unit.id}
+                  type="button"
+                  className="grid w-full gap-2 bg-white px-4 py-3 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[minmax(0,1.2fr)_132px_132px_minmax(0,1fr)_118px_132px] md:items-center md:gap-3"
+                  onClick={() => {
+                    const element = document.getElementById(`unit-detail-${unit.id}`)
+                    element?.scrollIntoView({ block: 'nearest' })
+                  }}
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium text-slate-800">{unit.item_name}</span>
+                    <span className="block truncate text-xs text-slate-500">{unit.item_code}</span>
+                  </span>
+                  <span className="truncate text-slate-700">{unit.asset_code || '-'}</span>
+                  <span className="truncate text-slate-700">{unit.serial_code || '-'}</span>
+                  <span className="truncate text-slate-600">
+                    {[unit.brand, unit.model].filter(Boolean).join(' / ') || '-'}
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                    {formatCondition(unit.condition)}
+                  </span>
+                  <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                    {formatAvailability(unit.availability_status)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <aside className="rounded-lg border border-slate-200 bg-white p-4 xl:sticky xl:top-4 xl:self-start">
+            <p className="mb-3 text-sm font-medium text-slate-700">Detalle de unidad</p>
+            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
+              {pageUnits.map((unit) => (
+                <div
+                  key={unit.id}
+                  id={`unit-detail-${unit.id}`}
+                  className="rounded-lg bg-slate-50 p-3 text-sm"
+                >
+                  <div>
+                    <p className="font-semibold text-slate-900">{unit.item_name}</p>
+                    <p className="text-xs text-slate-500">{unit.item_code}</p>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Condición</span>{formatCondition(unit.condition)}</p>
+                    <p className="rounded bg-white px-2 py-2"><span className="block text-xs text-slate-500">Disponibilidad</span>{formatAvailability(unit.availability_status)}</p>
+                  </div>
+                  <div className="mt-3 space-y-1 text-slate-600">
+                    <p><span className="font-medium text-slate-700">Patrimonial:</span> {unit.asset_code || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Código anterior:</span> {unit.old_code || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Serie:</span> {unit.serial_code || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Marca:</span> {unit.brand || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Modelo:</span> {unit.model || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Ingreso:</span> {unit.entry_date || '-'}</p>
+                    <p><span className="font-medium text-slate-700">Asignación:</span> {unit.assignment_date || '-'}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      ) : (
+        <p className="rounded-lg bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+          No hay unidades que coincidan con los filtros.
+        </p>
+      )}
 
       {filteredUnits.length > PAGE_SIZE && (
-        <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="mt-4 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-500">Página {currentPage} de {totalPages}</p>
           <div className="grid grid-cols-2 gap-2 sm:flex">
             <button
@@ -233,6 +248,6 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
           </div>
         </div>
       )}
-    </div>
+    </section>
   )
 }
