@@ -1,7 +1,8 @@
 'use client'
 
-import { useActionState, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useActionState, useEffect, useMemo, useState } from 'react'
 import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
+import { useIsHydrated } from '@/lib/use-is-hydrated'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -25,7 +26,6 @@ type RequestFormProps = {
 }
 
 const RESULTS_LIMIT = 12
-const subscribeToHydration = () => () => {}
 
 export function RequestForm({
   items,
@@ -38,11 +38,7 @@ export function RequestForm({
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
-  const mounted = useSyncExternalStore(
-    subscribeToHydration,
-    () => true,
-    () => false
-  )
+  const mounted = useIsHydrated()
 
   const selectedIds = rows.map((row) => row.item_id)
 

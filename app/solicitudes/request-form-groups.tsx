@@ -1,7 +1,8 @@
 'use client'
 
-import { useActionState, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useActionState, useEffect, useMemo, useState } from 'react'
 import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
+import { useIsHydrated } from '@/lib/use-is-hydrated'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -32,7 +33,6 @@ type Group = {
 }
 
 const RESULTS_LIMIT = 8
-const subscribeToHydration = () => () => {}
 
 function makeGroup(index: number): Group {
   return {
@@ -58,11 +58,7 @@ export function RequestFormGroups({
   })
   const [groups, setGroups] = useState<Group[]>([makeGroup(0)])
   const [addedItemMessage, setAddedItemMessage] = useState('')
-  const mounted = useSyncExternalStore(
-    subscribeToHydration,
-    () => true,
-    () => false
-  )
+  const mounted = useIsHydrated()
 
   const itemMap = useMemo(() => {
     return new Map(items.map((item) => [item.id, item]))
