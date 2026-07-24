@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { normalizeSearchText } from '@/lib/item-format'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatInventoryStatus } from '@/lib/status-format'
 
@@ -19,10 +20,6 @@ type InventoryItem = {
 }
 
 const PAGE_SIZE = 50
-
-function normalize(value: string | null | undefined) {
-  return value?.trim().toLocaleLowerCase('es') ?? ''
-}
 
 export function InventoryList({ items }: { items: InventoryItem[] }) {
   const [search, setSearch] = useState('')
@@ -44,18 +41,18 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
   )
 
   const filteredItems = useMemo(() => {
-    const query = normalize(search)
+    const query = normalizeSearchText(search)
 
     return items.filter((item) => {
       const matchesCategory = !category || item.category === category
       const matchesStatus = !status || item.status === status
       const matchesSearch =
         !query ||
-        normalize(item.name).includes(query) ||
-        normalize(item.code).includes(query) ||
-        item.asset_codes.some((code) => normalize(code).includes(query)) ||
-        normalize(item.category).includes(query) ||
-        normalize(item.location).includes(query)
+        normalizeSearchText(item.name).includes(query) ||
+        normalizeSearchText(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalizeSearchText(code).includes(query)) ||
+        normalizeSearchText(item.category).includes(query) ||
+        normalizeSearchText(item.location).includes(query)
 
       return matchesCategory && matchesStatus && matchesSearch
     })

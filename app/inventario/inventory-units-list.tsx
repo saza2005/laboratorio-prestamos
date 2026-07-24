@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { normalizeSearchText } from '@/lib/item-format'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatUnitAvailability, formatUnitCondition } from '@/lib/status-format'
 
@@ -21,10 +22,6 @@ type InventoryUnit = {
 
 const PAGE_SIZE = 50
 
-function normalize(value: string | null | undefined) {
-  return value?.trim().toLocaleLowerCase('es') ?? ''
-}
-
 export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
   const [search, setSearch] = useState('')
   const [condition, setCondition] = useState('')
@@ -33,18 +30,18 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null)
 
   const filteredUnits = useMemo(() => {
-    const query = normalize(search)
+    const query = normalizeSearchText(search)
 
     return units.filter((unit) => {
       const matchesSearch =
         !query ||
-        normalize(unit.item_name).includes(query) ||
-        normalize(unit.item_code).includes(query) ||
-        normalize(unit.asset_code).includes(query) ||
-        normalize(unit.old_code).includes(query) ||
-        normalize(unit.serial_code).includes(query) ||
-        normalize(unit.model).includes(query) ||
-        normalize(unit.brand).includes(query)
+        normalizeSearchText(unit.item_name).includes(query) ||
+        normalizeSearchText(unit.item_code).includes(query) ||
+        normalizeSearchText(unit.asset_code).includes(query) ||
+        normalizeSearchText(unit.old_code).includes(query) ||
+        normalizeSearchText(unit.serial_code).includes(query) ||
+        normalizeSearchText(unit.model).includes(query) ||
+        normalizeSearchText(unit.brand).includes(query)
       const matchesCondition = !condition || unit.condition === condition
       const matchesAvailability =
         !availability || unit.availability_status === availability

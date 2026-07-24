@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { normalizeSearchText } from '@/lib/item-format'
 
 type CatalogItem = {
   id: string
@@ -13,10 +14,6 @@ type CatalogItem = {
 }
 
 const PAGE_SIZE = 24
-
-function normalize(value: string | null | undefined) {
-  return value?.trim().toLowerCase() ?? ''
-}
 
 export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
   const [search, setSearch] = useState('')
@@ -34,16 +31,16 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
   }, [items])
 
   const filteredItems = useMemo(() => {
-    const query = normalize(search)
+    const query = normalizeSearchText(search)
 
     return items.filter((item) => {
       const matchesCategory = !category || item.category === category
       const matchesSearch =
         !query ||
-        normalize(item.name).includes(query) ||
-        normalize(item.code).includes(query) ||
-        item.asset_codes.some((code) => normalize(code).includes(query)) ||
-        normalize(item.category).includes(query)
+        normalizeSearchText(item.name).includes(query) ||
+        normalizeSearchText(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalizeSearchText(code).includes(query)) ||
+        normalizeSearchText(item.category).includes(query)
 
       return matchesCategory && matchesSearch
     })

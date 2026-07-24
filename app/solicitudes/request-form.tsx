@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
 import { createRequestWithState } from './actions'
 
 type ItemOption = {
@@ -25,16 +26,6 @@ type RequestFormProps = {
 
 const RESULTS_LIMIT = 12
 const subscribeToHydration = () => () => {}
-
-function normalize(value: string | null | undefined) {
-  return value?.trim().toLowerCase() ?? ''
-}
-
-function formatAssetCodes(codes: string[]) {
-  if (codes.length === 0) return null
-  if (codes.length <= 2) return codes.join(', ')
-  return `${codes.slice(0, 2).join(', ')} +${codes.length - 2}`
-}
 
 export function RequestForm({
   items,
@@ -70,16 +61,16 @@ export function RequestForm({
   }, [items])
 
   const filteredItems = useMemo(() => {
-    const query = normalize(itemSearch)
+    const query = normalizeSearchText(itemSearch)
 
     return items.filter((item) => {
       const matchesCategory = !categoryFilter || item.category === categoryFilter
       const matchesSearch =
         !query ||
-        normalize(item.name).includes(query) ||
-        normalize(item.code).includes(query) ||
-        item.asset_codes.some((code) => normalize(code).includes(query)) ||
-        normalize(item.category).includes(query)
+        normalizeSearchText(item.name).includes(query) ||
+        normalizeSearchText(item.code).includes(query) ||
+        item.asset_codes.some((code) => normalizeSearchText(code).includes(query)) ||
+        normalizeSearchText(item.category).includes(query)
 
       return matchesCategory && matchesSearch
     })
