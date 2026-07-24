@@ -6,14 +6,7 @@ import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
-
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null
-  }
-
-  return value ?? null
-}
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
 export default async function PrestamosPage() {
   let auth

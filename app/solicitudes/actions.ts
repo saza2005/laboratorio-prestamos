@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { getActionErrorMessage } from '@/lib/action-error'
 import { canCreateGroupRequests, canUseRequestPortal } from '@/lib/supabase/auth/roles'
+import { isValidDateInput } from '@/lib/date-input'
+import { getEcuadorDate } from '@/lib/loan-status'
 
 export type RequestActionState = {
   error: string | null
@@ -100,30 +102,7 @@ function parseGroups(formData: FormData): RequestGroupRow[] {
     .filter((group) => group.items.length > 0)
 }
 
-function isValidDateInput(value: string) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
 
-  const [year, month, day] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  return (
-    date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day
-  )
-}
-
-function getEcuadorDate() {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Guayaquil',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date())
-  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]))
-
-  return `${values.year}-${values.month}-${values.day}`
-}
 
 async function persistRequest(formData: FormData): Promise<void> {
   const { supabase, profile } = await getAuthProfile()

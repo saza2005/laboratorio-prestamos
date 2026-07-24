@@ -7,14 +7,8 @@ import { InventoryUnitsList } from './inventory-units-list'
 import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null
-  }
-
-  return value ?? null
-}
 
 export default async function InventarioPage() {
   let auth

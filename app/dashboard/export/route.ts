@@ -4,11 +4,8 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canSeeReportsModule } from '@/lib/supabase/auth/roles'
 import { parseReportPeriod } from '@/lib/report-period'
 import { getEffectiveLoanStatus } from '@/lib/loan-status'
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) return value[0] ?? null
-  return value ?? null
-}
 
 export async function GET(request: NextRequest) {
   let auth

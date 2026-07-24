@@ -9,14 +9,7 @@ export {
   loanStatusBadgeClass,
   requestStatusBadgeClass as statusBadgeClass,
 } from '@/lib/status-format'
-
-export function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null
-  }
-
-  return value ?? null
-}
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
 export async function getRequestPortalAuth() {
   try {

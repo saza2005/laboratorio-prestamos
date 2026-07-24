@@ -5,14 +5,8 @@ import { PendingReturnsList } from './pending-returns-list'
 import { ReturnsHistory } from './returns-history'
 import { canManageReturns, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null
-  }
-
-  return value ?? null
-}
 export default async function DevolucionesPage() {
   let auth
 

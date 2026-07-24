@@ -14,14 +14,7 @@ import { formatDateTime, formatMonthName } from '@/lib/format-date'
 import { parseReportPeriod } from '@/lib/report-period'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import { formatMovementType, loanStatusBadgeClass as statusBadgeClass } from '@/lib/status-format'
-
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null
-  }
-
-  return value ?? null
-}
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
 export default async function DashboardPage({
   searchParams,

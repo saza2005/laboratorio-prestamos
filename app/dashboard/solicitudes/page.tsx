@@ -7,14 +7,7 @@ import {
 } from '@/lib/supabase/auth/roles'
 import { RequestsTable } from './requests-table'
 import { RequestActionsPanel } from './request-actions-panel'
-
-function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null
-  }
-
-  return value ?? null
-}
+import { firstOrNull } from '@/lib/supabase/query-utils'
 
 export default async function DashboardSolicitudesPage() {
   let auth
