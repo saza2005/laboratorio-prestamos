@@ -4,6 +4,7 @@ import { useActionState, useEffect, useMemo, useState } from 'react'
 import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
 import { useIsHydrated } from '@/lib/use-is-hydrated'
 import { createRequestWithState } from './actions'
+import { ItemAddedToast } from '@/components/item-added-toast'
 
 type ItemOption = {
   id: string
@@ -241,12 +242,7 @@ export function RequestFormGroups({
 
   return (
     <form action={formAction} className="space-y-6">
-      {addedItemMessage && (
-        <div className="fixed left-4 top-24 z-50 max-w-[calc(100vw-2rem)] rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg sm:max-w-sm" role="status" aria-live="polite">
-          <p className="font-medium">Ítem agregado en la parte inferior</p>
-          <p className="mt-1 truncate">{addedItemMessage}</p>
-        </div>
-      )}
+      <ItemAddedToast itemName={addedItemMessage} />
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-1 block text-sm font-medium">Propósito</label>

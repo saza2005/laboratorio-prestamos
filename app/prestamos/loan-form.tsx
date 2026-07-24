@@ -4,6 +4,7 @@ import { useActionState, useEffect, useMemo, useState } from 'react'
 import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
 import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createLoanWithState } from './actions'
+import { ItemAddedToast } from '@/components/item-added-toast'
 
 type Item = {
   id: string
@@ -198,12 +199,7 @@ export function LoanForm({
       onSubmit={confirmSubmit.onSubmit}
     >
       {confirmSubmit.dialog}
-      {addedItemName && (
-        <div className="fixed left-4 top-24 z-50 max-w-xs rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg">
-          <p className="font-medium">Ítem agregado en la parte inferior</p>
-          <p className="mt-1 truncate">{addedItemName}</p>
-        </div>
-      )}
+      <ItemAddedToast itemName={addedItemName} />
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
