@@ -5,6 +5,7 @@ import { PendingReturnsList } from './pending-returns-list'
 import { ReturnsHistory } from './returns-history'
 import { canManageReturns, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
+import { ADMIN_HISTORY_LIMIT, PROFILE_SELECT_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 
 export default async function DevolucionesPage() {
@@ -64,7 +65,7 @@ export default async function DevolucionesPage() {
     `)
     .in('loans.status', ['active', 'partial_return', 'overdue'])
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(PROFILE_SELECT_LIMIT)
 
   if (error) {
     throw new Error(error.message)
@@ -104,7 +105,7 @@ export default async function DevolucionesPage() {
       )
     `)
     .order('created_at', { ascending: false, referencedTable: 'returns' })
-    .limit(50)
+    .limit(ADMIN_HISTORY_LIMIT)
   if (returnHistoryError) {
     throw new Error(returnHistoryError.message)
   }

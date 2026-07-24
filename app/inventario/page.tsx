@@ -6,7 +6,7 @@ import { InventoryList } from './inventory-list'
 import { InventoryUnitsList } from './inventory-units-list'
 import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 
 
@@ -125,7 +125,7 @@ export default async function InventarioPage() {
       profiles:profiles!inventory_movements_created_by_fkey(full_name)
     `)
     .order('created_at', { ascending: false })
-    .limit(100)
+    .limit(ADMIN_HISTORY_LIMIT)
 
   if (movementsError) {
     throw new Error(movementsError.message)

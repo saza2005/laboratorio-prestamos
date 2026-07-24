@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { USER_HISTORY_LIMIT } from '@/lib/query-limits'
 import { formatLoanStatus, loanStatusBadgeClass } from '@/lib/status-format'
 
 type LoanItem = {
@@ -156,7 +157,7 @@ export function LoansList({ loans }: LoansListProps) {
             <option value="cancelled">Cancelado</option>
           </select>
           <div className="flex items-center text-sm text-slate-600">
-            Resultados: {filteredLoans.length} de los últimos 50 préstamos
+            Resultados: {filteredLoans.length} de los últimos {USER_HISTORY_LIMIT} préstamos
           </div>
         </div>
       </div>

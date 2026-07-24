@@ -1,7 +1,11 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
-import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import {
+  INVENTORY_CATALOG_LIMIT,
+  PROFILE_SELECT_LIMIT,
+  USER_HISTORY_LIMIT,
+} from '@/lib/query-limits'
 import { getEffectiveLoanStatus } from '@/lib/loan-status'
 export {
   formatLoanStatus,
@@ -64,7 +68,7 @@ export async function getStudentsForGroups(
     .eq('role', 'student')
     .eq('is_active', true)
     .order('full_name', { ascending: true })
-    .limit(500)
+    .limit(PROFILE_SELECT_LIMIT)
 
   if (error) {
     throw new Error(error.message)
@@ -104,7 +108,7 @@ export async function getOwnRequests(
     `)
     .eq('user_id', userId)
     .order('requested_at', { ascending: false })
-    .limit(50)
+    .limit(USER_HISTORY_LIMIT)
 
   if (error) {
     throw new Error(error.message)
@@ -171,7 +175,7 @@ export async function getOwnLoans(
     `)
     .eq('user_id', userId)
     .order('delivery_date', { ascending: false })
-    .limit(50)
+    .limit(USER_HISTORY_LIMIT)
 
   if (error) {
     throw new Error(error.message)

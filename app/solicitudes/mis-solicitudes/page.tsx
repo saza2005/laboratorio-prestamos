@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
 import { getOwnRequests, getRequestPortalAuth } from '../shared'
+import { USER_HISTORY_LIMIT } from '@/lib/query-limits'
 import { RequestsList } from './requests-list'
 
 export default async function MisSolicitudesPage() {
@@ -24,7 +25,7 @@ export default async function MisSolicitudesPage() {
           </Link>
           <h1 className="mt-3 text-3xl font-bold">Mis solicitudes</h1>
           <p className="mt-1 text-slate-600">
-            Historial y estado de tus últimas 50 solicitudes.
+            Historial y estado de tus últimas {USER_HISTORY_LIMIT} solicitudes.
           </p>
         </div>
 

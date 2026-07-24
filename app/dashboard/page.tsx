@@ -12,6 +12,7 @@ import {
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
 import { parseReportPeriod } from '@/lib/report-period'
+import { DASHBOARD_LOW_STOCK_LIMIT, DASHBOARD_RECENT_LOANS_LIMIT } from '@/lib/query-limits'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import { formatMovementType, loanStatusBadgeClass as statusBadgeClass } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
@@ -79,7 +80,7 @@ export default async function DashboardPage({
       .eq('status', 'active')
       .lte('stock_available', 2)
       .order('stock_available', { ascending: true })
-      .limit(6),
+      .limit(DASHBOARD_LOW_STOCK_LIMIT),
   ])
 
   if (inventorySummaryResult.error) {
@@ -128,7 +129,7 @@ export default async function DashboardPage({
         profiles:profiles!loans_user_id_fkey(full_name, email)
       `)
       .order('delivery_date', { ascending: false })
-      .limit(6),
+      .limit(DASHBOARD_LOW_STOCK_LIMIT),
   ])
 
   if (activeLoansResult.error) {
@@ -163,7 +164,7 @@ export default async function DashboardPage({
       profiles:profiles!inventory_movements_created_by_fkey(full_name)
     `)
     .order('created_at', { ascending: false })
-    .limit(8)
+    .limit(DASHBOARD_RECENT_LOANS_LIMIT)
 
   if (movementsError) {
     throw new Error(movementsError.message)

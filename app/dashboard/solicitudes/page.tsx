@@ -7,6 +7,7 @@ import {
 } from '@/lib/supabase/auth/roles'
 import { RequestsTable } from './requests-table'
 import { RequestActionsPanel } from './request-actions-panel'
+import { ADMIN_REQUESTS_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 
 export default async function DashboardSolicitudesPage() {
@@ -74,7 +75,7 @@ const { data: rawRequests, error } = await supabase
     )
   `)
   .order('requested_at', { ascending: false })
-  .limit(100)
+  .limit(ADMIN_REQUESTS_LIMIT)
 
   if (error) {
     throw new Error(error.message)

@@ -4,7 +4,11 @@ import { LoanForm } from './loan-form'
 import { LoansList } from './loans-list'
 import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import {
+  INVENTORY_CATALOG_LIMIT,
+  PROFILE_SELECT_LIMIT,
+  USER_HISTORY_LIMIT,
+} from '@/lib/query-limits'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 
@@ -30,7 +34,7 @@ export default async function PrestamosPage() {
       .in('role', ['teacher', 'student'])
       .eq('is_active', true)
       .order('full_name', { ascending: true })
-      .limit(500),
+      .limit(PROFILE_SELECT_LIMIT),
     supabase
       .from('items')
       .select(
@@ -165,7 +169,7 @@ export default async function PrestamosPage() {
       )
     `)
     .order('delivery_date', { ascending: false })
-    .limit(50)
+    .limit(USER_HISTORY_LIMIT)
 
   if (loansError) {
     throw new Error(loansError.message)

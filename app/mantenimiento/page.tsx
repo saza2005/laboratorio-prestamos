@@ -7,7 +7,7 @@ import {
 } from '@/lib/supabase/auth/roles'
 import { MaintenanceForm } from './maintenance-form'
 import { MaintenanceHistory } from './maintenance-history'
-import { INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 
 export default async function MantenimientoPage() {
   let auth
@@ -57,7 +57,7 @@ export default async function MantenimientoPage() {
       items:items(name, code)
     `)
     .order('maintenance_date', { ascending: false })
-    .limit(100)
+    .limit(ADMIN_HISTORY_LIMIT)
 
   if (recordsError) {
     throw new Error(recordsError.message)
