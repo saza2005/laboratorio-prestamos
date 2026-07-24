@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageInventory } from '@/lib/supabase/auth/roles'
+import { getActionErrorMessage } from '@/lib/action-error'
 
 export type InventoryActionState = {
   error: string | null
@@ -78,14 +79,6 @@ async function persistItem(formData: FormData) {
   }
 }
 
-function getInventoryErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-
-  return 'No se pudo guardar el ítem. Intente nuevamente.'
-}
-
 export async function createItem(formData: FormData): Promise<void> {
   await persistItem(formData)
   redirect('/inventario')
@@ -98,7 +91,7 @@ export async function createItemWithState(
   try {
     await persistItem(formData)
   } catch (error) {
-    return { error: getInventoryErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo guardar el ítem. Intente nuevamente.') }
   }
 
   redirect('/inventario')

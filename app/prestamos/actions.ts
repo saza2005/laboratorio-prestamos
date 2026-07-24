@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageLoans } from '@/lib/supabase/auth/roles'
+import { getActionErrorMessage } from '@/lib/action-error'
 
 export type LoanActionState = { error: string | null }
 
@@ -71,12 +72,6 @@ async function persistLoan(formData: FormData): Promise<void> {
   if (error) throw new Error(error.message)
 }
 
-function getLoanErrorMessage(error: unknown) {
-  return error instanceof Error && error.message
-    ? error.message
-    : 'No se pudo registrar el préstamo. Intente nuevamente.'
-}
-
 export async function createLoan(formData: FormData): Promise<void> {
   await persistLoan(formData)
   redirect('/prestamos')
@@ -89,7 +84,7 @@ export async function createLoanWithState(
   try {
     await persistLoan(formData)
   } catch (error) {
-    return { error: getLoanErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo registrar el préstamo. Intente nuevamente.') }
   }
   redirect('/prestamos')
 }

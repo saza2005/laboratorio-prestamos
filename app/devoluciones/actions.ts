@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageReturns } from '@/lib/supabase/auth/roles'
+import { getActionErrorMessage } from '@/lib/action-error'
 
 export type ReturnActionState = {
   error: string | null
@@ -40,14 +41,6 @@ async function persistReturn(formData: FormData): Promise<void> {
   }
 }
 
-function getReturnErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-
-  return 'No se pudo registrar la devolución. Intente nuevamente.'
-}
-
 export async function createReturn(formData: FormData): Promise<void> {
   await persistReturn(formData)
   redirect('/devoluciones')
@@ -60,7 +53,7 @@ export async function createReturnWithState(
   try {
     await persistReturn(formData)
   } catch (error) {
-    return { error: getReturnErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo registrar la devolución. Intente nuevamente.') }
   }
 
   redirect('/devoluciones')

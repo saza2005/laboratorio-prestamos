@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageInventory } from '@/lib/supabase/auth/roles'
+import { getActionErrorMessage } from '@/lib/action-error'
 
 export type MaintenanceActionState = {
   error: string | null
@@ -84,14 +85,6 @@ function isValidDateInput(value: string) {
   )
 }
 
-function getMaintenanceErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-
-  return 'No se pudo registrar el mantenimiento. Intente nuevamente.'
-}
-
 export async function createMaintenance(formData: FormData): Promise<void> {
   await persistMaintenance(formData)
   redirect('/mantenimiento')
@@ -104,7 +97,7 @@ export async function createMaintenanceWithState(
   try {
     await persistMaintenance(formData)
   } catch (error) {
-    return { error: getMaintenanceErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo registrar el mantenimiento. Intente nuevamente.') }
   }
 
   redirect('/mantenimiento')

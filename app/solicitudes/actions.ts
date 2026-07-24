@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
+import { getActionErrorMessage } from '@/lib/action-error'
 import { canCreateGroupRequests, canUseRequestPortal } from '@/lib/supabase/auth/roles'
 
 export type RequestActionState = {
@@ -183,14 +184,6 @@ async function persistRequest(formData: FormData): Promise<void> {
   }
 }
 
-function getRequestErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-
-  return 'No se pudo procesar la solicitud. Intente nuevamente.'
-}
-
 export async function createRequest(formData: FormData): Promise<void> {
   await persistRequest(formData)
   redirect('/solicitudes')
@@ -203,7 +196,7 @@ export async function createRequestWithState(
   try {
     await persistRequest(formData)
   } catch (error) {
-    return { error: getRequestErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo procesar la solicitud. Intente nuevamente.') }
   }
 
   redirect('/solicitudes')
@@ -221,7 +214,7 @@ export async function cancelOwnRequestWithState(
   try {
     await persistCancelOwnRequest(formData)
   } catch (error) {
-    return { error: getRequestErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo procesar la solicitud. Intente nuevamente.') }
   }
 
   redirect('/solicitudes')

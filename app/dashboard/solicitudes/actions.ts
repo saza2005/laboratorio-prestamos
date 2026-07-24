@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageLoans } from '@/lib/supabase/auth/roles'
+import { getActionErrorMessage } from '@/lib/action-error'
 
 export type ActionState = {
   error: string | null
@@ -144,14 +145,6 @@ async function persistDeliverRequest(formData: FormData): Promise<void> {
   }
 }
 
-function getActionErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-
-  return 'No se pudo procesar la acción. Intente nuevamente.'
-}
-
 export async function approveRequest(formData: FormData): Promise<void> {
   await persistApproveRequest(formData)
   redirect('/dashboard/solicitudes')
@@ -164,7 +157,7 @@ export async function approveRequestWithState(
   try {
     await persistApproveRequest(formData)
   } catch (error) {
-    return { error: getActionErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo procesar la acción. Intente nuevamente.') }
   }
 
   redirect('/dashboard/solicitudes')
@@ -182,7 +175,7 @@ export async function rejectRequestWithState(
   try {
     await persistRejectRequest(formData)
   } catch (error) {
-    return { error: getActionErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo procesar la acción. Intente nuevamente.') }
   }
 
   redirect('/dashboard/solicitudes')
@@ -200,7 +193,7 @@ export async function deliverRequestWithState(
   try {
     await persistDeliverRequest(formData)
   } catch (error) {
-    return { error: getActionErrorMessage(error) }
+    return { error: getActionErrorMessage(error, 'No se pudo procesar la acción. Intente nuevamente.') }
   }
 
   redirect('/dashboard/solicitudes')
