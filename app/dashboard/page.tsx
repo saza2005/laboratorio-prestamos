@@ -44,8 +44,9 @@ export default async function DashboardPage({
 
   const { supabase, user, profile } = auth
   const params = await searchParams
+  const now = new Date()
 
-  const period = parseReportPeriod(params.month, params.year, new Date())
+  const period = parseReportPeriod(params.month, params.year, now)
 
   if (!period) {
     redirect('/dashboard')
@@ -53,6 +54,17 @@ export default async function DashboardPage({
 
   const selectedMonth = period.month
   const selectedYear = period.year
+  const reportBaseYear = now.getFullYear()
+  const reportYears = Array.from(
+    new Set([
+      reportBaseYear - 2,
+      reportBaseYear - 1,
+      reportBaseYear,
+      reportBaseYear + 1,
+      reportBaseYear + 2,
+      selectedYear,
+    ])
+  ).sort((a, b) => a - b)
 
   const { data: maintenance, error: maintenanceError } = await supabase
     .from('maintenance_records')
@@ -589,7 +601,7 @@ export default async function DashboardPage({
                     defaultValue={selectedYear}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2"
                   >
-                    {[2024, 2025, 2026, 2027].map((year) => (
+                    {reportYears.map((year) => (
                       <option key={year} value={year}>
                         {year}
                       </option>
