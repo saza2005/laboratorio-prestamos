@@ -9,6 +9,23 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 - Después de cada acción crítica, revisar el cambio en la pantalla correspondiente y, si aplica, en Supabase.
 - Si aparece un error, guardar ruta, rol, acción realizada, mensaje exacto y hora aproximada.
 
+## Estados y prioridad
+
+Usar estos valores en la columna `Estado` durante la validación:
+
+- `Pendiente`: todavía no se ha probado en la fase actual.
+- `Correcto`: probado y funcionando.
+- `Revisar`: probado con error o comportamiento dudoso.
+- `No aplica`: el rol o ambiente no usa esa función.
+
+Prioridad de cierre:
+
+1. Autenticación, rutas por rol y cierre de sesión.
+2. Solicitudes individuales/grupales, aprobación, entrega completa y entrega parcial.
+3. Préstamos directos con uno o varios ítems y selección de unidades patrimoniales.
+4. Devoluciones parciales/totales y actualización de stock.
+5. Inventario, mantenimiento, dashboard, exportaciones y filtros.
+
 ## 1. Autenticación y rutas
 
 | Prueba | Rol | Resultado esperado | Estado |
@@ -156,3 +173,11 @@ La fase puede cerrarse cuando:
 - no hay rutas que se queden cargando;
 - los cambios de stock coinciden con préstamos/devoluciones;
 - `git status` queda limpio después de commit y push.
+
+## Registro de ejecución
+
+Completar una fila por ronda de pruebas:
+
+| Fecha | Ambiente | Rol(es) | Responsable | Resultado general | Observaciones |
+| --- | --- | --- | --- | --- | --- |
+|  | Localhost / Vercel |  |  | Pendiente / Correcto / Revisar |  |
