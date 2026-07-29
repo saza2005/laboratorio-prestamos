@@ -25,7 +25,7 @@ export default function HomePage() {
             href="/auth/register"
             className="rounded-lg border border-slate-300 px-6 py-3 font-medium transition hover:bg-slate-50"
           >
-            Registrarse
+            Registro institucional
           </Link>
         </div>
       </div>
