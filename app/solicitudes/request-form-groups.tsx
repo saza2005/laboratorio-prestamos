@@ -5,6 +5,7 @@ import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
 import { useIsHydrated } from '@/lib/use-is-hydrated'
 import { createRequestWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
+import { stockAvailabilityBadgeClass } from '@/lib/status-format'
 
 type ItemOption = {
   id: string
@@ -408,9 +409,17 @@ export function RequestFormGroups({
                           Código interno: {item.code}
                           {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
                         </span>
-                        <span className="mt-1 block text-xs text-slate-600">
-                          Stock: {item.stock_available} | Categoría:{' '}
-                          {item.category || 'Sin categoría'}
+                        <span className="mt-2 flex flex-wrap gap-2 text-xs">
+                          <span
+                            className={`rounded-full px-2.5 py-1 font-semibold ring-1 ${stockAvailabilityBadgeClass(
+                              item.stock_available
+                            )}`}
+                          >
+                            Stock: {item.stock_available}
+                          </span>
+                          <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+                            {item.category || 'Sin categoría'}
+                          </span>
                         </span>
                       </button>
                     )
@@ -449,10 +458,18 @@ export function RequestFormGroups({
                               Código interno: {item.code}
                               {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
                             </p>
-                            <p className="mt-1 text-xs text-slate-600">
-                              Disponible: {item.stock_available} | Total solicitado:{' '}
-                              {totalRequestedForItem}
-                            </p>
+                            <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                              <span
+                                className={`rounded-full px-2.5 py-1 font-semibold ring-1 ${stockAvailabilityBadgeClass(
+                                  item.stock_available
+                                )}`}
+                              >
+                                Disponible: {item.stock_available}
+                              </span>
+                              <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+                                Total solicitado: {totalRequestedForItem}
+                              </span>
+                            </div>
                           </div>
 
                           <div>

@@ -8,6 +8,7 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { ADMIN_HISTORY_LIMIT, PROFILE_SELECT_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
+import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function DevolucionesPage() {
   let auth
@@ -196,9 +197,16 @@ export default async function DevolucionesPage() {
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Gestión de Devoluciones</h1>
-            <p className="text-slate-600">
-              Usuario: {profile?.full_name} | Rol: {profile?.role}
-            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
+              <span
+                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
+                  profile?.role
+                )}`}
+              >
+                {formatUserRole(profile?.role)}
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">

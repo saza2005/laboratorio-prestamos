@@ -5,6 +5,7 @@ import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
 import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createLoanWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
+import { stockAvailabilityBadgeClass } from '@/lib/status-format'
 
 type Item = {
   id: string
@@ -299,9 +300,17 @@ export function LoanForm({
                     Código interno: {item.code}
                     {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
                   </span>
-                  <span className="mt-1 block text-xs text-slate-600">
-                    Stock: {item.stock_available} | Categoría:{' '}
-                    {item.category || 'Sin categoría'}
+                  <span className="mt-2 flex flex-wrap gap-2 text-xs">
+                    <span
+                      className={`rounded-full px-2.5 py-1 font-semibold ring-1 ${stockAvailabilityBadgeClass(
+                        item.stock_available
+                      )}`}
+                    >
+                      Stock: {item.stock_available}
+                    </span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+                      {item.category || 'Sin categoría'}
+                    </span>
                   </span>
                   {item.track_individual && (
                     <span className="mt-1 block text-xs text-blue-700">
@@ -422,9 +431,24 @@ export function LoanForm({
                   )}
                 </div>
 
-                <p className={`mt-2 text-sm ${exceedsStock ? 'text-red-600' : 'text-slate-600'}`}>
-                  Solicitado en este préstamo: {total} de {item.stock_available} disponibles
-                </p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                  <span
+                    className={`rounded-full px-2.5 py-1 font-semibold ring-1 ${
+                      exceedsStock
+                        ? 'bg-red-50 text-red-700 ring-red-200'
+                        : 'bg-slate-100 text-slate-700 ring-slate-200'
+                    }`}
+                  >
+                    Solicitado: {total}
+                  </span>
+                  <span
+                    className={`rounded-full px-2.5 py-1 font-semibold ring-1 ${stockAvailabilityBadgeClass(
+                      item.stock_available
+                    )}`}
+                  >
+                    Disponible: {item.stock_available}
+                  </span>
+                </div>
               </div>
             )
           })

@@ -5,7 +5,7 @@ import { normalizeSearchText } from '@/lib/item-format'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { PaginationControls } from '@/components/pagination-controls'
 import { formatDateTime } from '@/lib/format-date'
-import { formatInventoryStatus, formatMovementType } from '@/lib/status-format'
+import { formatInventoryStatus, formatItemType, formatMovementType, inventoryStatusBadgeClass } from '@/lib/status-format'
 
 type InventoryItem = {
   id: string
@@ -241,7 +241,11 @@ export function InventoryList({
                     {item.stock_available}
                   </span>
                   <span className="text-slate-600">{item.stock_total}</span>
-                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                  <span
+                    className={`rounded-full px-2 py-1 text-xs font-medium ring-1 ${inventoryStatusBadgeClass(
+                      item.status
+                    )}`}
+                  >
                     {formatInventoryStatus(item.status)}
                   </span>
                 </button>
@@ -261,7 +265,11 @@ export function InventoryList({
                     <p className="text-sm text-slate-600">{selectedItem.category || '-'}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ring-1 ${inventoryStatusBadgeClass(
+                        selectedItem.status
+                      )}`}
+                    >
                       {formatInventoryStatus(selectedItem.status)}
                     </span>
                     <button
@@ -285,7 +293,7 @@ export function InventoryList({
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Tipo</span>
-                    <span className="font-semibold">{selectedItem.item_type}</span>
+                    <span className="font-semibold">{formatItemType(selectedItem.item_type)}</span>
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Seguimiento</span>

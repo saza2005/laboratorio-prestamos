@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
-import { formatLoanStatus, loanStatusBadgeClass } from '@/lib/status-format'
+import { formatLoanStatus, loanStatusBadgeClass, requestKindBadgeClass } from '@/lib/status-format'
 
 type LoanItem = {
   id: string
@@ -195,8 +195,14 @@ export function LoansList({ loans }: LoansListProps) {
                 <span className="text-slate-500">
                   {formatDateTime(loan.delivery_date)}
                 </span>
-                <span className="font-medium text-slate-800">
-                  {getLoanType(loan)}
+                <span>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                      getLoanType(loan)
+                    )}`}
+                  >
+                    {getLoanType(loan)}
+                  </span>
                 </span>
                 <span className="min-w-0 text-slate-700 md:truncate">
                   {getPreviewText(loan)}
@@ -234,9 +240,16 @@ export function LoansList({ loans }: LoansListProps) {
                 <p className="text-sm text-slate-500">
                   Entregado: {formatDateTime(selectedLoan.delivery_date)}
                 </p>
-                <h3 className="mt-1 text-lg font-semibold">
-                  Préstamo {getLoanType(selectedLoan).toLowerCase()}
-                </h3>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <h3 className="text-lg font-semibold">Préstamo</h3>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                      getLoanType(selectedLoan)
+                    )}`}
+                  >
+                    {getLoanType(selectedLoan)}
+                  </span>
+                </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <span

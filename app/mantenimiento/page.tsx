@@ -9,6 +9,7 @@ import { MaintenanceForm } from './maintenance-form'
 import { MaintenanceHistory } from './maintenance-history'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { ModuleTabs } from '@/components/module-tabs'
+import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function MantenimientoPage() {
   let auth
@@ -79,8 +80,20 @@ export default async function MantenimientoPage() {
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-3xl font-bold">Mantenimiento de equipos</h1>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Mantenimiento de equipos</h1>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
+              <span
+                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
+                  profile?.role
+                )}`}
+              >
+                {formatUserRole(profile?.role)}
+              </span>
+            </div>
+          </div>
 
           <Link
             href="/dashboard"

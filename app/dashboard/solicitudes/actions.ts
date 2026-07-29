@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageLoans } from '@/lib/supabase/auth/roles'
 import { getActionErrorMessage } from '@/lib/action-error'
+import { sendTransactionalEmail } from '@/lib/email/send-transactional-email'
 
 export type ActionState = {
   error: string | null
@@ -52,6 +53,11 @@ async function persistApproveRequest(formData: FormData): Promise<void> {
   if (error) {
     throw new Error(error.message)
   }
+
+  await sendTransactionalEmail(supabase, {
+    type: 'request-approved',
+    requestId,
+  })
 }
 
 async function persistRejectRequest(formData: FormData): Promise<void> {
@@ -76,6 +82,11 @@ async function persistRejectRequest(formData: FormData): Promise<void> {
   if (error) {
     throw new Error(error.message)
   }
+
+  await sendTransactionalEmail(supabase, {
+    type: 'request-rejected',
+    requestId,
+  })
 }
 
 async function persistDeliverRequest(formData: FormData): Promise<void> {
@@ -132,7 +143,7 @@ async function persistDeliverRequest(formData: FormData): Promise<void> {
     throw new Error('Debe entregar al menos un material con stock disponible.')
   }
 
-  const { error } = await supabase.rpc('deliver_approved_request_with_units', {
+  const { data: loanId, error } = await supabase.rpc('deliver_approved_request_with_units', {
     p_request_id: requestId,
     p_units: units,
     p_items: items,
@@ -143,6 +154,15 @@ async function persistDeliverRequest(formData: FormData): Promise<void> {
   if (error) {
     throw new Error(error.message)
   }
+
+  if (!loanId) {
+    throw new Error('No se pudo identificar el préstamo creado.')
+  }
+
+  await sendTransactionalEmail(supabase, {
+    type: 'materials-delivered',
+    loanId,
+  })
 }
 
 export async function approveRequest(formData: FormData): Promise<void> {

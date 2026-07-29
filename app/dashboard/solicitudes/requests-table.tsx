@@ -8,6 +8,7 @@ import { normalizeSearchText } from '@/lib/item-format'
 import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import {
   formatRequestStatus,
+  requestKindBadgeClass,
   requestStatusBadgeClass as statusBadgeClass,
 } from '@/lib/status-format'
 
@@ -259,8 +260,14 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                         {req.requester?.email ?? '-'}
                       </span>
                     </span>
-                    <span className="font-medium text-slate-700">
-                      {getRequestType(req)}
+                    <span>
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                          getRequestType(req)
+                        )}`}
+                      >
+                        {getRequestType(req)}
+                      </span>
                     </span>
                     <span className="min-w-0 truncate text-slate-700">
                       {req.purpose || getPreviewText(req)}
@@ -316,7 +323,13 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                   <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <p className="font-medium text-slate-700">Tipo</p>
-                    <p className="mt-1 text-slate-600">{getRequestType(selectedRequest)}</p>
+                    <span
+                      className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                        getRequestType(selectedRequest)
+                      )}`}
+                    >
+                      {getRequestType(selectedRequest)}
+                    </span>
                   </div>
                   <div>
                     <p className="font-medium text-slate-700">Devolución estimada</p>

@@ -21,12 +21,17 @@ import {
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import {
   formatInventoryStatus,
+  formatUserRole,
+  inventoryStatusBadgeClass,
   formatLoanStatus,
   formatMaintenanceType,
+  maintenanceTypeBadgeClass,
   formatMovementType,
+  movementTypeBadgeClass,
   formatRequestStatus,
   loanStatusBadgeClass as statusBadgeClass,
   requestStatusBadgeClass,
+  userRoleBadgeClass,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 
@@ -67,79 +72,6 @@ export default async function DashboardPage({
     ])
   ).sort((a, b) => a - b)
 
-  const { data: maintenance, error: maintenanceError } = await supabase
-    .from('maintenance_records')
-    .select('maintenance_type, maintenance_date')
-    .gte('maintenance_date', period.startDate)
-    .lt('maintenance_date', period.endDate)
-
-  if (maintenanceError) {
-    throw new Error(maintenanceError.message)
-  }
-
-  const maintenanceMap = new Map<string, number>()
-
-  for (const m of maintenance ?? []) {
-    const type =
-      m.maintenance_type === 'preventive'
-        ? 'Preventivo'
-        : 'Correctivo'
-
-    maintenanceMap.set(type, (maintenanceMap.get(type) ?? 0) + 1)
-  }
-
-  const maintenanceData = Array.from(maintenanceMap.entries()).map(
-    ([name, value]) => ({ name, value })
-  )
-
-  const canSeeInventory = canSeeInventoryModule(profile.role)
-  const canSeeLoans = canSeeLoansModule(profile.role)
-  const canSeeReturns = canSeeReturnsModule(profile.role)
-  const canSeeReports = canSeeReportsModule(profile.role)
-
-  const [
-    inventorySummaryResult,
-    lowStockItemsResult,
-    outOfStockCountResult,
-    criticalStockCountResult,
-  ] = await Promise.all([
-    supabase.rpc('get_dashboard_inventory_summary'),
-    supabase
-      .from('items')
-      .select('id, code, name, stock_available, status')
-      .eq('status', 'active')
-      .lte('stock_available', 2)
-      .order('stock_available', { ascending: true })
-      .limit(DASHBOARD_LOW_STOCK_LIMIT),
-    supabase
-      .from('items')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'active')
-      .eq('stock_available', 0),
-    supabase
-      .from('items')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'active')
-      .gt('stock_available', 0)
-      .lte('stock_available', 2),
-  ])
-
-  if (inventorySummaryResult.error) {
-    throw new Error(inventorySummaryResult.error.message)
-  }
-
-  if (lowStockItemsResult.error) {
-    throw new Error(lowStockItemsResult.error.message)
-  }
-
-  if (outOfStockCountResult.error) {
-    throw new Error(outOfStockCountResult.error.message)
-  }
-
-  if (criticalStockCountResult.error) {
-    throw new Error(criticalStockCountResult.error.message)
-  }
-
   const currentDate = getEcuadorDate()
   const [currentYear, currentMonth, currentDay] = currentDate
     .split('-')
@@ -149,36 +81,41 @@ export default async function DashboardPage({
   )
     .toISOString()
     .slice(0, 10)
+
+  const canSeeInventory = canSeeInventoryModule(profile.role)
+  const canSeeLoans = canSeeLoansModule(profile.role)
+  const canSeeReturns = canSeeReturnsModule(profile.role)
+  const canSeeReports = canSeeReportsModule(profile.role)
+
+  const [dashboardSummaryResult, lowStockItemsResult] = await Promise.all([
+    supabase.rpc('get_dashboard_operational_summary', {
+      p_start_date: period.startDate,
+      p_end_date: period.endDate,
+      p_current_date: currentDate,
+      p_upcoming_limit_date: upcomingLimitDate,
+    }),
+    supabase
+      .from('items')
+      .select('id, code, name, stock_available, status')
+      .eq('status', 'active')
+      .lte('stock_available', 2)
+      .order('stock_available', { ascending: true })
+      .limit(DASHBOARD_LOW_STOCK_LIMIT),
+  ])
+
+  if (dashboardSummaryResult.error) {
+    throw new Error(dashboardSummaryResult.error.message)
+  }
+
+  if (lowStockItemsResult.error) {
+    throw new Error(lowStockItemsResult.error.message)
+  }
+
   const [
-    activeLoansResult,
-    partialLoansResult,
-    overdueLoansResult,
-    returnedLoansResult,
     recentLoansResult,
     dueSoonLoansResult,
-    pendingRequestsCountResult,
-    approvedRequestsCountResult,
     actionableRequestsResult,
   ] = await Promise.all([
-    supabase
-      .from('loans')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'active')
-      .or(`expected_return_date.is.null,expected_return_date.gte.${currentDate}`),
-    supabase
-      .from('loans')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'partial_return')
-      .or(`expected_return_date.is.null,expected_return_date.gte.${currentDate}`),
-    supabase
-      .from('loans')
-      .select('id', { count: 'exact', head: true })
-      .in('status', ['active', 'partial_return', 'overdue'])
-      .lt('expected_return_date', currentDate),
-    supabase
-      .from('loans')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'returned'),
     supabase
       .from('loans')
       .select(`
@@ -207,14 +144,6 @@ export default async function DashboardPage({
       .limit(DASHBOARD_RECENT_LOANS_LIMIT),
     supabase
       .from('requests')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'pending'),
-    supabase
-      .from('requests')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'approved'),
-    supabase
-      .from('requests')
       .select(`
         id,
         requested_at,
@@ -228,36 +157,12 @@ export default async function DashboardPage({
       .limit(DASHBOARD_RECENT_LOANS_LIMIT),
   ])
 
-  if (activeLoansResult.error) {
-    throw new Error(activeLoansResult.error.message)
-  }
-
-  if (partialLoansResult.error) {
-    throw new Error(partialLoansResult.error.message)
-  }
-
-  if (overdueLoansResult.error) {
-    throw new Error(overdueLoansResult.error.message)
-  }
-
-  if (returnedLoansResult.error) {
-    throw new Error(returnedLoansResult.error.message)
-  }
-
   if (recentLoansResult.error) {
     throw new Error(recentLoansResult.error.message)
   }
 
   if (dueSoonLoansResult.error) {
     throw new Error(dueSoonLoansResult.error.message)
-  }
-
-  if (pendingRequestsCountResult.error) {
-    throw new Error(pendingRequestsCountResult.error.message)
-  }
-
-  if (approvedRequestsCountResult.error) {
-    throw new Error(approvedRequestsCountResult.error.message)
   }
 
   if (actionableRequestsResult.error) {
@@ -338,22 +243,29 @@ export default async function DashboardPage({
     throw new Error(recentMaintenanceResult.error.message)
   }
 
-  const inventorySummary = inventorySummaryResult.data?.[0]
-  const totalItems = Number(inventorySummary?.total_items ?? 0)
-  const totalStock = Number(inventorySummary?.total_stock ?? 0)
-  const totalAvailable = Number(inventorySummary?.total_available ?? 0)
+  const dashboardSummary = dashboardSummaryResult.data?.[0]
+  const totalItems = Number(dashboardSummary?.total_items ?? 0)
+  const totalStock = Number(dashboardSummary?.total_stock ?? 0)
+  const totalAvailable = Number(dashboardSummary?.total_available ?? 0)
   const totalUnavailable = totalStock - totalAvailable
 
-  const activeLoans = activeLoansResult.count ?? 0
-  const partialLoans = partialLoansResult.count ?? 0
-  const overdueLoans = overdueLoansResult.count ?? 0
-  const returnedLoans = returnedLoansResult.count ?? 0
-  const pendingRequests = pendingRequestsCountResult.count ?? 0
-  const approvedRequests = approvedRequestsCountResult.count ?? 0
+  const activeLoans = Number(dashboardSummary?.active_loans ?? 0)
+  const partialLoans = Number(dashboardSummary?.partial_loans ?? 0)
+  const overdueLoans = Number(dashboardSummary?.overdue_loans ?? 0)
+  const returnedLoans = Number(dashboardSummary?.returned_loans ?? 0)
+  const pendingRequests = Number(dashboardSummary?.pending_requests ?? 0)
+  const approvedRequests = Number(dashboardSummary?.approved_requests ?? 0)
 
   const lowStockItems = lowStockItemsResult.data ?? []
-  const outOfStockItems = outOfStockCountResult.count ?? 0
-  const criticalStockItems = criticalStockCountResult.count ?? 0
+  const outOfStockItems = Number(dashboardSummary?.out_of_stock_items ?? 0)
+  const criticalStockItems = Number(dashboardSummary?.critical_stock_items ?? 0)
+  const rawMaintenanceData = Array.isArray(dashboardSummary?.maintenance_data)
+    ? (dashboardSummary.maintenance_data as Array<{ name?: unknown; value?: unknown }>)
+    : []
+  const maintenanceData = rawMaintenanceData.map((item) => ({
+    name: String(item.name ?? 'Sin tipo'),
+    value: Number(item.value ?? 0),
+  }))
 
   const actionableRequests =
     (actionableRequestsResult.data ?? []).map((requestEntry) => {
@@ -468,7 +380,7 @@ export default async function DashboardPage({
       description: `${movement.item_name} [${movement.item_code}] · Cantidad ${movement.quantity}`,
       actor: movement.user_name,
       href: '/inventario',
-      className: 'bg-indigo-50 text-indigo-700 ring-indigo-200',
+      className: movementTypeBadgeClass(movement.type),
     })),
     ...(recentRequestsResult.data ?? []).map((requestEntry) => {
       const requester = firstOrNull(requestEntry.requester) as
@@ -531,7 +443,7 @@ export default async function DashboardPage({
         description: `${record.activity} · ${item?.name ?? 'Trabajo general'}`,
         actor: record.responsible,
         href: '/mantenimiento',
-        className: 'bg-amber-50 text-amber-700 ring-amber-200',
+        className: maintenanceTypeBadgeClass(record.maintenance_type),
       }
     }),
   ]
@@ -556,8 +468,12 @@ export default async function DashboardPage({
                 <span className="rounded-full bg-slate-100 px-3 py-1">
                   {profile?.email || user.email}
                 </span>
-                <span className="rounded-full bg-slate-100 px-3 py-1">
-                  Rol: {profile?.role || 'Sin rol'}
+                <span
+                  className={`rounded-full px-3 py-1 font-medium ring-1 ${userRoleBadgeClass(
+                    profile?.role
+                  )}`}
+                >
+                  Rol: {formatUserRole(profile?.role)}
                 </span>
               </div>
             </div>
@@ -1005,7 +921,15 @@ export default async function DashboardPage({
                                 {isOutOfStock ? 'Sin stock' : 'Stock crítico'}
                               </span>
                             </td>
-                            <td className="px-4 py-3">{formatInventoryStatus(item.status)}</td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${inventoryStatusBadgeClass(
+                                  item.status
+                                )}`}
+                              >
+                                {formatInventoryStatus(item.status)}
+                              </span>
+                            </td>
                           </tr>
                         )
                       })
@@ -1102,8 +1026,14 @@ export default async function DashboardPage({
                         <td className="px-4 py-3">
                           {formatDateTime(movement.created_at)}
                         </td>
-                        <td className="px-4 py-3 font-medium">
-                          {formatMovementType(movement.type)}
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${movementTypeBadgeClass(
+                              movement.type
+                            )}`}
+                          >
+                            {formatMovementType(movement.type)}
+                          </span>
                         </td>
                         <td className="px-4 py-3">
                           {movement.item_name} [{movement.item_code}]

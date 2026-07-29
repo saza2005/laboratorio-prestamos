@@ -4,7 +4,12 @@ import { useMemo, useState } from 'react'
 import { normalizeSearchText } from '@/lib/item-format'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { PaginationControls } from '@/components/pagination-controls'
-import { formatUnitAvailability, formatUnitCondition } from '@/lib/status-format'
+import {
+  formatUnitAvailability,
+  formatUnitCondition,
+  unitAvailabilityBadgeClass,
+  unitConditionBadgeClass,
+} from '@/lib/status-format'
 
 type InventoryUnit = {
   id: string
@@ -170,10 +175,18 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                   <span className="truncate text-slate-600">
                     {[unit.brand, unit.model].filter(Boolean).join(' / ') || '-'}
                   </span>
-                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                  <span
+                    className={`rounded-full px-2 py-1 text-xs font-medium ring-1 ${unitConditionBadgeClass(
+                      unit.condition
+                    )}`}
+                  >
                     {formatUnitCondition(unit.condition)}
                   </span>
-                  <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                  <span
+                    className={`rounded-full px-2 py-1 text-xs font-medium ring-1 ${unitAvailabilityBadgeClass(
+                      unit.availability_status
+                    )}`}
+                  >
                     {formatUnitAvailability(unit.availability_status)}
                   </span>
                 </button>
@@ -206,11 +219,23 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                 <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Condición</span>
-                    <span className="font-semibold">{formatUnitCondition(selectedUnit.condition)}</span>
+                    <span
+                      className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${unitConditionBadgeClass(
+                        selectedUnit.condition
+                      )}`}
+                    >
+                      {formatUnitCondition(selectedUnit.condition)}
+                    </span>
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Disponibilidad</span>
-                    <span className="font-semibold">{formatUnitAvailability(selectedUnit.availability_status)}</span>
+                    <span
+                      className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${unitAvailabilityBadgeClass(
+                        selectedUnit.availability_status
+                      )}`}
+                    >
+                      {formatUnitAvailability(selectedUnit.availability_status)}
+                    </span>
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Patrimonial</span>

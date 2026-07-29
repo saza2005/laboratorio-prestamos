@@ -181,10 +181,16 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
                       </span>
                       <span className="mt-1 block text-xs text-slate-500">
                         Código interno: {item.code}
-                        {assetCodes ? ` | Patrimonial: ${assetCodes}` : ''}
                       </span>
-                      <span className="mt-1 block text-xs text-slate-600">
-                        Categoría: {item.category || 'Sin categoría'}
+                      <span className="mt-2 flex flex-wrap gap-2 text-xs">
+                        {assetCodes && (
+                          <span className="rounded-full bg-blue-50 px-2.5 py-1 font-medium text-blue-700 ring-1 ring-blue-200">
+                            Patrimonial: {assetCodes}
+                          </span>
+                        )}
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+                          {item.category || 'Sin categoría'}
+                        </span>
                       </span>
                     </button>
                   )
@@ -205,9 +211,22 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
               {isGeneralMaintenance ? (
                 <p className="text-sm text-slate-600">Trabajo general</p>
               ) : selectedItem ? (
-                <p className="text-sm text-slate-600">
-                  {selectedItem.name} [{selectedItem.code}]
-                </p>
+                <div className="mt-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2">
+                  <p className="font-medium text-slate-900">{selectedItem.name}</p>
+                  <p className="mt-1 text-xs text-slate-600">
+                    Código interno: {selectedItem.code}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    {formatAssetCodes(selectedItem.asset_codes) && (
+                      <span className="rounded-full bg-white px-2.5 py-1 font-medium text-blue-700 ring-1 ring-blue-200">
+                        Patrimonial: {formatAssetCodes(selectedItem.asset_codes)}
+                      </span>
+                    )}
+                    <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-700 ring-1 ring-slate-200">
+                      {selectedItem.category || 'Sin categoría'}
+                    </span>
+                  </div>
+                </div>
               ) : (
                 <p className="text-sm text-slate-500">
                   Aún no has seleccionado equipo o trabajo general.

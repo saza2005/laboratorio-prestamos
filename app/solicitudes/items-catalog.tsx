@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { normalizeSearchText } from '@/lib/item-format'
 import { PaginationControls } from '@/components/pagination-controls'
+import { formatItemType, itemTypeBadgeClass, stockAvailabilityBadgeClass } from '@/lib/status-format'
 
 type CatalogItem = {
   id: string
@@ -121,11 +122,25 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
             <div key={item.id} className="rounded-lg border border-slate-200 p-4">
               <h3 className="font-semibold">{item.name}</h3>
               <p className="text-sm text-slate-500">Código: {item.code}</p>
-              <p className="text-sm">Stock: {item.stock_available}</p>
-              <p className="text-sm text-slate-500">
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span
+                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${stockAvailabilityBadgeClass(
+                    item.stock_available
+                  )}`}
+                >
+                  Stock: {item.stock_available}
+                </span>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${itemTypeBadgeClass(
+                    item.item_type
+                  )}`}
+                >
+                  {formatItemType(item.item_type)}
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-slate-500">
                 Categoría: {item.category || 'Sin categoría'}
               </p>
-              <p className="text-sm text-slate-500">Tipo: {item.item_type || '-'}</p>
             </div>
           ))
         ) : (

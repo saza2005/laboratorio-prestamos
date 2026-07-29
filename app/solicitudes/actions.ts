@@ -6,6 +6,7 @@ import { getActionErrorMessage } from '@/lib/action-error'
 import { canCreateGroupRequests, canUseRequestPortal } from '@/lib/supabase/auth/roles'
 import { isValidDateInput } from '@/lib/date-input'
 import { getEcuadorDate } from '@/lib/loan-status'
+import { sendTransactionalEmail } from '@/lib/email/send-transactional-email'
 
 export type RequestActionState = {
   error: string | null
@@ -150,7 +151,7 @@ async function persistRequest(formData: FormData): Promise<void> {
     throw new Error('La fecha estimada de devolución no puede estar en el pasado.')
   }
 
-  const { error } = await supabase.rpc('create_request_transaction', {
+  const { data: requestId, error } = await supabase.rpc('create_request_transaction', {
     p_purpose: purpose || null,
     p_comments: comments || null,
     p_scheduled_return_date: scheduledReturnDate || null,
@@ -161,6 +162,15 @@ async function persistRequest(formData: FormData): Promise<void> {
   if (error) {
     throw new Error(error.message)
   }
+
+  if (!requestId) {
+    throw new Error('No se pudo identificar la solicitud creada.')
+  }
+
+  await sendTransactionalEmail(supabase, {
+    type: 'request-created',
+    requestId,
+  })
 }
 
 export async function createRequest(formData: FormData): Promise<void> {

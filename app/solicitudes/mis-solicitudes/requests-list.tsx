@@ -8,6 +8,7 @@ import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
 import {
   formatRequestStatus,
+  requestKindBadgeClass,
   requestStatusBadgeClass as statusBadgeClass,
 } from '@/lib/status-format'
 
@@ -216,8 +217,14 @@ export function RequestsList({ requests }: RequestsListProps) {
                 <span className="text-slate-500">
                   {formatDateTime(request.requested_at)}
                 </span>
-                <span className="font-medium text-slate-800">
-                  {getRequestType(request)}
+                <span>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                      getRequestType(request)
+                    )}`}
+                  >
+                    {getRequestType(request)}
+                  </span>
                 </span>
                 <span className="min-w-0 text-slate-700 md:truncate">
                   {request.purpose || getPreviewText(request)}
@@ -255,9 +262,16 @@ export function RequestsList({ requests }: RequestsListProps) {
                 <p className="text-sm text-slate-500">
                   {formatDateTime(selectedRequest.requested_at)}
                 </p>
-                <h3 className="mt-1 text-lg font-semibold">
-                  Solicitud {getRequestType(selectedRequest).toLowerCase()}
-                </h3>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <h3 className="text-lg font-semibold">Solicitud</h3>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                      getRequestType(selectedRequest)
+                    )}`}
+                  >
+                    {getRequestType(selectedRequest)}
+                  </span>
+                </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <span

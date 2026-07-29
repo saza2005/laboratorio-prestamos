@@ -9,6 +9,7 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
+import { formatLoanStatus, formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 
 export default async function InventarioPage() {
@@ -291,7 +292,7 @@ export default async function InventarioPage() {
       date: loan?.delivery_date ?? loanItem.created_at,
       type: 'loan',
       title: 'Préstamo',
-      description: `Estado: ${loan?.status ?? 'sin estado'} · Pendiente: ${Math.max(0, pending)}`,
+      description: `Estado: ${formatLoanStatus(loan?.status)} · Pendiente: ${Math.max(0, pending)}`,
       quantity: loanItem.quantity,
       user: borrower?.full_name ?? borrower?.email ?? 'Sin usuario',
     })
@@ -359,9 +360,16 @@ export default async function InventarioPage() {
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Gestión de Inventario</h1>
-            <p className="text-slate-600">
-              Usuario: {profile?.full_name} | Rol: {profile?.role}
-            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
+              <span
+                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
+                  profile?.role
+                )}`}
+              >
+                {formatUserRole(profile?.role)}
+              </span>
+            </div>
           </div>
 
           <Link

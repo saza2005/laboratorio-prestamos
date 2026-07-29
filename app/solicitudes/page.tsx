@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { LogoutButton } from '@/app/logout-button'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
 import { getRequestPortalAuth, getOwnLoans, getOwnRequests } from './shared'
+import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function SolicitudesPage() {
   const { supabase, user, profile } = await getRequestPortalAuth()
@@ -27,7 +28,16 @@ export default async function SolicitudesPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <h1 className="text-3xl font-bold">Portal de laboratorio</h1>
-              <p className="mt-2 text-slate-600">Bienvenido, {profile.full_name}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                <span className="text-slate-600">Bienvenido, {profile.full_name}</span>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
+                    profile.role
+                  )}`}
+                >
+                  {formatUserRole(profile.role)}
+                </span>
+              </div>
               <p className="mt-1 text-sm text-slate-500">
                 {profile.role === 'teacher'
                   ? 'Gestiona solicitudes individuales, grupales y revisa tus préstamos.'

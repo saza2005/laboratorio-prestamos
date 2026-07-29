@@ -6,7 +6,10 @@ import { parseReportPeriod } from '@/lib/report-period'
 import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import { getEffectiveLoanStatus } from '@/lib/loan-status'
 import {
+  formatItemType,
+  formatInventoryStatus,
   formatLoanStatus,
+  formatMaintenanceType,
   formatMovementType,
   formatRequestStatus,
 } from '@/lib/status-format'
@@ -122,10 +125,7 @@ export async function GET(request: NextRequest) {
         activity: record.activity,
         responsible: record.responsible,
         date: record.maintenance_date,
-        type:
-          record.maintenance_type === 'preventive'
-            ? 'Preventivo'
-            : 'Correctivo',
+        type: formatMaintenanceType(record.maintenance_type),
         observations: record.observations ?? '-',
       })
     }
@@ -349,10 +349,10 @@ export async function GET(request: NextRequest) {
         code: item.code,
         name: item.name,
         category: item.category ?? '-',
-        type: item.item_type,
+        type: formatItemType(item.item_type),
         stockTotal: item.stock_total,
         available: item.stock_available,
-        status: item.status,
+        status: formatInventoryStatus(item.status),
         location: item.location ?? '-',
       })
     }

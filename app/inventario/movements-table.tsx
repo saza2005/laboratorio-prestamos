@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
-import { formatMovementType } from '@/lib/status-format'
+import { formatMovementType, movementTypeBadgeClass } from '@/lib/status-format'
 
 type Movement = {
   id: string
@@ -16,6 +16,7 @@ type Movement = {
   item_code: string
   user_name: string
 }
+
 
 export function MovementsTable({
   data,
@@ -104,6 +105,8 @@ export function MovementsTable({
             <option value="return_ok">Devolución OK</option>
             <option value="return_damaged">Dañado</option>
             <option value="return_missing">Faltante</option>
+            <option value="adjustment_up">Ajuste +</option>
+            <option value="adjustment_down">Ajuste -</option>
           </select>
 
           <input
@@ -153,7 +156,15 @@ export function MovementsTable({
                   onClick={() => setSelectedMovementId(movement.id)}
                 >
                   <span className="text-slate-500">{formatDateTime(movement.created_at)}</span>
-                  <span className="font-medium text-slate-800">{formatMovementType(movement.type)}</span>
+                  <span>
+                    <span
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${movementTypeBadgeClass(
+                        movement.type
+                      )}`}
+                    >
+                      {formatMovementType(movement.type)}
+                    </span>
+                  </span>
                   <span className="min-w-0">
                     <span className="block truncate font-medium text-slate-800">{movement.item_name}</span>
                     <span className="block truncate text-xs text-slate-500">{movement.item_code}</span>
@@ -190,7 +201,13 @@ export function MovementsTable({
                 <div className="grid grid-cols-2 gap-3 text-center">
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Tipo</span>
-                    <span className="font-semibold">{formatMovementType(selectedMovement.type)}</span>
+                    <span
+                      className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${movementTypeBadgeClass(
+                        selectedMovement.type
+                      )}`}
+                    >
+                      {formatMovementType(selectedMovement.type)}
+                    </span>
                   </p>
                   <p className="rounded-lg bg-slate-50 px-3 py-3">
                     <span className="block text-xs text-slate-500">Cantidad</span>

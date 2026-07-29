@@ -5,7 +5,7 @@ import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
 import { USER_HISTORY_LIMIT } from '@/lib/query-limits'
-import { formatLoanStatus, loanStatusBadgeClass } from '@/lib/status-format'
+import { formatLoanStatus, loanStatusBadgeClass, requestKindBadgeClass } from '@/lib/status-format'
 
 type LoanItem = {
   id: string
@@ -282,8 +282,14 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
                         {loan.borrower_email}
                       </span>
                     </span>
-                    <span className="font-medium text-slate-700">
-                      {getLoanType(loan)}
+                    <span>
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                          getLoanType(loan)
+                        )}`}
+                      >
+                        {getLoanType(loan)}
+                      </span>
                     </span>
                     <span className="min-w-0 truncate text-slate-700">
                       {getPreviewText(loan)}
@@ -338,7 +344,13 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
                 <div className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <p className="font-medium text-slate-700">Tipo</p>
-                    <p className="mt-1 text-slate-600">{getLoanType(selectedLoan)}</p>
+                    <span
+                      className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${requestKindBadgeClass(
+                        getLoanType(selectedLoan)
+                      )}`}
+                    >
+                      {getLoanType(selectedLoan)}
+                    </span>
                   </div>
                   <div>
                     <p className="font-medium text-slate-700">Devolución esperada</p>

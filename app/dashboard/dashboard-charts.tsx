@@ -35,8 +35,49 @@ type MaintenanceChartItem = {
 }
 
 
-const PIE_COLORS = ['#2563eb', '#f59e0b', '#16a34a', '#64748b']
+function getLoanStatusColor(name: string) {
+  switch (name) {
+    case 'Activos':
+      return '#2563eb'
+    case 'Parciales':
+      return '#d97706'
+    case 'Vencidos':
+      return '#dc2626'
+    case 'Cerrados':
+      return '#16a34a'
+    default:
+      return '#64748b'
+  }
+}
 
+function getMovementTypeColor(name: string) {
+  switch (name) {
+    case 'Préstamo':
+      return '#4f46e5'
+    case 'Devolución OK':
+      return '#059669'
+    case 'Devuelto dañado':
+    case 'Reportado faltante':
+      return '#e11d48'
+    case 'Ajuste positivo':
+      return '#0f766e'
+    case 'Ajuste negativo':
+      return '#ea580c'
+    default:
+      return '#64748b'
+  }
+}
+
+function getMaintenanceColor(name: string) {
+  switch (name) {
+    case 'Preventivo':
+      return '#2563eb'
+    case 'Correctivo':
+      return '#d97706'
+    default:
+      return '#64748b'
+  }
+}
 
 function hasChartData(data: { value: number }[]) {
   return data.some((item) => item.value > 0)
@@ -102,7 +143,7 @@ export function DashboardCharts({
                   {loanStatusData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={PIE_COLORS[index % PIE_COLORS.length]}
+                      fill={getLoanStatusColor(entry.name)}
                     />
                   ))}
                 </Pie>
@@ -132,7 +173,7 @@ export function DashboardCharts({
                 {maintenanceData.map((entry, index) => (
                   <Cell
                     key={`maintenance-${index}`}
-                    fill={PIE_COLORS[index % PIE_COLORS.length]}
+                    fill={getMaintenanceColor(entry.name)}
                   />
                 ))}
               </Pie>
@@ -156,7 +197,14 @@ export function DashboardCharts({
                 <YAxis allowDecimals={false} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="value" name="Cantidad de movimientos" />
+                <Bar dataKey="value" name="Cantidad de movimientos">
+                  {movementTypeData.map((entry, index) => (
+                    <Cell
+                      key={`movement-${index}`}
+                      fill={getMovementTypeColor(entry.name)}
+                    />
+                  ))}
+                </Bar>
             </BarChart>
           ) : (
             <EmptyChartState />
