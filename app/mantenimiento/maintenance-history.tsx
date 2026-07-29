@@ -6,6 +6,7 @@ import {
   formatMaintenanceType,
   maintenanceTypeBadgeClass as typeBadgeClass,
 } from '@/lib/status-format'
+import { normalizeSearchText } from '@/lib/item-format'
 
 type MaintenanceRecord = {
   id: string
@@ -39,16 +40,16 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filteredRecords = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     return records.filter((record) => {
       const matchesType = typeFilter ? record.maintenance_type === typeFilter : true
-      const itemName = getItemName(record).toLowerCase()
-      const itemCode = getItemCode(record).toLowerCase()
-      const activity = record.activity.toLowerCase()
-      const responsible = record.responsible.toLowerCase()
-      const observations = record.observations?.toLowerCase() ?? ''
-      const date = record.maintenance_date.toLowerCase()
+      const itemName = normalizeSearchText(getItemName(record))
+      const itemCode = normalizeSearchText(getItemCode(record))
+      const activity = normalizeSearchText(record.activity)
+      const responsible = normalizeSearchText(record.responsible)
+      const observations = normalizeSearchText(record.observations)
+      const date = normalizeSearchText(record.maintenance_date)
 
       const matchesSearch =
         !term ||

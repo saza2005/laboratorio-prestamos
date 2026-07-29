@@ -5,6 +5,7 @@ import { DetailDrawer } from '@/components/detail-drawer'
 import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import { CancelRequestButton } from '../cancel-request-button'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 import {
   formatRequestStatus,
   requestStatusBadgeClass as statusBadgeClass,
@@ -99,14 +100,14 @@ export function RequestsList({ requests }: RequestsListProps) {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
   const filteredRequests = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     return requests.filter((request) => {
       const visibleStatus = getVisibleRequestStatus(request)
       const matchesStatus = statusFilter
         ? visibleStatus === statusFilter || request.status === statusFilter
         : true
-      const itemsText = [
+      const itemsText = normalizeSearchText([
         ...request.request_items.map(
           (item) => `${item.items?.name ?? ''} ${item.items?.code ?? ''}`
         ),
@@ -116,13 +117,12 @@ export function RequestsList({ requests }: RequestsListProps) {
           )
         ),
       ]
-        .join(' ')
-        .toLowerCase()
+        .join(' '))
       const matchesSearch =
         !term ||
-        getRequestType(request).toLowerCase().includes(term) ||
-        (request.purpose ?? '').toLowerCase().includes(term) ||
-        (request.comments ?? '').toLowerCase().includes(term) ||
+        normalizeSearchText(getRequestType(request)).includes(term) ||
+        normalizeSearchText(request.purpose).includes(term) ||
+        normalizeSearchText(request.comments).includes(term) ||
         itemsText.includes(term)
 
       return matchesStatus && matchesSearch

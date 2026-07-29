@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 import { formatMovementType } from '@/lib/status-format'
 
 type Movement = {
@@ -31,13 +32,13 @@ export function MovementsTable({
 
   const filtered = useMemo(() => {
     return data.filter((m) => {
-      const text = search.toLowerCase()
+      const text = normalizeSearchText(search)
 
       const matchesSearch =
-        m.item_name.toLowerCase().includes(text) ||
-        m.item_code.toLowerCase().includes(text) ||
-        m.user_name.toLowerCase().includes(text) ||
-        (m.notes ?? '').toLowerCase().includes(text)
+        normalizeSearchText(m.item_name).includes(text) ||
+        normalizeSearchText(m.item_code).includes(text) ||
+        normalizeSearchText(m.user_name).includes(text) ||
+        normalizeSearchText(m.notes).includes(text)
 
       const matchesType = typeFilter ? m.type === typeFilter : true
 

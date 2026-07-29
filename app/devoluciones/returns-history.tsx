@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 
 type ReturnHistoryEntry = {
   id: string
@@ -41,18 +42,18 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filteredEntries = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     if (!term) return entries
 
     return entries.filter((entry) => {
       return (
-        entry.borrower_name.toLowerCase().includes(term) ||
-        entry.receiver_name.toLowerCase().includes(term) ||
-        entry.item_name.toLowerCase().includes(term) ||
-        entry.item_code.toLowerCase().includes(term) ||
-        (entry.unit_code ?? '').toLowerCase().includes(term) ||
-        (entry.notes ?? '').toLowerCase().includes(term)
+        normalizeSearchText(entry.borrower_name).includes(term) ||
+        normalizeSearchText(entry.receiver_name).includes(term) ||
+        normalizeSearchText(entry.item_name).includes(term) ||
+        normalizeSearchText(entry.item_code).includes(term) ||
+        normalizeSearchText(entry.unit_code).includes(term) ||
+        normalizeSearchText(entry.notes).includes(term)
       )
     })
   }, [entries, search])

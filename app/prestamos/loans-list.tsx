@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 import { USER_HISTORY_LIMIT } from '@/lib/query-limits'
 import { formatLoanStatus, loanStatusBadgeClass } from '@/lib/status-format'
 
@@ -122,7 +123,7 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
   const dueSoonLimitDate = useMemo(() => addDaysToDate(currentDate, 7), [currentDate])
 
   const filteredLoans = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     return loans.filter((loan) => {
       const dueLabel = getDueLabel(loan, currentDate, dueSoonLimitDate)
@@ -132,7 +133,7 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
         (dueFilter === 'overdue' && dueLabel === 'Vencido') ||
         (dueFilter === 'due_soon' && dueLabel === 'Próximo') ||
         (dueFilter === 'no_date' && !loan.expected_return_date)
-      const itemsText = [
+      const itemsText = normalizeSearchText([
         ...loan.loan_items.map((li) =>
           `${li.item?.name ?? ''} ${li.item?.code ?? ''} ${li.unit?.asset_code ?? ''} ${li.unit?.serial_code ?? ''}`
         ),
@@ -140,14 +141,13 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
           group.loan_group_items.map((gi) => `${gi.item?.name ?? ''} ${gi.item?.code ?? ''}`)
         ),
       ]
-        .join(' ')
-        .toLowerCase()
+        .join(' '))
 
       const matchesSearch =
         !term ||
-        loan.borrower_name.toLowerCase().includes(term) ||
-        loan.borrower_email.toLowerCase().includes(term) ||
-        loan.notes?.toLowerCase().includes(term) ||
+        normalizeSearchText(loan.borrower_name).includes(term) ||
+        normalizeSearchText(loan.borrower_email).includes(term) ||
+        normalizeSearchText(loan.notes).includes(term) ||
         itemsText.includes(term)
 
       return matchesStatus && matchesDue && matchesSearch

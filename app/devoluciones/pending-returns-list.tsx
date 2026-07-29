@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 import { formatLoanStatus, loanStatusBadgeClass as statusBadgeClass } from '@/lib/status-format'
 
 type PendingLoanItem = {
@@ -84,19 +85,19 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filteredItems = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     return loanItems.filter((item) => {
       const matchesStatus = statusFilter ? item.loans?.status === statusFilter : true
-      const userName = item.loan_user?.profiles?.full_name?.toLowerCase() ?? ''
-      const userEmail = item.loan_user?.profiles?.email?.toLowerCase() ?? ''
-      const itemName = item.items?.name?.toLowerCase() ?? ''
-      const itemCode = item.items?.code?.toLowerCase() ?? ''
-      const unitCode = getUnitCode(item).toLowerCase()
-      const groups = (item.loans?.loan_groups ?? [])
+      const userName = normalizeSearchText(item.loan_user?.profiles?.full_name)
+      const userEmail = normalizeSearchText(item.loan_user?.profiles?.email)
+      const itemName = normalizeSearchText(item.items?.name)
+      const itemCode = normalizeSearchText(item.items?.code)
+      const unitCode = normalizeSearchText(getUnitCode(item))
+      const groupsText = (item.loans?.loan_groups ?? [])
         .map((group) => `${group.group_name} ${group.leader?.full_name ?? ''}`)
         .join(' ')
-        .toLowerCase()
+      const groups = normalizeSearchText(groupsText)
 
       const matchesSearch =
         !term ||

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import {
   formatRequestStatus,
@@ -113,7 +114,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
   const filteredRequests = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     return requests.filter((req) => {
       const visibleStatus = getVisibleRequestStatus(req)
@@ -123,11 +124,11 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
           req.loan?.status === statusFilter
         : true
 
-      const requesterName = req.requester?.full_name?.toLowerCase() ?? ''
-      const requesterEmail = req.requester?.email?.toLowerCase() ?? ''
-      const purpose = req.purpose?.toLowerCase() ?? ''
-      const comments = req.comments?.toLowerCase() ?? ''
-      const itemsText = [
+      const requesterName = normalizeSearchText(req.requester?.full_name)
+      const requesterEmail = normalizeSearchText(req.requester?.email)
+      const purpose = normalizeSearchText(req.purpose)
+      const comments = normalizeSearchText(req.comments)
+      const itemsText = normalizeSearchText([
         ...req.request_items.map((ri) =>
           `${ri.item?.name ?? ''} ${ri.item?.code ?? ''} ${
             ri.item?.asset_codes?.join(' ') ?? ''
@@ -141,8 +142,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
           )
         ),
       ]
-        .join(' ')
-        .toLowerCase()
+        .join(' '))
 
       const matchesSearch =
         !term ||

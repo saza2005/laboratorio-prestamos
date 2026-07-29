@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { normalizeSearchText } from '@/lib/item-format'
 import { formatLoanStatus, loanStatusBadgeClass } from '@/lib/status-format'
 
 type LoanItem = {
@@ -88,11 +89,11 @@ export function LoansList({ loans }: LoansListProps) {
   const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null)
 
   const filteredLoans = useMemo(() => {
-    const term = search.trim().toLowerCase()
+    const term = normalizeSearchText(search)
 
     return loans.filter((loan) => {
       const matchesStatus = statusFilter ? loan.status === statusFilter : true
-      const itemsText = [
+      const itemsText = normalizeSearchText([
         ...loan.loan_items.map(
           (item) => `${item.item?.name ?? ''} ${item.item?.code ?? ''}`
         ),
@@ -102,11 +103,10 @@ export function LoansList({ loans }: LoansListProps) {
           )
         ),
       ]
-        .join(' ')
-        .toLowerCase()
+        .join(' '))
       const matchesSearch =
         !term ||
-        getLoanType(loan).toLowerCase().includes(term) ||
+        normalizeSearchText(getLoanType(loan)).includes(term) ||
         itemsText.includes(term)
 
       return matchesStatus && matchesSearch
