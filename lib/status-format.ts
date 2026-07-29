@@ -14,6 +14,8 @@ export function formatRequestStatus(status: string | null | undefined) {
       return 'Devuelta'
     case 'partial_return':
       return 'Devolución parcial'
+    case 'partial_delivery':
+      return 'Entregada parcialmente'
     default:
       return status ?? '-'
   }
@@ -35,6 +37,8 @@ export function requestStatusBadgeClass(status: string | null | undefined) {
       return 'bg-green-100 text-green-700'
     case 'partial_return':
       return 'bg-orange-100 text-orange-700'
+    case 'partial_delivery':
+      return 'bg-amber-100 text-amber-800'
     default:
       return 'bg-slate-100 text-slate-700'
   }

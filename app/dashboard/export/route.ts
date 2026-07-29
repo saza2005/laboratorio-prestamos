@@ -77,9 +77,7 @@ export async function GET(request: NextRequest) {
   }) => {
     const visibleStatus = getVisibleRequestStatus(requestEntry)
 
-    return visibleStatus === 'partial_delivery'
-      ? 'Entregada parcialmente'
-      : formatRequestStatus(visibleStatus)
+    return formatRequestStatus(visibleStatus)
   }
 
 

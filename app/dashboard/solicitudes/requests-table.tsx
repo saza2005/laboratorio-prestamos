@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
+import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import {
   formatRequestStatus,
   requestStatusBadgeClass as statusBadgeClass,
@@ -30,6 +31,7 @@ type StaffRequestGroup = {
     full_name?: string
   } | null
   request_group_items: Array<{
+    item_id: string | null
     quantity: number
     item: {
       id?: string
@@ -59,6 +61,13 @@ type StaffRequestRow = {
     delivery_date?: string
     expected_return_date?: string
   } | null
+  loans: Array<{
+    id?: string
+    loan_items: Array<{
+      item_id: string | null
+      quantity: number
+    }>
+  }>
   request_items: StaffRequestItem[]
   request_groups: StaffRequestGroup[]
   actions: React.ReactNode
@@ -106,8 +115,11 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
     const term = search.trim().toLowerCase()
 
     return requests.filter((req) => {
+      const visibleStatus = getVisibleRequestStatus(req)
       const matchesStatus = statusFilter
-        ? req.status === statusFilter || req.loan?.status === statusFilter
+        ? visibleStatus === statusFilter ||
+          req.status === statusFilter ||
+          req.loan?.status === statusFilter
         : true
 
       const requesterName = req.requester?.full_name?.toLowerCase() ?? ''
@@ -176,6 +188,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
             <option value="approved">Aprobada</option>
             <option value="rejected">Rechazada</option>
             <option value="delivered">Entregada</option>
+            <option value="partial_delivery">Entregada parcialmente</option>
             <option value="returned">Devuelta</option>
             <option value="partial_return">Devolución parcial</option>
             <option value="cancelled">Cancelada</option>
@@ -202,6 +215,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
             <div className="divide-y divide-slate-200">
               {filteredRequests.map((req) => {
                 const selected = selectedRequest?.id === req.id
+                const visibleStatus = getVisibleRequestStatus(req)
 
                 return (
                   <button
@@ -232,10 +246,10 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                     <span>
                       <span
                         className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass(
-                          req.status
+                          visibleStatus
                         )}`}
                       >
-                        {formatRequestStatus(req.status)}
+                        {formatRequestStatus(visibleStatus)}
                       </span>
                     </span>
                   </button>
@@ -262,10 +276,10 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                     <div className="flex shrink-0 items-center gap-2">
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
-                          selectedRequest.status
+                          getVisibleRequestStatus(selectedRequest)
                         )}`}
                       >
-                        {formatRequestStatus(selectedRequest.status)}
+                        {formatRequestStatus(getVisibleRequestStatus(selectedRequest))}
                       </span>
                       <button
                         type="button"

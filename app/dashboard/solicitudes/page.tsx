@@ -40,7 +40,11 @@ const { data: rawRequests, error } = await supabase
       id,
       status,
       delivery_date,
-      expected_return_date
+      expected_return_date,
+      loan_items (
+        item_id,
+        quantity
+      )
     ),
     request_items (
       id,
@@ -62,6 +66,7 @@ const { data: rawRequests, error } = await supabase
       group_name,
       leader:profiles(full_name),
       request_group_items (
+        item_id,
         quantity,
         items (
           id,
@@ -108,6 +113,27 @@ const requests =
           expected_return_date?: string
         }
       | null,
+    loans: (() => {
+      const loan = firstOrNull(req.loans) as
+        | {
+            id?: string
+            loan_items?: { item_id: string | null; quantity: number }[] | null
+          }
+        | null
+
+      return loan
+        ? [
+            {
+              id: loan.id,
+              loan_items:
+                loan.loan_items?.map((loanItem) => ({
+                  item_id: loanItem.item_id,
+                  quantity: loanItem.quantity,
+                })) ?? [],
+            },
+          ]
+        : []
+    })(),
     request_items:
       req.request_items?.map((ri) => ({
         id: ri.id,
@@ -138,6 +164,7 @@ const requests =
         leader: firstOrNull(group.leader),
         request_group_items:
           group.request_group_items?.map((gi) => ({
+            item_id: gi.item_id,
             quantity: gi.quantity,
             item: (() => {
               const item = firstOrNull(gi.items) as

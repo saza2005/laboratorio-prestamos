@@ -93,16 +93,6 @@ function getPreviewText(request: RequestRow) {
     : firstItem
 }
 
-function formatVisibleRequestStatus(status: string) {
-  if (status === 'partial_delivery') return 'Entregada parcialmente'
-  return formatRequestStatus(status)
-}
-
-function visibleRequestStatusBadgeClass(status: string) {
-  if (status === 'partial_delivery') return 'bg-amber-100 text-amber-800'
-  return statusBadgeClass(status)
-}
-
 export function RequestsList({ requests }: RequestsListProps) {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
@@ -154,11 +144,11 @@ export function RequestsList({ requests }: RequestsListProps) {
                 </span>
                 <span>
                   <span
-                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${visibleRequestStatusBadgeClass(
+                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass(
                       visibleStatus
                     )}`}
                   >
-                    {formatVisibleRequestStatus(visibleStatus)}
+                    {formatRequestStatus(visibleStatus)}
                   </span>
                 </span>
               </button>
@@ -181,11 +171,11 @@ export function RequestsList({ requests }: RequestsListProps) {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${visibleRequestStatusBadgeClass(
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
                     getVisibleRequestStatus(selectedRequest)
                   )}`}
                 >
-                  {formatVisibleRequestStatus(getVisibleRequestStatus(selectedRequest))}
+                  {formatRequestStatus(getVisibleRequestStatus(selectedRequest))}
                 </span>
                 <button
                   type="button"
