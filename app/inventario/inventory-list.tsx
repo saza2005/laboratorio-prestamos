@@ -4,7 +4,8 @@ import { useMemo, useState } from 'react'
 import { normalizeSearchText } from '@/lib/item-format'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { PaginationControls } from '@/components/pagination-controls'
-import { formatInventoryStatus } from '@/lib/status-format'
+import { formatDateTime } from '@/lib/format-date'
+import { formatInventoryStatus, formatMovementType } from '@/lib/status-format'
 
 type InventoryItem = {
   id: string
@@ -20,9 +21,68 @@ type InventoryItem = {
   asset_codes: string[]
 }
 
+type ItemHistoryEntry = {
+  id: string
+  date: string | null
+  type: string
+  title: string
+  description: string
+  quantity?: number
+  user?: string
+}
+
 const PAGE_SIZE = 50
 
-export function InventoryList({ items }: { items: InventoryItem[] }) {
+function formatHistoryType(type: string) {
+  if (type === 'loan') return 'Préstamo'
+  if (type === 'return') return 'Devolución'
+  if (type.startsWith('maintenance_')) return 'Mantenimiento'
+  return formatMovementType(type)
+}
+
+function historyTypeClass(type: string) {
+  if (type === 'loan') {
+    return 'bg-blue-50 text-blue-700 ring-blue-200'
+  }
+
+  if (type === 'return') {
+    return 'bg-green-50 text-green-700 ring-green-200'
+  }
+
+  if (type === 'return_damaged' || type === 'return_missing') {
+    return 'bg-rose-50 text-rose-700 ring-rose-200'
+  }
+
+  if (type.startsWith('maintenance_')) {
+    return 'bg-amber-50 text-amber-700 ring-amber-200'
+  }
+
+  if (type === 'loan_out') {
+    return 'bg-indigo-50 text-indigo-700 ring-indigo-200'
+  }
+
+  if (type === 'return_ok') {
+    return 'bg-emerald-50 text-emerald-700 ring-emerald-200'
+  }
+
+  if (type === 'adjustment_up') {
+    return 'bg-teal-50 text-teal-700 ring-teal-200'
+  }
+
+  if (type === 'adjustment_down') {
+    return 'bg-orange-50 text-orange-700 ring-orange-200'
+  }
+
+  return 'bg-slate-100 text-slate-700 ring-slate-200'
+}
+
+export function InventoryList({
+  items,
+  histories,
+}: {
+  items: InventoryItem[]
+  histories?: Record<string, ItemHistoryEntry[]>
+}) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [status, setStatus] = useState('')
@@ -68,6 +128,7 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
   const selectedItem = selectedItemId
     ? filteredItems.find((item) => item.id === selectedItemId) ?? null
     : null
+  const selectedHistory = selectedItem ? histories?.[selectedItem.id] ?? [] : []
 
   function updateSearch(value: string) {
     setSearch(value)
@@ -241,6 +302,50 @@ export function InventoryList({ items }: { items: InventoryItem[] }) {
                     </div>
                   </div>
                 )}
+
+                <div className="border-t border-slate-200 pt-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-medium text-slate-700">Historial reciente</p>
+                    <span className="text-xs text-slate-500">Últimos {selectedHistory.length}</span>
+                  </div>
+
+                  {selectedHistory.length > 0 ? (
+                    <div className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                      {selectedHistory.map((entry) => (
+                        <div key={`${entry.type}-${entry.id}`} className="px-3 py-3 text-sm">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span
+                                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${historyTypeClass(entry.type)}`}
+                                >
+                                  {formatHistoryType(entry.type)}
+                                </span>
+                                <p className="font-medium text-slate-800">{entry.title}</p>
+                              </div>
+                              <p className="mt-1 text-xs text-slate-500">
+                                {formatDateTime(entry.date)}
+                              </p>
+                            </div>
+                            {typeof entry.quantity === 'number' && (
+                              <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                                Cantidad {entry.quantity}
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-2 text-slate-600">{entry.description}</p>
+                          {entry.user && (
+                            <p className="mt-1 text-xs text-slate-500">Responsable: {entry.user}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-3 rounded-lg bg-slate-50 px-3 py-4 text-sm text-slate-500">
+                      Sin movimientos recientes registrados para este ítem.
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </DetailDrawer>

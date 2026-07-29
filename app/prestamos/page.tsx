@@ -6,6 +6,7 @@ import { canManageLoans, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import {
   INVENTORY_CATALOG_LIMIT,
+  LOAN_AVAILABLE_UNITS_LIMIT,
   PROFILE_SELECT_LIMIT,
   USER_HISTORY_LIMIT,
 } from '@/lib/query-limits'
@@ -22,6 +23,7 @@ export default async function PrestamosPage() {
   }
 
   const { supabase, profile } = auth
+  const currentDate = getEcuadorDate()
 
   if (!canManageLoans(profile.role)) {
     redirect(getHomeRouteByRole(profile.role))
@@ -63,7 +65,9 @@ export default async function PrestamosPage() {
           ?.map((unit) => unit.asset_code)
           .filter((code): code is string => Boolean(code)) ?? [],
     })) ?? []
-  const hasTrackedItems = items.some((item) => item.track_individual)
+  const trackedItemIds = items
+    .filter((item) => item.track_individual)
+    .map((item) => item.id)
 
   let availableUnits: Array<{
     id: string
@@ -74,58 +78,37 @@ export default async function PrestamosPage() {
     model: string | null
   }> = []
 
-  if (hasTrackedItems) {
-    const [firstUnitsPage, secondUnitsPage] = await Promise.all([
-      supabase
-        .from('item_units')
-        .select(`
-          id,
-          item_id,
-          asset_code,
-          serial_code,
-          brand,
-          model,
-          items!inner(track_individual, status)
-        `)
-        .eq('items.track_individual', true)
-        .eq('items.status', 'active')
-        .eq('availability_status', 'available')
-        .eq('condition', 'good')
-        .order('asset_code', { ascending: true })
-        .range(0, 999),
-      supabase
-        .from('item_units')
-        .select(`
-          id,
-          item_id,
-          asset_code,
-          serial_code,
-          brand,
-          model,
-          items!inner(track_individual, status)
-        `)
-        .eq('items.track_individual', true)
-        .eq('items.status', 'active')
-        .eq('availability_status', 'available')
-        .eq('condition', 'good')
-        .order('asset_code', { ascending: true })
-        .range(1000, 1999),
-    ])
+  if (trackedItemIds.length > 0) {
+    const itemIdChunks = Array.from(
+      { length: Math.ceil(trackedItemIds.length / 50) },
+      (_, index) => trackedItemIds.slice(index * 50, index * 50 + 50)
+    )
 
-    if (firstUnitsPage.error) throw new Error(firstUnitsPage.error.message)
-    if (secondUnitsPage.error) throw new Error(secondUnitsPage.error.message)
+    const unitResults = await Promise.all(
+      itemIdChunks.map((chunk) =>
+        supabase
+          .from('item_units')
+          .select('id, item_id, asset_code, serial_code, brand, model')
+          .in('item_id', chunk)
+          .eq('availability_status', 'available')
+          .order('asset_code', { ascending: true })
+      )
+    )
 
-    availableUnits = [
-      ...(firstUnitsPage.data ?? []),
-      ...(secondUnitsPage.data ?? []),
-    ].map((unit) => ({
-      id: unit.id,
-      item_id: unit.item_id,
-      asset_code: unit.asset_code,
-      serial_code: unit.serial_code,
-      brand: unit.brand,
-      model: unit.model,
-    }))
+    const unitsError = unitResults.find((result) => result.error)?.error
+    if (unitsError) throw new Error(unitsError.message)
+
+    availableUnits = unitResults
+      .flatMap((result) => result.data ?? [])
+      .map((unit) => ({
+        id: unit.id,
+        item_id: unit.item_id,
+        asset_code: unit.asset_code,
+        serial_code: unit.serial_code,
+        brand: unit.brand,
+        model: unit.model,
+      }))
+      .slice(0, LOAN_AVAILABLE_UNITS_LIMIT)
   }
 
   const { data: rawLoans, error: loansError } = await supabase
@@ -280,7 +263,7 @@ export default async function PrestamosPage() {
             users={users}
             items={items}
             availableUnits={availableUnits}
-            minExpectedReturnDate={getEcuadorDate()}
+            minExpectedReturnDate={currentDate}
           />
         </div>
 
@@ -292,7 +275,7 @@ export default async function PrestamosPage() {
             </p>
           </div>
 
-          <LoansList loans={loans} />
+          <LoansList loans={loans} currentDate={currentDate} />
         </section>
       </div>
     </main>

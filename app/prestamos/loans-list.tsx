@@ -55,6 +55,7 @@ type LoanRow = {
 
 type LoansListProps = {
   loans: LoanRow[]
+  currentDate: string
 }
 
 function getLoanType(loan: LoanRow) {
@@ -89,16 +90,48 @@ function getPreviewText(loan: LoanRow) {
     : firstItem
 }
 
-export function LoansList({ loans }: LoansListProps) {
+function addDaysToDate(value: string, days: number) {
+  const [year, month, day] = value.split('-').map(Number)
+
+  return new Date(Date.UTC(year, month - 1, day + days))
+    .toISOString()
+    .slice(0, 10)
+}
+
+function getDueLabel(loan: LoanRow, currentDate: string, dueSoonLimitDate: string) {
+  if (!loan.expected_return_date || loan.status === 'returned' || loan.status === 'cancelled') {
+    return null
+  }
+
+  if (loan.status === 'overdue' || loan.expected_return_date < currentDate) {
+    return 'Vencido'
+  }
+
+  if (loan.expected_return_date <= dueSoonLimitDate) {
+    return 'Próximo'
+  }
+
+  return null
+}
+
+export function LoansList({ loans, currentDate }: LoansListProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [dueFilter, setDueFilter] = useState('')
   const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null)
+  const dueSoonLimitDate = useMemo(() => addDaysToDate(currentDate, 7), [currentDate])
 
   const filteredLoans = useMemo(() => {
     const term = search.trim().toLowerCase()
 
     return loans.filter((loan) => {
+      const dueLabel = getDueLabel(loan, currentDate, dueSoonLimitDate)
       const matchesStatus = statusFilter ? loan.status === statusFilter : true
+      const matchesDue =
+        !dueFilter ||
+        (dueFilter === 'overdue' && dueLabel === 'Vencido') ||
+        (dueFilter === 'due_soon' && dueLabel === 'Próximo') ||
+        (dueFilter === 'no_date' && !loan.expected_return_date)
       const itemsText = [
         ...loan.loan_items.map((li) =>
           `${li.item?.name ?? ''} ${li.item?.code ?? ''} ${li.unit?.asset_code ?? ''} ${li.unit?.serial_code ?? ''}`
@@ -117,9 +150,9 @@ export function LoansList({ loans }: LoansListProps) {
         loan.notes?.toLowerCase().includes(term) ||
         itemsText.includes(term)
 
-      return matchesStatus && matchesSearch
+      return matchesStatus && matchesDue && matchesSearch
     })
-  }, [loans, search, statusFilter])
+  }, [currentDate, dueFilter, dueSoonLimitDate, loans, search, statusFilter])
 
   const selectedLoan = selectedLoanId
     ? filteredLoans.find((loan) => loan.id === selectedLoanId) ?? null
@@ -133,10 +166,19 @@ export function LoansList({ loans }: LoansListProps) {
     setSelectedLoanId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setDueFilter('')
+    setSelectedLoanId(null)
+  }
+
+  const hasFilters = Boolean(search || statusFilter || dueFilter)
+
   return (
     <div className="space-y-4">
       <div className="rounded-2xl bg-white p-4 shadow sm:p-6">
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_minmax(160px,220px)_minmax(180px,240px)_minmax(180px,auto)]">
           <input
             type="text"
             placeholder="Buscar por usuario, correo, ítem, código o unidad patrimonial"
@@ -156,8 +198,29 @@ export function LoansList({ loans }: LoansListProps) {
             <option value="returned">Devuelto</option>
             <option value="cancelled">Cancelado</option>
           </select>
-          <div className="flex items-center text-sm text-slate-600">
-            Resultados: {filteredLoans.length} de los últimos {USER_HISTORY_LIMIT} préstamos
+          <select
+            value={dueFilter}
+            onChange={(event) => setDueFilter(event.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2"
+          >
+            <option value="">Todos los vencimientos</option>
+            <option value="overdue">Vencidos</option>
+            <option value="due_soon">Próximos 7 días</option>
+            <option value="no_date">Sin fecha esperada</option>
+          </select>
+          <div className="flex flex-col gap-2 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              Resultados: {filteredLoans.length} de los últimos {USER_HISTORY_LIMIT} préstamos
+            </span>
+            {hasFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="w-fit rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              >
+                Limpiar filtros
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -178,6 +241,7 @@ export function LoansList({ loans }: LoansListProps) {
               {filteredLoans.map((loan) => {
                 const selected = selectedLoan?.id === loan.id
                 const pendingCount = getPendingCount(loan)
+                const dueLabel = getDueLabel(loan, currentDate, dueSoonLimitDate)
 
                 return (
                   <button
@@ -185,11 +249,30 @@ export function LoansList({ loans }: LoansListProps) {
                     type="button"
                     onClick={() => openLoan(loan.id)}
                     className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_112px_124px] md:items-center md:gap-3 ${
-                      selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
+                      selected
+                        ? 'bg-blue-50'
+                        : dueLabel === 'Vencido'
+                          ? 'bg-red-50 hover:bg-red-100'
+                          : dueLabel === 'Próximo'
+                            ? 'bg-amber-50 hover:bg-amber-100'
+                            : 'bg-white hover:bg-slate-50'
                     }`}
                   >
                     <span className="text-slate-500">
-                      {loan.delivery_date ? formatDateTime(loan.delivery_date) : '-'}
+                      <span className="block">
+                        {loan.delivery_date ? formatDateTime(loan.delivery_date) : '-'}
+                      </span>
+                      {dueLabel && (
+                        <span
+                          className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                            dueLabel === 'Vencido'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-amber-100 text-amber-700'
+                          }`}
+                        >
+                          {dueLabel}
+                        </span>
+                      )}
                     </span>
                     <span className="min-w-0">
                       <span className="block truncate font-medium text-slate-800">

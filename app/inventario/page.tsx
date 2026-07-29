@@ -131,6 +131,71 @@ export default async function InventarioPage() {
     throw new Error(movementsError.message)
   }
 
+  const [loanHistoryResult, returnHistoryResult, maintenanceHistoryResult] =
+    await Promise.all([
+      supabase
+        .from('loan_items')
+        .select(`
+          id,
+          item_id,
+          quantity,
+          returned_quantity,
+          damaged_quantity,
+          missing_quantity,
+          created_at,
+          loans:loans(
+            id,
+            delivery_date,
+            status,
+            borrower:profiles!loans_user_id_fkey(full_name, email)
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(ADMIN_HISTORY_LIMIT),
+      supabase
+        .from('return_items')
+        .select(`
+          id,
+          quantity_ok,
+          quantity_damaged,
+          quantity_missing,
+          notes,
+          created_at,
+          loan_items:loan_items(item_id),
+          returns:returns(
+            received_at,
+            receiver:profiles!returns_received_by_fkey(full_name, email)
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(ADMIN_HISTORY_LIMIT),
+      supabase
+        .from('maintenance_records')
+        .select(`
+          id,
+          item_id,
+          activity,
+          responsible,
+          maintenance_date,
+          maintenance_type,
+          observations
+        `)
+        .order('maintenance_date', { ascending: false })
+        .limit(ADMIN_HISTORY_LIMIT),
+    ])
+
+  if (loanHistoryResult.error) {
+    throw new Error(loanHistoryResult.error.message)
+  }
+
+  if (returnHistoryResult.error) {
+    throw new Error(returnHistoryResult.error.message)
+  }
+
+  if (maintenanceHistoryResult.error) {
+    throw new Error(maintenanceHistoryResult.error.message)
+  }
+
   const normalizedMovements =
     movements?.map((movement) => {
       const item = firstOrNull(movement.items) as
@@ -152,6 +217,140 @@ export default async function InventarioPage() {
         user_name: movementUser?.full_name ?? 'Sistema',
       }
     }) ?? []
+
+  const historyByItem = new Map<
+    string,
+    Array<{
+      id: string
+      date: string | null
+      type: string
+      title: string
+      description: string
+      quantity?: number
+      user?: string
+    }>
+  >()
+
+  function addItemHistory(
+    itemId: string | null | undefined,
+    entry: {
+      id: string
+      date: string | null
+      type: string
+      title: string
+      description: string
+      quantity?: number
+      user?: string
+    }
+  ) {
+    if (!itemId) return
+    const entries = historyByItem.get(itemId) ?? []
+    entries.push(entry)
+    historyByItem.set(itemId, entries)
+  }
+
+  movements?.forEach((movement) => {
+    const item = firstOrNull(movement.items) as { id?: string } | null
+    const movementUser = firstOrNull(movement.profiles) as
+      | { full_name?: string }
+      | null
+
+    addItemHistory(item?.id, {
+      id: movement.id,
+      date: movement.created_at,
+      type: movement.movement_type,
+      title: 'Movimiento de inventario',
+      description: movement.notes ?? 'Movimiento registrado en inventario',
+      quantity: movement.quantity,
+      user: movementUser?.full_name ?? 'Sistema',
+    })
+  })
+
+  loanHistoryResult.data?.forEach((loanItem) => {
+    const loan = firstOrNull(loanItem.loans) as
+      | {
+          delivery_date?: string | null
+          status?: string | null
+          borrower?:
+            | { full_name?: string; email?: string }
+            | { full_name?: string; email?: string }[]
+            | null
+        }
+      | null
+    const borrower = firstOrNull(loan?.borrower) as
+      | { full_name?: string; email?: string }
+      | null
+    const pending =
+      loanItem.quantity -
+      (loanItem.returned_quantity ?? 0) -
+      (loanItem.missing_quantity ?? 0)
+
+    addItemHistory(loanItem.item_id, {
+      id: loanItem.id,
+      date: loan?.delivery_date ?? loanItem.created_at,
+      type: 'loan',
+      title: 'Préstamo',
+      description: `Estado: ${loan?.status ?? 'sin estado'} · Pendiente: ${Math.max(0, pending)}`,
+      quantity: loanItem.quantity,
+      user: borrower?.full_name ?? borrower?.email ?? 'Sin usuario',
+    })
+  })
+
+  returnHistoryResult.data?.forEach((returnItem) => {
+    const loanItem = firstOrNull(returnItem.loan_items) as
+      | { item_id?: string | null }
+      | null
+    const returnData = firstOrNull(returnItem.returns) as
+      | {
+          received_at?: string | null
+          receiver?:
+            | { full_name?: string; email?: string }
+            | { full_name?: string; email?: string }[]
+            | null
+        }
+      | null
+    const receiver = firstOrNull(returnData?.receiver) as
+      | { full_name?: string; email?: string }
+      | null
+    const totalReturned =
+      (returnItem.quantity_ok ?? 0) +
+      (returnItem.quantity_damaged ?? 0) +
+      (returnItem.quantity_missing ?? 0)
+
+    addItemHistory(loanItem?.item_id, {
+      id: returnItem.id,
+      date: returnData?.received_at ?? returnItem.created_at,
+      type: 'return',
+      title: 'Devolución',
+      description: `OK: ${returnItem.quantity_ok} · Dañado: ${returnItem.quantity_damaged} · Faltante: ${returnItem.quantity_missing}`,
+      quantity: totalReturned,
+      user: receiver?.full_name ?? receiver?.email ?? 'Sin receptor',
+    })
+  })
+
+  maintenanceHistoryResult.data?.forEach((record) => {
+    addItemHistory(record.item_id, {
+      id: record.id,
+      date: record.maintenance_date,
+      type: `maintenance_${record.maintenance_type}`,
+      title: 'Mantenimiento',
+      description: `${record.activity}${record.observations ? ` · ${record.observations}` : ''}`,
+      user: record.responsible,
+    })
+  })
+
+  const itemHistories = Object.fromEntries(
+    Array.from(historyByItem.entries()).map(([itemId, entries]) => [
+      itemId,
+      entries
+        .sort((a, b) => {
+          const dateA = a.date ? new Date(a.date).getTime() : 0
+          const dateB = b.date ? new Date(b.date).getTime() : 0
+          return dateB - dateA
+        })
+        .slice(0, 12),
+    ])
+  )
 
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
@@ -178,7 +377,7 @@ export default async function InventarioPage() {
           <ItemForm />
         </div>
 
-        <InventoryList items={inventoryItems} />
+        <InventoryList items={inventoryItems} histories={itemHistories} />
         <InventoryUnitsList units={units} />
         <MovementsTable data={normalizedMovements} limit={100} />
       </div>
