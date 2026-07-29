@@ -70,6 +70,10 @@ Esta permite confirmar entregas parciales y crear el préstamo solo con lo realm
 
 ## Flujo de validación funcional
 
+Checklist detallada:
+
+- `docs/PRUEBAS_FUNCIONALES.md`
+
 ### Student
 
 - Iniciar sesión con Google institucional.
