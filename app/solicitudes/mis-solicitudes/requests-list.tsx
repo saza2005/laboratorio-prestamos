@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
+import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import { CancelRequestButton } from '../cancel-request-button'
 import { formatDateTime } from '@/lib/format-date'
 import {
@@ -90,58 +91,6 @@ function getPreviewText(request: RequestRow) {
   return request.request_items.length > 1
     ? `${firstItem} +${request.request_items.length - 1}`
     : firstItem
-}
-
-function getDeliveredQuantityByItem(request: RequestRow) {
-  const deliveredByItem = new Map<string, number>()
-
-  for (const loan of request.loans) {
-    for (const loanItem of loan.loan_items) {
-      if (!loanItem.item_id) continue
-      deliveredByItem.set(
-        loanItem.item_id,
-        (deliveredByItem.get(loanItem.item_id) ?? 0) + loanItem.quantity
-      )
-    }
-  }
-
-  return deliveredByItem
-}
-
-function isPartiallyDelivered(request: RequestRow) {
-  if (request.status !== 'delivered') return false
-
-  if (request.request_groups.length === 0) {
-    const approvedItems = request.request_items.filter(
-      (item) => item.quantity_approved > 0
-    )
-
-    return approvedItems.some(
-      (item) => item.quantity_delivered < item.quantity_approved
-    )
-  }
-
-  const deliveredByItem = getDeliveredQuantityByItem(request)
-  const requestedByItem = new Map<string, number>()
-
-  for (const group of request.request_groups) {
-    for (const groupItem of group.request_group_items) {
-      if (!groupItem.item_id) continue
-      requestedByItem.set(
-        groupItem.item_id,
-        (requestedByItem.get(groupItem.item_id) ?? 0) + groupItem.quantity
-      )
-    }
-  }
-
-  return [...requestedByItem.entries()].some(
-    ([itemId, requestedQuantity]) =>
-      (deliveredByItem.get(itemId) ?? 0) < requestedQuantity
-  )
-}
-
-function getVisibleRequestStatus(request: RequestRow) {
-  return isPartiallyDelivered(request) ? 'partial_delivery' : request.status
 }
 
 function formatVisibleRequestStatus(status: string) {

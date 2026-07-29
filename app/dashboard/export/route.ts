@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canSeeReportsModule } from '@/lib/supabase/auth/roles'
 import { parseReportPeriod } from '@/lib/report-period'
+import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import { getEffectiveLoanStatus } from '@/lib/loan-status'
 import {
   formatLoanStatus,
@@ -54,73 +55,6 @@ export async function GET(request: NextRequest) {
 
   const workbook = new ExcelJS.Workbook()
 
-  const getDeliveredQuantityByItem = (requestEntry: {
-    loans?:
-      | { loan_items?: { item_id: string | null; quantity: number }[] | null }
-      | { loan_items?: { item_id: string | null; quantity: number }[] | null }[]
-      | null
-  }) => {
-    const deliveredByItem = new Map<string, number>()
-    const requestLoan = firstOrNull(requestEntry.loans)
-
-    for (const loanItem of requestLoan?.loan_items ?? []) {
-      if (!loanItem.item_id) continue
-      deliveredByItem.set(
-        loanItem.item_id,
-        (deliveredByItem.get(loanItem.item_id) ?? 0) + loanItem.quantity
-      )
-    }
-
-    return deliveredByItem
-  }
-
-  const isPartiallyDeliveredRequest = (requestEntry: {
-    status: string | null
-    request_items?:
-      | {
-          quantity_approved: number
-          quantity_delivered: number
-        }[]
-      | null
-    request_groups?:
-      | {
-          request_group_items?:
-            | { item_id: string | null; quantity: number }[]
-            | null
-        }[]
-      | null
-    loans?:
-      | { loan_items?: { item_id: string | null; quantity: number }[] | null }
-      | { loan_items?: { item_id: string | null; quantity: number }[] | null }[]
-      | null
-  }) => {
-    if (requestEntry.status !== 'delivered') return false
-
-    if (!requestEntry.request_groups?.length) {
-      return (requestEntry.request_items ?? [])
-        .filter((item) => item.quantity_approved > 0)
-        .some((item) => item.quantity_delivered < item.quantity_approved)
-    }
-
-    const deliveredByItem = getDeliveredQuantityByItem(requestEntry)
-    const requestedByItem = new Map<string, number>()
-
-    for (const group of requestEntry.request_groups) {
-      for (const groupItem of group.request_group_items ?? []) {
-        if (!groupItem.item_id) continue
-        requestedByItem.set(
-          groupItem.item_id,
-          (requestedByItem.get(groupItem.item_id) ?? 0) + groupItem.quantity
-        )
-      }
-    }
-
-    return [...requestedByItem.entries()].some(
-      ([itemId, requestedQuantity]) =>
-        (deliveredByItem.get(itemId) ?? 0) < requestedQuantity
-    )
-  }
-
   const formatExportRequestStatus = (requestEntry: {
     status: string | null
     request_items?:
@@ -140,10 +74,14 @@ export async function GET(request: NextRequest) {
       | { loan_items?: { item_id: string | null; quantity: number }[] | null }
       | { loan_items?: { item_id: string | null; quantity: number }[] | null }[]
       | null
-  }) =>
-    isPartiallyDeliveredRequest(requestEntry)
+  }) => {
+    const visibleStatus = getVisibleRequestStatus(requestEntry)
+
+    return visibleStatus === 'partial_delivery'
       ? 'Entregada parcialmente'
-      : formatRequestStatus(requestEntry.status)
+      : formatRequestStatus(visibleStatus)
+  }
+
 
 
   if (includeModule('maintenance')) {
