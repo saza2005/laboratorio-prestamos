@@ -15,7 +15,9 @@ El estudiante puede:
 - Crear solicitudes individuales.
 - Buscar materiales por nombre, código interno, código patrimonial o categoría.
 - Revisar sus solicitudes en `Mis solicitudes`, incluyendo si fueron entregadas completa o parcialmente.
+- Filtrar `Mis solicitudes` por texto o estado y limpiar filtros cuando sea necesario.
 - Revisar préstamos activos, vencidos, parciales y devueltos en `Mis préstamos`.
+- Filtrar `Mis préstamos` por texto o estado y limpiar filtros cuando sea necesario.
 - Abrir el detalle de solicitudes y préstamos desde un panel lateral al seleccionar una fila.
 
 El estudiante no puede:
@@ -42,7 +44,9 @@ El docente puede:
 - Crear solicitudes grupales.
 - Seleccionar estudiantes para grupos.
 - Revisar las solicitudes que creó, incluyendo entregas parciales.
+- Filtrar sus solicitudes por texto o estado y limpiar filtros cuando sea necesario.
 - Revisar sus préstamos.
+- Filtrar sus préstamos por texto o estado y limpiar filtros cuando sea necesario.
 - Abrir el detalle de solicitudes y préstamos desde un panel lateral al seleccionar una fila.
 
 Flujo de solicitud grupal:
@@ -100,7 +104,7 @@ El administrador puede realizar las mismas acciones que el laboratorista y adem�
 - Para equipos con unidad patrimonial, seleccionar la unidad correcta.
 - En devoluciones, marcar como faltante solo cuando el material no será devuelto.
 - Registrar observaciones en mantenimiento y devoluciones cuando exista daño o condición especial.
-- Usar los filtros de cada módulo para encontrar registros por código, código patrimonial, usuario o estado.
+- Usar los filtros de cada módulo para encontrar registros por código, código patrimonial, usuario o estado. El botón `Limpiar filtros` aparece cuando existe una búsqueda o filtro activo.
 - En listados con panel lateral, seleccionar una fila para abrir el detalle y cerrar con `Cerrar`, `Esc` o clic fuera del panel.
 - Antes de confirmar acciones críticas, revisar el cuadro de confirmación. Si aparece un error, leer el mensaje mostrado y corregir los datos antes de intentar nuevamente.
 
