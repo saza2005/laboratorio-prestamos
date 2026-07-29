@@ -1,5 +1,11 @@
 export function normalizeSearchText(value: string | null | undefined) {
-  return value?.trim().toLocaleLowerCase('es') ?? ''
+  return (
+    value
+      ?.trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLocaleLowerCase('es') ?? ''
+  )
 }
 
 export function formatAssetCodes(codes: string[]) {
