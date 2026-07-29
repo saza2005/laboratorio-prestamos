@@ -127,6 +127,8 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Gráficas | Renderizan datos del periodo | Pendiente |
 | Exportar todo el reporte | Descarga Excel con varias hojas | Pendiente |
 | Exportar módulo individual | Descarga Excel solo del módulo elegido | Pendiente |
+| Exportar solicitudes con entrega parcial | El Excel muestra `Entregada parcialmente` cuando aplica | Pendiente |
+| Exportar préstamos | El Excel muestra estados en español, no valores internos | Pendiente |
 
 ## 10. Cierre
 
