@@ -8,6 +8,7 @@ import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/role
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { ModuleTabs } from '@/components/module-tabs'
 
 
 export default async function InventarioPage() {
@@ -355,31 +356,58 @@ export default async function InventarioPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Gestión de Inventario</h1>
-          <p className="text-slate-600">
-            Usuario: {profile?.full_name} | Rol: {profile?.role}
-          </p>
-        </div>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Gestión de Inventario</h1>
+            <p className="text-slate-600">
+              Usuario: {profile?.full_name} | Rol: {profile?.role}
+            </p>
+          </div>
 
-        <div className="mb-6">
           <Link
             href="/dashboard"
-            className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
+            className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
           >
             Volver al dashboard
           </Link>
         </div>
 
-        <div className="mb-8 rounded-2xl bg-white shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Agregar nuevo item</h2>
+        <ModuleTabs
+          tabs={[
+            {
+              id: 'items',
+              label: 'Ítems',
+              description: 'Consulta el inventario general, stock, códigos y detalles por ítem.',
+            },
+            {
+              id: 'unidades',
+              label: 'Unidades',
+              description: 'Revisa equipos con seguimiento individual y sus códigos patrimoniales.',
+            },
+            {
+              id: 'movimientos',
+              label: 'Movimientos',
+              description: 'Consulta movimientos recientes de inventario.',
+            },
+            {
+              id: 'nuevo',
+              label: 'Agregar ítem',
+              description: 'Registra manualmente un nuevo material o equipo.',
+            },
+          ]}
+        >
+          <InventoryList items={inventoryItems} histories={itemHistories} />
 
-          <ItemForm />
-        </div>
+          <InventoryUnitsList units={units} />
 
-        <InventoryList items={inventoryItems} histories={itemHistories} />
-        <InventoryUnitsList units={units} />
-        <MovementsTable data={normalizedMovements} limit={100} />
+          <MovementsTable data={normalizedMovements} limit={100} />
+
+          <div className="rounded-2xl bg-white shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Agregar nuevo item</h2>
+
+            <ItemForm />
+          </div>
+        </ModuleTabs>
       </div>
     </main>
   )

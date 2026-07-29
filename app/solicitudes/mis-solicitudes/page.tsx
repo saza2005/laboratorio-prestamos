@@ -16,17 +16,20 @@ export default async function MisSolicitudesPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-8">
       <div className="mx-auto max-w-6xl space-y-6">
-        <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Mis solicitudes</h1>
+            <p className="mt-1 text-slate-600">
+              Historial y estado de tus últimas {USER_HISTORY_LIMIT} solicitudes.
+            </p>
+          </div>
+
           <Link
             href="/solicitudes"
-            className="text-sm font-medium text-blue-700 hover:underline"
+            className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-slate-900"
           >
             Volver al portal
           </Link>
-          <h1 className="mt-3 text-3xl font-bold">Mis solicitudes</h1>
-          <p className="mt-1 text-slate-600">
-            Historial y estado de tus últimas {USER_HISTORY_LIMIT} solicitudes.
-          </p>
         </div>
 
         <section className="grid gap-4 md:grid-cols-3">

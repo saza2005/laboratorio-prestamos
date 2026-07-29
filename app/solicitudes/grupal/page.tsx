@@ -20,12 +20,15 @@ export default async function SolicitudGrupalPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-8">
       <div className="mx-auto max-w-6xl space-y-6">
-        <div>
-          <Link href="/solicitudes" className="text-sm font-medium text-blue-700 hover:underline">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Nueva solicitud grupal</h1>
+            <p className="mt-1 text-slate-600">Organiza grupos, jefes de grupo y materiales solicitados.</p>
+          </div>
+
+          <Link href="/solicitudes" className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-slate-900">
             Volver al portal
           </Link>
-          <h1 className="mt-3 text-3xl font-bold">Nueva solicitud grupal</h1>
-          <p className="mt-1 text-slate-600">Organiza grupos, jefes de grupo y materiales solicitados.</p>
         </div>
 
         <section className="rounded-lg bg-white p-4 shadow sm:p-6">

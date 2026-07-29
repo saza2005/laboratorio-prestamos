@@ -12,6 +12,7 @@ import {
 } from '@/lib/query-limits'
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { ModuleTabs } from '@/components/module-tabs'
 
 export default async function PrestamosPage() {
   let auth
@@ -241,42 +242,57 @@ export default async function PrestamosPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8 text-slate-900">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Gestión de Préstamos</h1>
-          <p className="text-slate-600">
-            Usuario: {profile?.full_name} | Rol: {profile?.role}
-          </p>
-        </div>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Gestión de Préstamos</h1>
+            <p className="text-slate-600">
+              Usuario: {profile?.full_name} | Rol: {profile?.role}
+            </p>
+          </div>
 
-        <div className="mb-6">
           <Link
             href="/dashboard"
-            className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
+            className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
           >
             Volver al dashboard
           </Link>
         </div>
 
-        <div className="mb-8 rounded-2xl bg-white shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Registrar préstamo</h2>
-          <LoanForm
-            users={users}
-            items={items}
-            availableUnits={availableUnits}
-            minExpectedReturnDate={currentDate}
-          />
-        </div>
-
-        <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold">Préstamos registrados</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Selecciona un préstamo para revisar materiales, usuario, grupos y estado de devolución.
-            </p>
+        <ModuleTabs
+          tabs={[
+            {
+              id: 'registrar',
+              label: 'Registrar préstamo',
+              description: 'Crea préstamos directos con uno o varios materiales.',
+            },
+            {
+              id: 'historial',
+              label: 'Préstamos registrados',
+              description: 'Consulta préstamos recientes, estados, vencimientos y detalles.',
+            },
+          ]}
+        >
+          <div className="rounded-2xl bg-white shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Registrar préstamo</h2>
+            <LoanForm
+              users={users}
+              items={items}
+              availableUnits={availableUnits}
+              minExpectedReturnDate={currentDate}
+            />
           </div>
 
-          <LoansList loans={loans} currentDate={currentDate} />
-        </section>
+          <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Préstamos registrados</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Selecciona un préstamo para revisar materiales, usuario, grupos y estado de devolución.
+              </p>
+            </div>
+
+            <LoansList loans={loans} currentDate={currentDate} />
+          </section>
+        </ModuleTabs>
       </div>
     </main>
   )

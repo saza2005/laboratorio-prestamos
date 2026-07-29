@@ -8,6 +8,7 @@ import {
 import { MaintenanceForm } from './maintenance-form'
 import { MaintenanceHistory } from './maintenance-history'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import { ModuleTabs } from '@/components/module-tabs'
 
 export default async function MantenimientoPage() {
   let auth
@@ -89,14 +90,28 @@ export default async function MantenimientoPage() {
           </Link>
         </div>
 
-        {/* FORM */}
-        <div className="bg-white rounded-2xl shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Registrar mantenimiento</h2>
+        <ModuleTabs
+          tabs={[
+            {
+              id: 'registrar',
+              label: 'Registrar mantenimiento',
+              description: 'Registra mantenimiento preventivo, correctivo o trabajo general.',
+            },
+            {
+              id: 'historial',
+              label: 'Historial',
+              description: 'Consulta mantenimientos recientes y abre el detalle de cada registro.',
+            },
+          ]}
+        >
+          <div className="bg-white rounded-2xl shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Registrar mantenimiento</h2>
 
-          <MaintenanceForm items={maintenanceItems} />
-        </div>
+            <MaintenanceForm items={maintenanceItems} />
+          </div>
 
-        <MaintenanceHistory records={normalizedRecords} limit={100} />
+          <MaintenanceHistory records={normalizedRecords} limit={100} />
+        </ModuleTabs>
 
       </div>
     </main>

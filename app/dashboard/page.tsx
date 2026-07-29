@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/app/logout-button'
 import { LinkGoogleButton } from '@/app/auth/link-google-button'
 import { DashboardCharts } from './dashboard-charts'
+import { ModuleTabs } from '@/components/module-tabs'
 import {
   canSeeInventoryModule,
   canSeeLoansModule,
@@ -568,92 +569,31 @@ export default async function DashboardPage({
           </div>
         </section>
 
-        <section className="rounded-lg bg-white p-5 shadow sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold">Periodo de reporte</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Filtra métricas, gráficas y exportaciones del dashboard.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-              <form className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                <div>
-                  <label className="mb-1 block text-sm font-medium">Mes</label>
-                  <select
-                    name="month"
-                    defaultValue={selectedMonth}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                  >
-                    {Array.from({ length: 12 }, (_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {formatMonthName(i)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium">Año</label>
-                  <select
-                    name="year"
-                    defaultValue={selectedYear}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                  >
-                    {reportYears.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
-                >
-                  Filtrar
-                </button>
-              </form>
-
-              {canSeeReports && (
-                <form
-                  action="/dashboard/export"
-                  className="flex flex-col gap-3 sm:flex-row sm:items-end"
-                >
-                  <input type="hidden" name="month" value={selectedMonth} />
-                  <input type="hidden" name="year" value={selectedYear} />
-
-                  <div>
-                    <label className="mb-1 block text-sm font-medium">Exportar</label>
-                    <select
-                      name="module"
-                      defaultValue="all"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    >
-                      <option value="all">Todo el reporte</option>
-                      <option value="requests">Solicitudes</option>
-                      <option value="loans">Préstamos</option>
-                      <option value="returns">Devoluciones</option>
-                      <option value="maintenance">Mantenimiento</option>
-                      <option value="movements">Movimientos</option>
-                      <option value="inventory">Inventario completo</option>
-                    </select>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="rounded-lg bg-green-600 px-4 py-2 text-center font-medium text-white transition hover:bg-green-700"
-                  >
-                    Exportar Excel
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </section>
-
+        <ModuleTabs
+          tabs={[
+            {
+              id: 'resumen',
+              label: 'Resumen',
+              description: 'Indicadores principales, accesos rápidos y trabajo que requiere atención.',
+            },
+            {
+              id: 'graficas',
+              label: 'Gráficas',
+              description: 'Análisis visual del periodo seleccionado en reportes.',
+            },
+            {
+              id: 'seguimiento',
+              label: 'Seguimiento',
+              description: 'Actividad reciente, préstamos, alertas y movimientos operativos.',
+            },
+            {
+              id: 'reportes',
+              label: 'Reportes',
+              description: 'Filtro de periodo y exportaciones Excel por módulo.',
+            },
+          ]}
+        >
+          <div className="space-y-6">
         <section className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">Resumen general</h2>
@@ -921,6 +861,8 @@ export default async function DashboardPage({
           )}
         </section>
 
+          </div>
+
         <section className="space-y-4 rounded-lg bg-white p-5 shadow sm:p-6">
           <div>
             <h2 className="text-xl font-semibold">Análisis visual</h2>
@@ -936,6 +878,9 @@ export default async function DashboardPage({
           />
         </section>
 
+
+
+          <div className="space-y-6">
         <section className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">Seguimiento reciente</h2>
@@ -1183,6 +1128,95 @@ export default async function DashboardPage({
             </div>
           </div>
         </section>
+          </div>
+
+        <section className="rounded-lg bg-white p-5 shadow sm:p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">Periodo de reporte</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Filtra métricas, gráficas y exportaciones del dashboard.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
+              <form className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                <div>
+                  <label className="mb-1 block text-sm font-medium">Mes</label>
+                  <select
+                    name="month"
+                    defaultValue={selectedMonth}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {formatMonthName(i)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium">Año</label>
+                  <select
+                    name="year"
+                    defaultValue={selectedYear}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                  >
+                    {reportYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="submit"
+                  className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
+                >
+                  Filtrar
+                </button>
+              </form>
+
+              {canSeeReports && (
+                <form
+                  action="/dashboard/export"
+                  className="flex flex-col gap-3 sm:flex-row sm:items-end"
+                >
+                  <input type="hidden" name="month" value={selectedMonth} />
+                  <input type="hidden" name="year" value={selectedYear} />
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium">Exportar</label>
+                    <select
+                      name="module"
+                      defaultValue="all"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                    >
+                      <option value="all">Todo el reporte</option>
+                      <option value="requests">Solicitudes</option>
+                      <option value="loans">Préstamos</option>
+                      <option value="returns">Devoluciones</option>
+                      <option value="maintenance">Mantenimiento</option>
+                      <option value="movements">Movimientos</option>
+                      <option value="inventory">Inventario completo</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-green-600 px-4 py-2 text-center font-medium text-white transition hover:bg-green-700"
+                  >
+                    Exportar Excel
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
+
+        </ModuleTabs>
       </div>
     </main>
   )

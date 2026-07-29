@@ -7,6 +7,7 @@ import { canManageReturns, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { ADMIN_HISTORY_LIMIT, PROFILE_SELECT_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { ModuleTabs } from '@/components/module-tabs'
 
 export default async function DevolucionesPage() {
   let auth
@@ -192,37 +193,60 @@ export default async function DevolucionesPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Gestión de Devoluciones</h1>
-          <p className="text-slate-600">
-            Usuario: {profile?.full_name} | Rol: {profile?.role}
-          </p>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Gestión de Devoluciones</h1>
+            <p className="text-slate-600">
+              Usuario: {profile?.full_name} | Rol: {profile?.role}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/dashboard"
+              className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
+            >
+              Volver al dashboard
+            </Link>
+
+            <Link
+              href="/prestamos"
+              className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-center text-white transition hover:bg-blue-700"
+            >
+              Ir a préstamos
+            </Link>
+          </div>
         </div>
 
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/dashboard"
-            className="inline-block rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
-          >
-            Volver al dashboard
-          </Link>
+        <ModuleTabs
+          tabs={[
+            {
+              id: 'registrar',
+              label: 'Registrar devolución',
+              description: 'Procesa devoluciones parciales o totales de préstamos activos.',
+            },
+            {
+              id: 'pendientes',
+              label: 'Pendientes',
+              description: 'Revisa los préstamos e ítems que todavía tienen cantidades por devolver.',
+            },
+            {
+              id: 'historial',
+              label: 'Historial',
+              description: 'Consulta devoluciones registradas recientemente.',
+            },
+          ]}
+        >
+          <div className="rounded-2xl bg-white shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Registrar devolución</h2>
 
-          <Link
-            href="/prestamos"
-            className="inline-block rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition"
-          >
-            Ir a préstamos
-          </Link>
-        </div>
+            <ReturnForm loanItems={normalizedActiveLoanItems} />
+          </div>
 
-        <div className="mb-8 rounded-2xl bg-white shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Registrar devolución</h2>
+          <PendingReturnsList loanItems={normalizedActiveLoanItems} />
 
-          <ReturnForm loanItems={normalizedActiveLoanItems} />
-        </div>
-
-        <PendingReturnsList loanItems={normalizedActiveLoanItems} />
-        <ReturnsHistory entries={normalizedReturnHistory} limit={50} />
+          <ReturnsHistory entries={normalizedReturnHistory} limit={50} />
+        </ModuleTabs>
       </div>
     </main>
   )
