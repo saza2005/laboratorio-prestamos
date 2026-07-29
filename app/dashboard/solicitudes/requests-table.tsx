@@ -169,6 +169,14 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
     setSelectedRequestId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSelectedRequestId(null)
+  }
+
+  const hasFilters = Boolean(search || statusFilter)
+
   return (
     <div className="space-y-4">
       <div className="rounded-2xl bg-white p-4 shadow sm:p-6">
@@ -197,9 +205,20 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
             <option value="cancelled">Cancelada</option>
           </select>
 
-          <div className="flex items-center text-sm text-slate-600">
-            Resultados: {filteredRequests.length}
-            {limit ? ` de las últimas ${limit} solicitudes` : ''}
+          <div className="flex flex-col gap-2 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              Resultados: {filteredRequests.length}
+              {limit ? ` de las últimas ${limit} solicitudes` : ''}
+            </span>
+            {hasFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="w-fit rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              >
+                Limpiar filtros
+              </button>
+            )}
           </div>
         </div>
       </div>
