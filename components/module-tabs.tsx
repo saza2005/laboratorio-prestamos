@@ -19,6 +19,13 @@ export function ModuleTabs({ tabs, children }: ModuleTabsProps) {
   const activeIndex = Math.max(0, tabs.findIndex((tab) => tab.id === activeTab))
   const activeDescription = tabs[activeIndex]?.description
 
+  function selectRelativeTab(offset: number) {
+    if (tabs.length === 0) return
+
+    const nextIndex = (activeIndex + offset + tabs.length) % tabs.length
+    setActiveTab(tabs[nextIndex].id)
+  }
+
   return (
     <section className="space-y-5">
       <div className="overflow-x-auto rounded-lg bg-white p-2 shadow">
@@ -34,7 +41,19 @@ export function ModuleTabs({ tabs, children }: ModuleTabsProps) {
                 aria-selected={selected}
                 aria-controls={`module-panel-${tab.id}`}
                 id={`module-tab-${tab.id}`}
+                tabIndex={selected ? 0 : -1}
                 onClick={() => setActiveTab(tab.id)}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowRight') {
+                    event.preventDefault()
+                    selectRelativeTab(1)
+                  }
+
+                  if (event.key === 'ArrowLeft') {
+                    event.preventDefault()
+                    selectRelativeTab(-1)
+                  }
+                }}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                   selected
                     ? 'bg-slate-900 text-white shadow-sm'
