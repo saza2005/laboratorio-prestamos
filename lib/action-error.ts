@@ -11,6 +11,17 @@ export function getActionErrorMessage(
   return normalizeTechnicalError(message) ?? message
 }
 
+export function getSafePageErrorMessage(
+  error: unknown,
+  fallback = 'La sección no pudo cargar correctamente. Intente nuevamente.'
+) {
+  const message = error instanceof Error ? error.message.trim() : ''
+
+  if (!message) return fallback
+
+  return normalizeTechnicalError(message) ?? fallback
+}
+
 function normalizeTechnicalError(message: string) {
   const normalized = message.toLowerCase()
 

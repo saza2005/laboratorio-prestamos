@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { getSafePageErrorMessage } from '@/lib/action-error'
 
 export default function ErrorPage({
   error,
@@ -14,6 +15,8 @@ export default function ErrorPage({
     console.error(error)
   }, [error])
 
+  const message = getSafePageErrorMessage(error)
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
       <section className="w-full max-w-lg rounded-lg bg-white p-6 shadow sm:p-8">
@@ -22,8 +25,10 @@ export default function ErrorPage({
           No se pudo cargar esta sección
         </h1>
         <p className="mt-3 text-slate-600">
-          La operación no se completó. Puede intentarlo nuevamente o volver a
-          una sección estable.
+          {message}
+        </p>
+        <p className="mt-2 text-sm text-slate-500">
+          Puede intentarlo nuevamente o volver a una sección estable.
         </p>
 
         {error.digest && (
