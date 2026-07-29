@@ -75,6 +75,14 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
     setSelectedId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setTypeFilter('')
+    setSelectedId(null)
+  }
+
+  const hasFilters = Boolean(search || typeFilter)
+
   return (
     <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -86,7 +94,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_180px]">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_180px_auto]">
           <input
             type="text"
             placeholder="Buscar por equipo, código, actividad, responsable o fecha"
@@ -103,6 +111,15 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
             <option value="preventive">Preventivo</option>
             <option value="corrective">Correctivo</option>
           </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 

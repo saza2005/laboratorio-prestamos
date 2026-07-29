@@ -65,6 +65,13 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
     setSelectedId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setSelectedId(null)
+  }
+
+  const hasFilters = Boolean(search)
+
   return (
     <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -76,13 +83,24 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
           </p>
         </div>
 
-        <input
-          type="text"
-          placeholder="Buscar por usuario, ítem, código, recibido por o notas"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm lg:w-96"
-        />
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <input
+            type="text"
+            placeholder="Buscar por usuario, ítem, código, recibido por o notas"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm lg:w-96"
+          />
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       </div>
 
       {filteredEntries.length > 0 ? (
