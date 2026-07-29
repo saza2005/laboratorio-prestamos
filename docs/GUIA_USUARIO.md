@@ -14,7 +14,7 @@ El estudiante puede:
 
 - Crear solicitudes individuales.
 - Buscar materiales por nombre, código interno, código patrimonial o categoría.
-- Revisar sus solicitudes en `Mis solicitudes`.
+- Revisar sus solicitudes en `Mis solicitudes`, incluyendo si fueron entregadas completa o parcialmente.
 - Revisar préstamos activos, vencidos, parciales y devueltos en `Mis préstamos`.
 - Abrir el detalle de solicitudes y préstamos desde un panel lateral al seleccionar una fila.
 
@@ -31,7 +31,7 @@ Flujo recomendado:
 2. Crear una solicitud individual.
 3. Agregar materiales desde el buscador.
 4. Enviar la solicitud.
-5. Revisar el estado en `Mis solicitudes`.
+5. Revisar el estado en `Mis solicitudes`. Si laboratorio entrega menos de lo aprobado, aparecerá como `Entregada parcialmente`.
 6. Cuando el laboratorio entregue el préstamo, revisar el detalle en `Mis préstamos`.
 
 ## Docente
@@ -41,7 +41,7 @@ El docente puede:
 - Crear solicitudes individuales.
 - Crear solicitudes grupales.
 - Seleccionar estudiantes para grupos.
-- Revisar las solicitudes que creó.
+- Revisar las solicitudes que creó, incluyendo entregas parciales.
 - Revisar sus préstamos.
 - Abrir el detalle de solicitudes y préstamos desde un panel lateral al seleccionar una fila.
 
@@ -52,7 +52,7 @@ Flujo de solicitud grupal:
 3. Seleccionar líder/estudiantes según corresponda.
 4. Buscar materiales y agregarlos al grupo.
 5. Revisar cantidades y enviar.
-6. Consultar estado en `Mis solicitudes`.
+6. Consultar estado en `Mis solicitudes`. Si la entrega no cubre todos los materiales solicitados, se mostrará como `Entregada parcialmente`.
 
 ## Laboratorista
 
@@ -100,7 +100,7 @@ El administrador puede realizar las mismas acciones que el laboratorista y adem�
 - Para equipos con unidad patrimonial, seleccionar la unidad correcta.
 - En devoluciones, marcar como faltante solo cuando el material no será devuelto.
 - Registrar observaciones en mantenimiento y devoluciones cuando exista daño o condición especial.
-- Usar los filtros de cada módulo para encontrar registros por código, usuario o estado.
+- Usar los filtros de cada módulo para encontrar registros por código, código patrimonial, usuario o estado.
 - En listados con panel lateral, seleccionar una fila para abrir el detalle y cerrar con `Cerrar`, `Esc` o clic fuera del panel.
 - Antes de confirmar acciones críticas, revisar el cuadro de confirmación. Si aparece un error, leer el mensaje mostrado y corregir los datos antes de intentar nuevamente.
 

@@ -33,6 +33,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Quitar item agregado | Se elimina sin afectar otros items | Pendiente |
 | Ver `/solicitudes/mis-solicitudes` | Solo muestra sus solicitudes | Pendiente |
 | Abrir detalle lateral de solicitud | Muestra propósito, items y estado | Pendiente |
+| Ver solicitud entregada parcialmente | Muestra `Entregada parcialmente` si no se entregó todo lo aprobado | Pendiente |
 | Cancelar solicitud pendiente propia | Cambia a cancelada | Pendiente |
 | Ver `/solicitudes/mis-prestamos` | Solo muestra sus préstamos | Pendiente |
 
@@ -47,6 +48,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Quitar items de un grupo | Se eliminan sin romper el formulario | Pendiente |
 | Enviar solicitud grupal | Guarda grupos e items | Pendiente |
 | Ver mis solicitudes | Solo muestra solicitudes creadas por el docente | Pendiente |
+| Ver solicitud grupal entregada parcialmente | Muestra `Entregada parcialmente` si la entrega no cubrió todos los materiales | Pendiente |
 | Ver mis préstamos | Muestra préstamos propios | Pendiente |
 
 ## 4. Admin y Lab Staff: solicitudes
@@ -60,7 +62,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Aprobar solicitud individual | Cambia a aprobada | Pendiente |
 | Rechazar solicitud | Guarda motivo y cambia a rechazada | Pendiente |
 | Entregar solicitud aprobada completa | Crea préstamo y descuenta stock | Pendiente |
-| Entregar solicitud parcial | Crea préstamo con lo entregado y descuenta solo esa cantidad | Pendiente |
+| Entregar solicitud parcial | Crea préstamo con lo entregado, descuenta solo esa cantidad y el solicitante ve `Entregada parcialmente` | Pendiente |
 | Entregar item con unidad patrimonial | Exige seleccionar unidad disponible | Pendiente |
 
 ## 5. Admin y Lab Staff: préstamos
