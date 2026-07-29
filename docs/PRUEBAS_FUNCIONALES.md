@@ -58,6 +58,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Entrar a `/dashboard/solicitudes` | Muestra solicitudes de todos los usuarios | Pendiente |
 | Filtrar por estado | Filtra correctamente, incluyendo `Entregada parcialmente` | Pendiente |
 | Buscar por usuario, código o material | Muestra coincidencias | Pendiente |
+| Limpiar filtros | Aparece solo con filtros activos y restablece búsqueda/estado | Pendiente |
 | Abrir detalle lateral | Muestra solicitante, propósito, items, grupo y estado | Pendiente |
 | Aprobar solicitud individual | Cambia a aprobada | Pendiente |
 | Rechazar solicitud | Guarda motivo y cambia a rechazada | Pendiente |
@@ -85,6 +86,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | --- | --- | --- |
 | Entrar a `/devoluciones` | Muestra préstamos con pendiente de devolución | Pendiente |
 | Buscar por usuario/item/código | Muestra coincidencias | Pendiente |
+| Limpiar filtros | Aparece solo con filtros activos y restablece búsqueda/estado | Pendiente |
 | Registrar devolución parcial | Actualiza cantidades y deja préstamo parcial | Pendiente |
 | Registrar devolución total | Cierra préstamo si todo fue devuelto/faltante | Pendiente |
 | Registrar daño | Actualiza cantidad dañada y stock según regla actual | Pendiente |
@@ -99,6 +101,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Buscar por nombre/código/patrimonial | Muestra coincidencias | Pendiente |
 | Filtrar por categoría | Filtra correctamente | Pendiente |
 | Filtrar por estado | Filtra correctamente | Pendiente |
+| Limpiar filtros | Aparece solo con filtros activos y restablece búsqueda/categoría/estado | Pendiente |
 | Abrir detalle de item | Muestra stock, códigos y datos básicos | Pendiente |
 | Revisar historial reciente del item | Muestra préstamos, devoluciones, mantenimiento y movimientos con colores | Pendiente |
 | Revisar unidades patrimoniales | Muestra estado y disponibilidad | Pendiente |
@@ -113,6 +116,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Registrar mantenimiento correctivo | Guarda registro | Pendiente |
 | Registrar trabajo general | Permite guardar sin item específico si aplica | Pendiente |
 | Buscar item por código/patrimonial | Muestra coincidencias | Pendiente |
+| Limpiar filtros | Aparece solo con filtros activos y restablece búsqueda/tipo/categoría | Pendiente |
 | Abrir historial en panel lateral | Muestra detalle completo | Pendiente |
 
 ## 9. Dashboard y reportes
