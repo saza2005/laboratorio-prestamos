@@ -135,6 +135,9 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
           <p className="text-sm text-slate-500">
             Selecciona un registro para revisar cantidades, usuario, unidad y grupos.
           </p>
+          <p className="mt-1 text-sm text-slate-500">
+            Resultados: {filteredItems.length} de {loanItems.length}
+          </p>
         </div>
         <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px_auto]">
           <input
