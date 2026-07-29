@@ -56,7 +56,7 @@ Checklist para validar el sistema antes de dejar una fase como estable o antes d
 | Prueba | Resultado esperado | Estado |
 | --- | --- | --- |
 | Entrar a `/dashboard/solicitudes` | Muestra solicitudes de todos los usuarios | Pendiente |
-| Filtrar por estado | Filtra correctamente | Pendiente |
+| Filtrar por estado | Filtra correctamente, incluyendo `Entregada parcialmente` | Pendiente |
 | Buscar por usuario, código o material | Muestra coincidencias | Pendiente |
 | Abrir detalle lateral | Muestra solicitante, propósito, items, grupo y estado | Pendiente |
 | Aprobar solicitud individual | Cambia a aprobada | Pendiente |
