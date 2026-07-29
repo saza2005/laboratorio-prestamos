@@ -418,7 +418,7 @@ export function RequestFormGroups({
                 </div>
               ) : (
                 <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
-                  No hay ítems disponibles que coincidan con la búsqueda.
+                  No hay ítems disponibles que coincidan con la búsqueda o filtros.
                 </p>
               )}
             </div>

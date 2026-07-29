@@ -129,7 +129,7 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
             </div>
           ))
         ) : (
-          <p className="text-slate-500">No hay ítems que coincidan con el filtro.</p>
+          <p className="text-slate-500">No hay ítems que coincidan con la búsqueda o filtros.</p>
         )}
       </div>
 

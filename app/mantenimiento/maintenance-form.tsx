@@ -192,7 +192,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
               </div>
             ) : (
               <p className="rounded-lg bg-white px-3 py-4 text-center text-sm text-slate-500">
-                No hay equipos que coincidan con la búsqueda.
+                No hay equipos que coincidan con la búsqueda o filtros.
               </p>
             )}
           </div>

@@ -314,7 +314,7 @@ export function LoanForm({
           </div>
         ) : (
           <p className="rounded-lg bg-white px-3 py-4 text-center text-sm text-slate-500">
-            No hay materiales disponibles que coincidan con la búsqueda.
+            No hay materiales disponibles que coincidan con la búsqueda o filtros.
           </p>
         )}
       </div>
