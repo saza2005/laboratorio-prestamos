@@ -64,6 +64,14 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
     setPage(1)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setCategory('')
+    setPage(1)
+  }
+
+  const hasFilters = Boolean(search || category)
+
   return (
     <div className="rounded-lg bg-white p-4 shadow sm:p-6">
       <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -74,7 +82,7 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,320px)_minmax(180px,240px)]">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,320px)_minmax(180px,240px)_auto]">
           <input
             type="search"
             value={search}
@@ -95,6 +103,15 @@ export function ItemsCatalog({ items }: { items: CatalogItem[] }) {
               </option>
             ))}
           </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 

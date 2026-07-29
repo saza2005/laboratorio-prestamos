@@ -119,6 +119,14 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
     setSelectedId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSelectedId(null)
+  }
+
+  const hasFilters = Boolean(search || statusFilter)
+
   return (
     <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -128,7 +136,7 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
             Selecciona un registro para revisar cantidades, usuario, unidad y grupos.
           </p>
         </div>
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px]">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px_auto]">
           <input
             type="text"
             placeholder="Buscar por usuario, ítem, código, unidad o grupo"
@@ -146,6 +154,15 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
             <option value="partial_return">Devolución parcial</option>
             <option value="overdue">Vencido</option>
           </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 

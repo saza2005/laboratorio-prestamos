@@ -87,6 +87,8 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
     setCategory('')
   }
 
+  const hasItemFilters = Boolean(search || category)
+
   return (
     <form
       action={formAction}
@@ -138,13 +140,15 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm transition hover:bg-slate-50"
-            >
-              Limpiar
-            </button>
+            {hasItemFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="w-fit rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm transition hover:bg-slate-50"
+              >
+                Limpiar filtros
+              </button>
+            )}
           </div>
 
           <p className="mt-3 text-xs text-slate-500">

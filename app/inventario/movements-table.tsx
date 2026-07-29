@@ -63,6 +63,16 @@ export function MovementsTable({
     setSelectedMovementId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setTypeFilter('')
+    setFromDate('')
+    setToDate('')
+    setSelectedMovementId(null)
+  }
+
+  const hasFilters = Boolean(search || typeFilter || fromDate || toDate)
+
   return (
     <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
       <div className="mb-4 space-y-4">
@@ -74,7 +84,7 @@ export function MovementsTable({
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_160px_160px_160px_auto]">
           <input
             type="text"
             placeholder="Buscar por ítem, código, usuario o notas"
@@ -108,6 +118,15 @@ export function MovementsTable({
             onChange={(e) => setToDate(e.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 

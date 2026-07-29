@@ -371,13 +371,15 @@ export function RequestFormGroups({
                   ))}
                 </select>
 
-                <button
-                  type="button"
-                  onClick={() => clearGroupFilters(groupIndex)}
-                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50"
-                >
-                  Limpiar
-                </button>
+                {(group.search || group.category) && (
+                  <button
+                    type="button"
+                    onClick={() => clearGroupFilters(groupIndex)}
+                    className="w-fit rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50"
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
               </div>
 
               <p className="text-sm text-slate-500">

@@ -148,6 +148,16 @@ export function InventoryList({
     setSelectedItemId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setCategory('')
+    setStatus('')
+    setPage(1)
+    setSelectedItemId(null)
+  }
+
+  const hasFilters = Boolean(search || category || status)
+
   return (
     <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
       <div className="mb-4 space-y-4">
@@ -158,7 +168,7 @@ export function InventoryList({
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_minmax(180px,240px)_minmax(160px,220px)]">
+        <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_minmax(180px,240px)_minmax(160px,220px)_auto]">
           <input
             type="search"
             value={search}
@@ -190,6 +200,15 @@ export function InventoryList({
             <option value="inactive">Inactivo</option>
             <option value="maintenance">Mantenimiento</option>
           </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 

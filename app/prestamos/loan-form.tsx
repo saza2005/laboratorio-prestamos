@@ -183,6 +183,7 @@ export function LoanForm({
     setCategoryFilter('')
   }
 
+  const hasItemFilters = Boolean(itemSearch || categoryFilter)
   const canSubmit = Boolean(selectedUserId) && !hasErrors && !isPending
 
   useEffect(() => {
@@ -255,13 +256,15 @@ export function LoanForm({
               </option>
             ))}
           </select>
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm transition hover:bg-slate-50"
-          >
-            Limpiar
-          </button>
+          {hasItemFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
 
         <p className="text-xs text-slate-500">

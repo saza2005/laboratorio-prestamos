@@ -134,6 +134,8 @@ export function RequestForm({
     setCategoryFilter('')
   }
 
+  const hasItemFilters = Boolean(itemSearch || categoryFilter)
+
   return (
     <form action={formAction} className="grid gap-4 md:grid-cols-2">
       <ItemAddedToast itemName={addedItemName} />
@@ -194,13 +196,15 @@ export function RequestForm({
               ))}
             </select>
 
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50"
-            >
-              Limpiar
-            </button>
+            {hasItemFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="w-fit rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50"
+              >
+                Limpiar filtros
+              </button>
+            )}
           </div>
 
           <div className="text-sm text-slate-500">

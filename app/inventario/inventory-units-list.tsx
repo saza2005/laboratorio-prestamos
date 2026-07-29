@@ -66,6 +66,16 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
     setSelectedUnitId(null)
   }
 
+  function clearFilters() {
+    setSearch('')
+    setCondition('')
+    setAvailability('')
+    setPage(1)
+    setSelectedUnitId(null)
+  }
+
+  const hasFilters = Boolean(search || condition || availability)
+
   return (
     <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
       <div className="mb-4 space-y-4">
@@ -76,7 +86,7 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
           </p>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_220px_220px]">
+        <div className="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_220px_220px_auto]">
           <input
             type="search"
             value={search}
@@ -117,6 +127,15 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
             <option value="maintenance">Mantenimiento</option>
             <option value="unavailable">No disponible</option>
           </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       </div>
 
