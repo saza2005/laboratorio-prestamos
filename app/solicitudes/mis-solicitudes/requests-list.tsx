@@ -94,12 +94,56 @@ function getPreviewText(request: RequestRow) {
 }
 
 export function RequestsList({ requests }: RequestsListProps) {
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
+
+  const filteredRequests = useMemo(() => {
+    const term = search.trim().toLowerCase()
+
+    return requests.filter((request) => {
+      const visibleStatus = getVisibleRequestStatus(request)
+      const matchesStatus = statusFilter
+        ? visibleStatus === statusFilter || request.status === statusFilter
+        : true
+      const itemsText = [
+        ...request.request_items.map(
+          (item) => `${item.items?.name ?? ''} ${item.items?.code ?? ''}`
+        ),
+        ...request.request_groups.flatMap((group) =>
+          group.request_group_items.map(
+            (item) => `${item.items?.name ?? ''} ${item.items?.code ?? ''}`
+          )
+        ),
+      ]
+        .join(' ')
+        .toLowerCase()
+      const matchesSearch =
+        !term ||
+        getRequestType(request).toLowerCase().includes(term) ||
+        (request.purpose ?? '').toLowerCase().includes(term) ||
+        (request.comments ?? '').toLowerCase().includes(term) ||
+        itemsText.includes(term)
+
+      return matchesStatus && matchesSearch
+    })
+  }, [requests, search, statusFilter])
 
   const selectedRequest = useMemo(() => {
     if (!selectedRequestId) return null
-    return requests.find((request) => request.id === selectedRequestId) ?? null
-  }, [requests, selectedRequestId])
+    return (
+      filteredRequests.find((request) => request.id === selectedRequestId) ??
+      null
+    )
+  }, [filteredRequests, selectedRequestId])
+
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSelectedRequestId(null)
+  }
+
+  const hasFilters = Boolean(search || statusFilter)
 
   if (requests.length === 0) {
     return <p className="text-slate-500">Aún no tienes solicitudes registradas.</p>
@@ -107,7 +151,46 @@ export function RequestsList({ requests }: RequestsListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-lg border border-slate-200">
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px_auto]">
+          <input
+            type="text"
+            placeholder="Buscar por propósito, ítem, código o tipo"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          />
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          >
+            <option value="">Todos los estados</option>
+            <option value="pending">Pendiente</option>
+            <option value="approved">Aprobada</option>
+            <option value="rejected">Rechazada</option>
+            <option value="delivered">Entregada</option>
+            <option value="partial_delivery">Entregada parcialmente</option>
+            <option value="returned">Devuelta</option>
+            <option value="cancelled">Cancelada</option>
+          </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+        <p className="mt-3 text-sm text-slate-500">
+          Resultados: {filteredRequests.length} de {requests.length}
+        </p>
+      </div>
+
+      {filteredRequests.length > 0 ? (
+        <div className="overflow-hidden rounded-lg border border-slate-200">
         <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_112px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
           <span>Fecha</span>
           <span>Tipo</span>
@@ -116,8 +199,8 @@ export function RequestsList({ requests }: RequestsListProps) {
           <span>Estado</span>
         </div>
 
-        <div className="divide-y divide-slate-200">
-          {requests.map((request) => {
+          <div className="divide-y divide-slate-200">
+          {filteredRequests.map((request) => {
             const selected = selectedRequest?.id === request.id
             const visibleStatus = getVisibleRequestStatus(request)
 
@@ -154,8 +237,15 @@ export function RequestsList({ requests }: RequestsListProps) {
               </button>
             )
           })}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="rounded-lg border border-slate-200 bg-white p-6">
+          <p className="text-slate-500">
+            No hay solicitudes que coincidan con los filtros.
+          </p>
+        </div>
+      )}
 
       <DetailDrawer isOpen={Boolean(selectedRequest)} onClose={() => setSelectedRequestId(null)}>
         {selectedRequest && (

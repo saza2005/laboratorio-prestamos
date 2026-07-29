@@ -83,12 +83,48 @@ function getPreviewText(loan: LoanRow) {
 }
 
 export function LoansList({ loans }: LoansListProps) {
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
   const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null)
+
+  const filteredLoans = useMemo(() => {
+    const term = search.trim().toLowerCase()
+
+    return loans.filter((loan) => {
+      const matchesStatus = statusFilter ? loan.status === statusFilter : true
+      const itemsText = [
+        ...loan.loan_items.map(
+          (item) => `${item.item?.name ?? ''} ${item.item?.code ?? ''}`
+        ),
+        ...loan.loan_groups.flatMap((group) =>
+          group.loan_group_items.map(
+            (item) => `${item.item?.name ?? ''} ${item.item?.code ?? ''}`
+          )
+        ),
+      ]
+        .join(' ')
+        .toLowerCase()
+      const matchesSearch =
+        !term ||
+        getLoanType(loan).toLowerCase().includes(term) ||
+        itemsText.includes(term)
+
+      return matchesStatus && matchesSearch
+    })
+  }, [loans, search, statusFilter])
 
   const selectedLoan = useMemo(() => {
     if (!selectedLoanId) return null
-    return loans.find((loan) => loan.id === selectedLoanId) ?? null
-  }, [loans, selectedLoanId])
+    return filteredLoans.find((loan) => loan.id === selectedLoanId) ?? null
+  }, [filteredLoans, selectedLoanId])
+
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('')
+    setSelectedLoanId(null)
+  }
+
+  const hasFilters = Boolean(search || statusFilter)
 
   if (loans.length === 0) {
     return <p className="text-slate-500">No tienes préstamos registrados.</p>
@@ -96,7 +132,44 @@ export function LoansList({ loans }: LoansListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-lg border border-slate-200">
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px_auto]">
+          <input
+            type="text"
+            placeholder="Buscar por ítem, código o tipo"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          />
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          >
+            <option value="">Todos los estados</option>
+            <option value="active">Activo</option>
+            <option value="partial_return">Devolución parcial</option>
+            <option value="overdue">Vencido</option>
+            <option value="returned">Devuelto</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-fit rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+        <p className="mt-3 text-sm text-slate-500">
+          Resultados: {filteredLoans.length} de {loans.length}
+        </p>
+      </div>
+
+      {filteredLoans.length > 0 ? (
+        <div className="overflow-hidden rounded-lg border border-slate-200">
         <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
           <span>Entrega</span>
           <span>Tipo</span>
@@ -106,7 +179,7 @@ export function LoansList({ loans }: LoansListProps) {
         </div>
 
         <div className="divide-y divide-slate-200">
-          {loans.map((loan) => {
+          {filteredLoans.map((loan) => {
             const selected = selectedLoan?.id === loan.id
             const pendingCount = getPendingCount(loan)
 
@@ -143,8 +216,15 @@ export function LoansList({ loans }: LoansListProps) {
               </button>
             )
           })}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="rounded-lg border border-slate-200 bg-white p-6">
+          <p className="text-slate-500">
+            No hay préstamos que coincidan con los filtros.
+          </p>
+        </div>
+      )}
 
       <DetailDrawer isOpen={Boolean(selectedLoan)} onClose={() => setSelectedLoanId(null)}>
         {selectedLoan && (
