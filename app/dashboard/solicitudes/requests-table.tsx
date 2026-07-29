@@ -39,6 +39,7 @@ type StaffRequestGroup = {
       code?: string
       stock_available?: number
       track_individual?: boolean
+      asset_codes?: string[]
     } | null
   }>
 }
@@ -134,7 +135,9 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
         ),
         ...req.request_groups.flatMap((group) =>
           group.request_group_items.map((gi) =>
-            `${gi.item?.name ?? ''} ${gi.item?.code ?? ''}`
+            `${gi.item?.name ?? ''} ${gi.item?.code ?? ''} ${
+              gi.item?.asset_codes?.join(' ') ?? ''
+            }`
           )
         ),
       ]
