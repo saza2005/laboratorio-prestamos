@@ -6,7 +6,7 @@ import { InventoryList } from './inventory-list'
 import { InventoryUnitsList } from './inventory-units-list'
 import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
+import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 
 
@@ -151,7 +151,7 @@ export default async function InventarioPage() {
           )
         `)
         .order('created_at', { ascending: false })
-        .limit(ADMIN_HISTORY_LIMIT),
+        .limit(INVENTORY_ITEM_HISTORY_LIMIT),
       supabase
         .from('return_items')
         .select(`
@@ -168,7 +168,7 @@ export default async function InventarioPage() {
           )
         `)
         .order('created_at', { ascending: false })
-        .limit(ADMIN_HISTORY_LIMIT),
+        .limit(INVENTORY_ITEM_HISTORY_LIMIT),
       supabase
         .from('maintenance_records')
         .select(`
@@ -181,7 +181,7 @@ export default async function InventarioPage() {
           observations
         `)
         .order('maintenance_date', { ascending: false })
-        .limit(ADMIN_HISTORY_LIMIT),
+        .limit(INVENTORY_ITEM_HISTORY_LIMIT),
     ])
 
   if (loanHistoryResult.error) {
