@@ -93,6 +93,8 @@ export async function getOwnRequests(
       request_items (
         id,
         quantity_requested,
+        quantity_approved,
+        quantity_delivered,
         items (name, code)
       ),
       request_groups (
@@ -101,8 +103,16 @@ export async function getOwnRequests(
         leader_student_id,
         leader:profiles(full_name),
         request_group_items (
+          item_id,
           quantity,
           items (name, code)
+        )
+      ),
+      loans (
+        id,
+        loan_items (
+          item_id,
+          quantity
         )
       )
     `)
@@ -115,8 +125,11 @@ export async function getOwnRequests(
   }
 
   return (
-    rawRequests?.map((req) => ({
-      id: req.id,
+    rawRequests?.map((req) => {
+      const requestLoan = firstOrNull(req.loans)
+
+      return {
+        id: req.id,
       status: req.status,
       requested_at: req.requested_at,
       purpose: req.purpose,
@@ -126,6 +139,8 @@ export async function getOwnRequests(
         req.request_items?.map((ri) => ({
           id: ri.id,
           quantity_requested: ri.quantity_requested,
+          quantity_approved: ri.quantity_approved,
+          quantity_delivered: ri.quantity_delivered,
           items: firstOrNull(ri.items),
         })) ?? [],
       request_groups:
@@ -135,11 +150,25 @@ export async function getOwnRequests(
           leader: firstOrNull(group.leader),
           request_group_items:
             group.request_group_items?.map((gi) => ({
+              item_id: gi.item_id,
               quantity: gi.quantity,
               items: firstOrNull(gi.items),
             })) ?? [],
         })) ?? [],
-    })) ?? []
+        loans: requestLoan
+          ? [
+              {
+                id: requestLoan.id,
+                loan_items:
+                  requestLoan.loan_items?.map((loanItem) => ({
+                    item_id: loanItem.item_id,
+                    quantity: loanItem.quantity,
+                  })) ?? [],
+              },
+            ]
+          : [],
+      }
+    }) ?? []
   )
 }
 

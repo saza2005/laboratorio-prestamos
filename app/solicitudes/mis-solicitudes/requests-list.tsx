@@ -12,6 +12,8 @@ import {
 type RequestItem = {
   id: string
   quantity_requested: number
+  quantity_approved: number
+  quantity_delivered: number
   items: {
     name?: string
     code?: string
@@ -19,6 +21,7 @@ type RequestItem = {
 }
 
 type RequestGroupItem = {
+  item_id: string | null
   quantity: number
   items: {
     name?: string
@@ -35,6 +38,16 @@ type RequestGroup = {
   request_group_items: RequestGroupItem[]
 }
 
+type LoanItem = {
+  item_id: string | null
+  quantity: number
+}
+
+type RequestLoan = {
+  id: string
+  loan_items: LoanItem[]
+}
+
 type RequestRow = {
   id: string
   status: string
@@ -44,6 +57,7 @@ type RequestRow = {
   scheduled_return_date: string | null
   request_items: RequestItem[]
   request_groups: RequestGroup[]
+  loans: RequestLoan[]
 }
 
 type RequestsListProps = {
@@ -78,6 +92,68 @@ function getPreviewText(request: RequestRow) {
     : firstItem
 }
 
+function getDeliveredQuantityByItem(request: RequestRow) {
+  const deliveredByItem = new Map<string, number>()
+
+  for (const loan of request.loans) {
+    for (const loanItem of loan.loan_items) {
+      if (!loanItem.item_id) continue
+      deliveredByItem.set(
+        loanItem.item_id,
+        (deliveredByItem.get(loanItem.item_id) ?? 0) + loanItem.quantity
+      )
+    }
+  }
+
+  return deliveredByItem
+}
+
+function isPartiallyDelivered(request: RequestRow) {
+  if (request.status !== 'delivered') return false
+
+  if (request.request_groups.length === 0) {
+    const approvedItems = request.request_items.filter(
+      (item) => item.quantity_approved > 0
+    )
+
+    return approvedItems.some(
+      (item) => item.quantity_delivered < item.quantity_approved
+    )
+  }
+
+  const deliveredByItem = getDeliveredQuantityByItem(request)
+  const requestedByItem = new Map<string, number>()
+
+  for (const group of request.request_groups) {
+    for (const groupItem of group.request_group_items) {
+      if (!groupItem.item_id) continue
+      requestedByItem.set(
+        groupItem.item_id,
+        (requestedByItem.get(groupItem.item_id) ?? 0) + groupItem.quantity
+      )
+    }
+  }
+
+  return [...requestedByItem.entries()].some(
+    ([itemId, requestedQuantity]) =>
+      (deliveredByItem.get(itemId) ?? 0) < requestedQuantity
+  )
+}
+
+function getVisibleRequestStatus(request: RequestRow) {
+  return isPartiallyDelivered(request) ? 'partial_delivery' : request.status
+}
+
+function formatVisibleRequestStatus(status: string) {
+  if (status === 'partial_delivery') return 'Entregada parcialmente'
+  return formatRequestStatus(status)
+}
+
+function visibleRequestStatusBadgeClass(status: string) {
+  if (status === 'partial_delivery') return 'bg-amber-100 text-amber-800'
+  return statusBadgeClass(status)
+}
+
 export function RequestsList({ requests }: RequestsListProps) {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
@@ -104,6 +180,7 @@ export function RequestsList({ requests }: RequestsListProps) {
         <div className="divide-y divide-slate-200">
           {requests.map((request) => {
             const selected = selectedRequest?.id === request.id
+            const visibleStatus = getVisibleRequestStatus(request)
 
             return (
               <button
@@ -128,11 +205,11 @@ export function RequestsList({ requests }: RequestsListProps) {
                 </span>
                 <span>
                   <span
-                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass(
-                      request.status
+                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${visibleRequestStatusBadgeClass(
+                      visibleStatus
                     )}`}
                   >
-                    {formatRequestStatus(request.status)}
+                    {formatVisibleRequestStatus(visibleStatus)}
                   </span>
                 </span>
               </button>
@@ -155,11 +232,11 @@ export function RequestsList({ requests }: RequestsListProps) {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass(
-                    selectedRequest.status
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${visibleRequestStatusBadgeClass(
+                    getVisibleRequestStatus(selectedRequest)
                   )}`}
                 >
-                  {formatRequestStatus(selectedRequest.status)}
+                  {formatVisibleRequestStatus(getVisibleRequestStatus(selectedRequest))}
                 </span>
                 <button
                   type="button"
@@ -240,8 +317,14 @@ export function RequestsList({ requests }: RequestsListProps) {
                         {requestItem.items?.name ?? 'Ítem'}
                       </span>
                       <span className="block text-xs text-slate-500">
-                        {requestItem.items?.code ?? '-'} | Cantidad:{' '}
+                        {requestItem.items?.code ?? '-'} | Solicitada:{' '}
                         {requestItem.quantity_requested}
+                        {requestItem.quantity_approved > 0 && (
+                          <>
+                            {' '}| Aprobada: {requestItem.quantity_approved} |
+                            Entregada: {requestItem.quantity_delivered}
+                          </>
+                        )}
                       </span>
                     </li>
                   ))}
