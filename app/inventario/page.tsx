@@ -6,7 +6,7 @@ import { InventoryList } from './inventory-list'
 import { InventoryUnitsList } from './inventory-units-list'
 import { canManageInventory, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
-import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LIMIT } from '@/lib/query-limits'
+import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LIMIT, INVENTORY_UNIT_MAINTENANCE_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { formatLoanStatus, formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
@@ -141,8 +141,12 @@ export default async function InventarioPage() {
     throw new Error(movementsError.message)
   }
 
-  const [loanHistoryResult, returnHistoryResult, maintenanceHistoryResult] =
-    await Promise.all([
+  const [
+    loanHistoryResult,
+    returnHistoryResult,
+    maintenanceHistoryResult,
+    unitMovementsResult,
+  ] = await Promise.all([
       supabase
         .from('loan_items')
         .select(`
@@ -184,6 +188,7 @@ export default async function InventarioPage() {
         .select(`
           id,
           item_id,
+          item_unit_id,
           activity,
           responsible,
           maintenance_date,
@@ -191,7 +196,21 @@ export default async function InventarioPage() {
           observations
         `)
         .order('maintenance_date', { ascending: false })
-        .limit(INVENTORY_ITEM_HISTORY_LIMIT),
+        .limit(INVENTORY_UNIT_MAINTENANCE_LIMIT),
+      supabase
+        .from('inventory_movements')
+        .select(`
+          id,
+          movement_type,
+          quantity,
+          reference_id,
+          notes,
+          created_at,
+          profiles:profiles!inventory_movements_created_by_fkey(full_name)
+        `)
+        .eq('reference_table', 'item_units')
+        .order('created_at', { ascending: false })
+        .limit(INVENTORY_UNIT_MAINTENANCE_LIMIT),
     ])
 
   if (loanHistoryResult.error) {
@@ -204,6 +223,10 @@ export default async function InventarioPage() {
 
   if (maintenanceHistoryResult.error) {
     throw new Error(maintenanceHistoryResult.error.message)
+  }
+
+  if (unitMovementsResult.error) {
+    throw new Error(unitMovementsResult.error.message)
   }
 
   const normalizedMovements =
@@ -349,6 +372,78 @@ export default async function InventarioPage() {
     })
   })
 
+  const maintenanceByUnit = new Map<
+    string,
+    Array<{
+      id: string
+      date: string | null
+      activity: string
+      responsible: string
+      maintenance_type: string
+      observations: string | null
+    }>
+  >()
+
+  maintenanceHistoryResult.data?.forEach((record) => {
+    if (!record.item_unit_id) return
+    const entries = maintenanceByUnit.get(record.item_unit_id) ?? []
+    entries.push({
+      id: record.id,
+      date: record.maintenance_date,
+      activity: record.activity,
+      responsible: record.responsible,
+      maintenance_type: record.maintenance_type,
+      observations: record.observations,
+    })
+    maintenanceByUnit.set(record.item_unit_id, entries)
+  })
+
+  const unitMovementsByUnit = new Map<
+    string,
+    Array<{
+      id: string
+      date: string | null
+      movement_type: string
+      quantity: number
+      notes: string | null
+      user: string
+    }>
+  >()
+
+  unitMovementsResult.data?.forEach((movement) => {
+    if (!movement.reference_id) return
+    const movementUser = firstOrNull(movement.profiles) as
+      | { full_name?: string }
+      | null
+    const entries = unitMovementsByUnit.get(movement.reference_id) ?? []
+    entries.push({
+      id: movement.id,
+      date: movement.created_at,
+      movement_type: movement.movement_type,
+      quantity: movement.quantity,
+      notes: movement.notes,
+      user: movementUser?.full_name ?? 'Sistema',
+    })
+    unitMovementsByUnit.set(movement.reference_id, entries)
+  })
+
+  const unitsWithMaintenance = units.map((unit) => ({
+    ...unit,
+    maintenance_records: (maintenanceByUnit.get(unit.id) ?? [])
+      .sort((a, b) => {
+        const dateA = a.date ? new Date(a.date).getTime() : 0
+        const dateB = b.date ? new Date(b.date).getTime() : 0
+        return dateB - dateA
+      })
+      .slice(0, 5),
+    unit_status_events: (unitMovementsByUnit.get(unit.id) ?? [])
+      .sort((a, b) => {
+        const dateA = a.date ? new Date(a.date).getTime() : 0
+        const dateB = b.date ? new Date(b.date).getTime() : 0
+        return dateB - dateA
+      })
+      .slice(0, 5),
+  }))
   const itemHistories = Object.fromEntries(
     Array.from(historyByItem.entries()).map(([itemId, entries]) => [
       itemId,
@@ -414,7 +509,7 @@ export default async function InventarioPage() {
         >
           <InventoryList items={inventoryItems} histories={itemHistories} />
 
-          <InventoryUnitsList units={units} />
+          <InventoryUnitsList units={unitsWithMaintenance} />
 
           <MovementsTable data={normalizedMovements} limit={100} />
 

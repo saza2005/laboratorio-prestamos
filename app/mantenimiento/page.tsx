@@ -28,7 +28,7 @@ export default async function MantenimientoPage() {
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, name, code, category, item_units(asset_code)')
+    .select('id, name, code, category, item_units(id, asset_code, serial_code, condition, availability_status)')
     .eq('item_type', 'equipment')
     .eq('status', 'active')
     .order('name')
@@ -45,6 +45,14 @@ export default async function MantenimientoPage() {
         item.item_units
           ?.map((unit) => unit.asset_code)
           .filter((code): code is string => Boolean(code)) ?? [],
+      units:
+        item.item_units?.map((unit) => ({
+          id: unit.id,
+          asset_code: unit.asset_code,
+          serial_code: unit.serial_code,
+          condition: unit.condition,
+          availability_status: unit.availability_status,
+        })) ?? [],
     })) ?? []
 
   const { data: records, error: recordsError } = await supabase
@@ -56,7 +64,8 @@ export default async function MantenimientoPage() {
       maintenance_date,
       maintenance_type,
       observations,
-      items:items(name, code)
+      items:items(name, code),
+      item_units:item_units!maintenance_records_item_unit_id_fkey(asset_code, serial_code, condition, availability_status)
     `)
     .order('maintenance_date', { ascending: false })
     .limit(ADMIN_HISTORY_LIMIT)
@@ -74,6 +83,9 @@ export default async function MantenimientoPage() {
       maintenance_type: record.maintenance_type,
       observations: record.observations,
       item: Array.isArray(record.items) ? record.items[0] ?? null : record.items,
+      unit: Array.isArray(record.item_units)
+        ? record.item_units[0] ?? null
+        : record.item_units,
     })) ?? []
 
   return (

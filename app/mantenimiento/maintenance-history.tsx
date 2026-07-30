@@ -4,7 +4,11 @@ import { useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
 import {
   formatMaintenanceType,
+  formatUnitAvailability,
+  formatUnitCondition,
   maintenanceTypeBadgeClass as typeBadgeClass,
+  unitAvailabilityBadgeClass,
+  unitConditionBadgeClass,
 } from '@/lib/status-format'
 import { normalizeSearchText } from '@/lib/item-format'
 
@@ -18,6 +22,12 @@ type MaintenanceRecord = {
   item: {
     name?: string
     code?: string
+  } | null
+  unit: {
+    asset_code?: string | null
+    serial_code?: string | null
+    condition?: string | null
+    availability_status?: string | null
   } | null
 }
 
@@ -34,9 +44,15 @@ function getItemCode(record: MaintenanceRecord) {
   return record.item?.code ?? '-'
 }
 
+function getUnitLabel(record: MaintenanceRecord) {
+  if (!record.unit) return ""
+  return record.unit.asset_code || record.unit.serial_code || "Unidad sin código"
+}
+
 export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) {
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
+  const [unitStateFilter, setUnitStateFilter] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filteredRecords = useMemo(() => {
@@ -44,12 +60,24 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
 
     return records.filter((record) => {
       const matchesType = typeFilter ? record.maintenance_type === typeFilter : true
+      const matchesUnitState =
+        !unitStateFilter ||
+        (unitStateFilter === "with-unit"
+          ? Boolean(record.unit)
+          : unitStateFilter === "no-unit"
+            ? !record.unit
+            : unitStateFilter === "maintenance"
+              ? record.unit?.condition === "maintenance"
+              : unitStateFilter === "unavailable"
+                ? record.unit?.availability_status === "unavailable"
+                : true)
       const itemName = normalizeSearchText(getItemName(record))
       const itemCode = normalizeSearchText(getItemCode(record))
       const activity = normalizeSearchText(record.activity)
       const responsible = normalizeSearchText(record.responsible)
       const observations = normalizeSearchText(record.observations)
       const date = normalizeSearchText(record.maintenance_date)
+      const unitLabel = normalizeSearchText(getUnitLabel(record))
 
       const matchesSearch =
         !term ||
@@ -58,11 +86,12 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
         activity.includes(term) ||
         responsible.includes(term) ||
         observations.includes(term) ||
-        date.includes(term)
+        date.includes(term) ||
+        unitLabel.includes(term)
 
-      return matchesType && matchesSearch
+      return matchesType && matchesUnitState && matchesSearch
     })
-  }, [records, search, typeFilter])
+  }, [records, search, typeFilter, unitStateFilter])
 
   const selectedRecord = selectedId
     ? filteredRecords.find((record) => record.id === selectedId) ?? null
@@ -79,10 +108,11 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
   function clearFilters() {
     setSearch('')
     setTypeFilter('')
+    setUnitStateFilter('')
     setSelectedId(null)
   }
 
-  const hasFilters = Boolean(search || typeFilter)
+  const hasFilters = Boolean(search || typeFilter || unitStateFilter)
 
   return (
     <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
@@ -95,7 +125,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_180px_auto]">
+        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_180px_200px_auto]">
           <input
             type="text"
             placeholder="Buscar por equipo, código, actividad, responsable o fecha"
@@ -111,6 +141,17 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
             <option value="">Todos los tipos</option>
             <option value="preventive">Preventivo</option>
             <option value="corrective">Correctivo</option>
+          </select>
+          <select
+            value={unitStateFilter}
+            onChange={(event) => setUnitStateFilter(event.target.value)}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          >
+            <option value="">Todas las unidades</option>
+            <option value="with-unit">Con unidad asociada</option>
+            <option value="no-unit">Sin unidad asociada</option>
+            <option value="maintenance">En mantenimiento</option>
+            <option value="unavailable">No disponible</option>
           </select>
           {hasFilters && (
             <button
@@ -154,6 +195,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
                       </span>
                       <span className="block truncate text-xs text-slate-500">
                         {getItemCode(record)}
+                        {getUnitLabel(record) ? " · " + getUnitLabel(record) : ""}
                       </span>
                     </span>
                     <span className="truncate text-slate-700">{record.activity}</span>
@@ -186,6 +228,35 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
                     <p className="text-sm text-slate-500">
                       Código: {getItemCode(selectedRecord)}
                     </p>
+                    {getUnitLabel(selectedRecord) && (
+                      <div className="mt-2 space-y-2">
+                        <p className="text-sm text-slate-500">
+                          Unidad: {getUnitLabel(selectedRecord)}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedRecord.unit?.condition && (
+                            <span
+                              className={
+                                "rounded-full px-2.5 py-1 text-xs font-medium ring-1 " +
+                                unitConditionBadgeClass(selectedRecord.unit.condition)
+                              }
+                            >
+                              {formatUnitCondition(selectedRecord.unit.condition)}
+                            </span>
+                          )}
+                          {selectedRecord.unit?.availability_status && (
+                            <span
+                              className={
+                                "rounded-full px-2.5 py-1 text-xs font-medium ring-1 " +
+                                unitAvailabilityBadgeClass(selectedRecord.unit.availability_status)
+                              }
+                            >
+                              {formatUnitAvailability(selectedRecord.unit.availability_status)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span

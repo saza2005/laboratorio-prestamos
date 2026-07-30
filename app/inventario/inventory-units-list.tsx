@@ -8,8 +8,10 @@ import { updateUnitStatusWithState } from './actions'
 import {
   formatUnitAvailability,
   formatUnitCondition,
+  formatMaintenanceType,
   unitAvailabilityBadgeClass,
   unitConditionBadgeClass,
+  maintenanceTypeBadgeClass,
 } from '@/lib/status-format'
 
 type InventoryUnit = {
@@ -25,6 +27,22 @@ type InventoryUnit = {
   assignment_date: string | null
   item_name: string
   item_code: string
+  maintenance_records: Array<{
+    id: string
+    date: string | null
+    activity: string
+    responsible: string
+    maintenance_type: string
+    observations: string | null
+  }>
+  unit_status_events: Array<{
+    id: string
+    date: string | null
+    movement_type: string
+    quantity: number
+    notes: string | null
+    user: string
+  }>
 }
 
 const PAGE_SIZE = 50
@@ -259,6 +277,71 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                   <p><span className="font-medium text-slate-700">Asignación:</span> {selectedUnit.assignment_date || '-'}</p>
                 </div>
 
+                <div className="border-t border-slate-200 pt-4">
+                  <h4 className="font-medium text-slate-800">Mantenimientos recientes</h4>
+                  {selectedUnit.maintenance_records.length > 0 ? (
+                    <div className="mt-3 space-y-2">
+                      {selectedUnit.maintenance_records.map((record) => (
+                        <div key={record.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-medium text-slate-800">{record.activity}</span>
+                            <span
+                              className={
+                                "rounded-full px-2.5 py-1 text-xs font-medium " +
+                                maintenanceTypeBadgeClass(record.maintenance_type)
+                              }
+                            >
+                              {formatMaintenanceType(record.maintenance_type)}
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs text-slate-500">
+                            {record.date || '-'} · {record.responsible}
+                          </p>
+                          {record.observations && (
+                            <p className="mt-2 text-xs text-slate-600">{record.observations}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 rounded-lg bg-slate-50 px-3 py-3 text-sm text-slate-500">
+                      Esta unidad no tiene reportes de mantenimiento asociados recientemente.
+                    </p>
+                  )}
+                </div>
+                <div className="border-t border-slate-200 pt-4">
+                  <h4 className="font-medium text-slate-800">Cambios recientes de estado</h4>
+                  {selectedUnit.unit_status_events.length > 0 ? (
+                    <div className="mt-3 space-y-2">
+                      {selectedUnit.unit_status_events.map((event) => (
+                        <div key={event.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-medium text-slate-800">
+                              {event.movement_type === 'adjustment_up'
+                                ? 'Unidad marcada como disponible'
+                                : event.movement_type === 'adjustment_down'
+                                  ? 'Unidad marcada como no disponible'
+                                  : 'Cambio de inventario'}
+                            </span>
+                            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+                              Cantidad: {event.quantity}
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs text-slate-500">
+                            {event.date || '-'} · {event.user}
+                          </p>
+                          {event.notes && (
+                            <p className="mt-2 text-xs text-slate-600">{event.notes}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 rounded-lg bg-slate-50 px-3 py-3 text-sm text-slate-500">
+                      Esta unidad no tiene cambios de estado recientes registrados.
+                    </p>
+                  )}
+                </div>
                 <form action={unitStatusAction} className="border-t border-slate-200 pt-4">
                   <input type="hidden" name="unit_id" value={selectedUnit.id} />
                   <div className="flex flex-col gap-3">

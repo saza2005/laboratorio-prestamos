@@ -2,6 +2,12 @@
 
 import { useActionState, useEffect, useMemo, useState } from 'react'
 import { formatAssetCodes, normalizeSearchText } from '@/lib/item-format'
+import {
+  formatUnitAvailability,
+  formatUnitCondition,
+  unitAvailabilityBadgeClass,
+  unitConditionBadgeClass,
+} from '@/lib/status-format'
 import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createMaintenanceWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
@@ -12,6 +18,13 @@ type MaintenanceItem = {
   code: string
   category: string | null
   asset_codes: string[]
+  units: Array<{
+    id: string
+    asset_code: string | null
+    serial_code: string | null
+    condition: string
+    availability_status: string
+  }>
 }
 
 const RESULTS_LIMIT = 12
@@ -22,6 +35,8 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
     { error: null }
   )
   const [selectedItemId, setSelectedItemId] = useState('')
+  const [selectedUnitId, setSelectedUnitId] = useState('')
+  const [markUnitUnavailable, setMarkUnitUnavailable] = useState(false)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
@@ -59,6 +74,8 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
 
   const visibleItems = filteredItems.slice(0, RESULTS_LIMIT)
   const selectedItem = items.find((item) => item.id === selectedItemId)
+  const selectedUnits = selectedItem?.units ?? []
+  const selectedUnit = selectedUnits.find((unit) => unit.id === selectedUnitId)
   const isGeneralMaintenance = selectedItemId === 'general'
 
   useEffect(() => {
@@ -70,6 +87,8 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
 
   function selectItem(itemId: string) {
     setSelectedItemId(itemId)
+    setSelectedUnitId('')
+    setMarkUnitUnavailable(false)
     setAddedItemName(
       itemId === 'general'
         ? 'Trabajo general'
@@ -80,6 +99,8 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
 
   function clearSelection() {
     setSelectedItemId('')
+    setSelectedUnitId('')
+    setMarkUnitUnavailable(false)
   }
 
   function clearFilters() {
@@ -100,6 +121,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
 
       <div className="space-y-4 md:col-span-2">
         <input type="hidden" name="item_id" value={selectedItemId} />
+        <input type="hidden" name="item_unit_id" value={selectedUnitId} />
 
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
           <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -244,6 +266,88 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
             )}
           </div>
         </div>
+
+        {selectedItem && selectedUnits.length > 0 && (
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium text-slate-800">Unidad específica</p>
+              <p className="text-sm text-slate-500">
+                Opcional: selecciona una unidad patrimonial para asociarla al mantenimiento.
+              </p>
+            </div>
+
+            <div className="mt-3 grid gap-2 md:grid-cols-2">
+              {selectedUnits.map((unit) => {
+                const selected = selectedUnitId === unit.id
+                const isLoaned = unit.availability_status === 'loaned'
+                const label = unit.asset_code || unit.serial_code || 'Unidad sin código'
+
+                return (
+                  <button
+                    key={unit.id}
+                    type="button"
+                    disabled={isLoaned}
+                    onClick={() => {
+                      setSelectedUnitId(selected ? '' : unit.id)
+                      setMarkUnitUnavailable(false)
+                    }}
+                    className={
+                      'rounded-lg border p-3 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-60 ' +
+                      (selected
+                        ? 'border-blue-300 bg-blue-50'
+                        : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50')
+                    }
+                  >
+                    <span className="block font-medium text-slate-900">{label}</span>
+                    {unit.asset_code && unit.serial_code && (
+                      <span className="mt-1 block text-xs text-slate-500">
+                        Serie: {unit.serial_code}
+                      </span>
+                    )}
+                    <span className="mt-2 flex flex-wrap gap-2 text-xs">
+                      <span
+                        className={
+                          'rounded-full px-2.5 py-1 font-medium ring-1 ' +
+                          unitConditionBadgeClass(unit.condition)
+                        }
+                      >
+                        {formatUnitCondition(unit.condition)}
+                      </span>
+                      <span
+                        className={
+                          'rounded-full px-2.5 py-1 font-medium ring-1 ' +
+                          unitAvailabilityBadgeClass(unit.availability_status)
+                        }
+                      >
+                        {formatUnitAvailability(unit.availability_status)}
+                      </span>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {selectedUnit && (
+              <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                <label className="flex items-start gap-3 text-sm text-amber-900">
+                  <input
+                    type="checkbox"
+                    name="mark_unit_unavailable"
+                    checked={markUnitUnavailable}
+                    onChange={(event) => setMarkUnitUnavailable(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-amber-300 text-amber-700 focus:ring-amber-500"
+                  />
+                  <span>
+                    <span className="block font-medium">Marcar unidad como en mantenimiento / no disponible</span>
+                    <span className="mt-1 block text-amber-800">
+                      Si no activas esta opción, solo se guardará el reporte como evidencia y la unidad conservará su estado actual.
+                    </span>
+                  </span>
+                </label>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <input
