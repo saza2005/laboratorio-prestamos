@@ -74,6 +74,8 @@ function getMaintenanceColor(name: string) {
       return '#2563eb'
     case 'Correctivo':
       return '#d97706'
+    case 'Trabajo general':
+      return '#475569'
     default:
       return '#64748b'
   }
@@ -157,7 +159,7 @@ export function DashboardCharts({
       </ChartPanel>
 
       {maintenanceData && (
-        <ChartPanel title="Mantenimiento preventivo vs correctivo" wide>
+        <ChartPanel title="Mantenimientos por tipo" wide>
           <ChartFrame>
         {hasMaintenanceData && maintenanceData ? (
           <PieChart width={520} height={320}>

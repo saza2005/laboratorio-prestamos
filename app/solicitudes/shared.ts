@@ -14,6 +14,7 @@ export {
   requestStatusBadgeClass as statusBadgeClass,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { compareRequestsByOperationalPriority, getVisibleRequestStatus } from '@/lib/request-delivery-status'
 
 export async function getRequestPortalAuth() {
   try {
@@ -38,7 +39,9 @@ export async function getRequestItems(
       item_units(asset_code)
     `)
     .eq('status', 'active')
+    .order('category', { ascending: true })
     .order('name', { ascending: true })
+    .order('code', { ascending: true })
     .limit(INVENTORY_CATALOG_LIMIT)
 
   if (error) {
@@ -51,7 +54,8 @@ export async function getRequestItems(
       asset_codes:
         item.item_units
           ?.map((unit) => unit.asset_code)
-          .filter((code): code is string => Boolean(code)) ?? [],
+          .filter((code): code is string => Boolean(code))
+          .sort((a, b) => a.localeCompare(b, 'es')) ?? [],
     })) ?? []
   )
 }
@@ -117,7 +121,7 @@ export async function getOwnRequests(
       )
     `)
     .eq('user_id', userId)
-    .order('requested_at', { ascending: false })
+    .order('requested_at', { ascending: true })
     .limit(USER_HISTORY_LIMIT)
 
   if (error) {
@@ -168,7 +172,12 @@ export async function getOwnRequests(
             ]
           : [],
       }
-    }) ?? []
+    })
+      .map((request) => ({
+        ...request,
+        status: getVisibleRequestStatus(request),
+      }))
+      .sort(compareRequestsByOperationalPriority) ?? []
   )
 }
 

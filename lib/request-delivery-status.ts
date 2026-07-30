@@ -82,3 +82,38 @@ function getDeliveredQuantityByItem(
 
   return deliveredByItem
 }
+
+
+export function getRequestOperationalPriority(status: string | null | undefined) {
+  switch (status) {
+    case 'pending':
+      return 0
+    case 'approved':
+      return 1
+    case 'partial_delivery':
+      return 2
+    case 'delivered':
+      return 3
+    case 'rejected':
+      return 4
+    case 'cancelled':
+      return 5
+    default:
+      return 6
+  }
+}
+
+export function compareRequestsByOperationalPriority(
+  a: { status: string | null | undefined; requested_at: string | null | undefined },
+  b: { status: string | null | undefined; requested_at: string | null | undefined }
+) {
+  const priorityDiff =
+    getRequestOperationalPriority(a.status) - getRequestOperationalPriority(b.status)
+
+  if (priorityDiff !== 0) return priorityDiff
+
+  const dateA = a.requested_at ? new Date(a.requested_at).getTime() : 0
+  const dateB = b.requested_at ? new Date(b.requested_at).getTime() : 0
+
+  return dateA - dateB
+}

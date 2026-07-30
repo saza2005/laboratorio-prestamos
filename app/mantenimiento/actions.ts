@@ -31,12 +31,20 @@ async function persistMaintenance(formData: FormData) {
     throw new Error('Faltan campos obligatorios.')
   }
 
-  if (!['preventive', 'corrective'].includes(maintenanceType)) {
+  if (!['preventive', 'corrective', 'general'].includes(maintenanceType)) {
     throw new Error('El tipo de mantenimiento no es válido.')
   }
 
   if (!isValidDateInput(maintenanceDate)) {
     throw new Error('La fecha de mantenimiento no es válida.')
+  }
+
+  if (isGeneralMaintenance && maintenanceType !== 'general') {
+    throw new Error('Un trabajo general debe registrarse con tipo Trabajo general.')
+  }
+
+  if (!isGeneralMaintenance && maintenanceType === 'general') {
+    throw new Error('El tipo Trabajo general solo puede usarse sin seleccionar equipo.')
   }
 
   if (!isGeneralMaintenance) {

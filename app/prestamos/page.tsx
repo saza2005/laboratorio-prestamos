@@ -46,7 +46,9 @@ export default async function PrestamosPage() {
       )
       .eq('status', 'active')
       .gt('stock_available', 0)
+      .order('category', { ascending: true })
       .order('name', { ascending: true })
+      .order('code', { ascending: true })
       .limit(INVENTORY_CATALOG_LIMIT),
   ])
 
@@ -65,7 +67,8 @@ export default async function PrestamosPage() {
       asset_codes:
         item.item_units
           ?.map((unit) => unit.asset_code)
-          .filter((code): code is string => Boolean(code)) ?? [],
+          .filter((code): code is string => Boolean(code))
+          .sort((a, b) => a.localeCompare(b, 'es')) ?? [],
     })) ?? []
   const trackedItemIds = items
     .filter((item) => item.track_individual)
@@ -110,6 +113,12 @@ export default async function PrestamosPage() {
         brand: unit.brand,
         model: unit.model,
       }))
+      .sort((a, b) =>
+        (a.asset_code || a.serial_code || a.model || '').localeCompare(
+          b.asset_code || b.serial_code || b.model || '',
+          'es'
+        )
+      )
       .slice(0, LOAN_AVAILABLE_UNITS_LIMIT)
   }
 

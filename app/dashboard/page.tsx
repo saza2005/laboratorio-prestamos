@@ -34,6 +34,7 @@ import {
   userRoleBadgeClass,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { compareRequestsByOperationalPriority } from '@/lib/request-delivery-status'
 
 export default async function DashboardPage({
   searchParams,
@@ -153,7 +154,7 @@ export default async function DashboardPage({
         profiles:profiles!requests_user_id_fkey(full_name, email)
       `)
       .in('status', ['pending', 'approved'])
-      .order('requested_at', { ascending: false })
+      .order('requested_at', { ascending: true })
       .limit(DASHBOARD_RECENT_LOANS_LIMIT),
   ])
 
@@ -283,6 +284,7 @@ export default async function DashboardPage({
         requester_email: requester?.email ?? '-',
       }
     })
+      .sort(compareRequestsByOperationalPriority)
 
   const recentLoans =
     (recentLoansResult.data ?? []).map((loan) => {

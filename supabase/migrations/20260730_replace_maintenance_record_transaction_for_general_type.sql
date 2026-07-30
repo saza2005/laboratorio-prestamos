@@ -1,3 +1,6 @@
+-- Reemplaza la RPC ya aplicada para aceptar maintenance_type = 'general'.
+-- Seguro de ejecutar varias veces: CREATE OR REPLACE actualiza la función existente.
+
 create or replace function public.register_maintenance_record_transaction(
   p_item_id uuid,
   p_item_unit_id uuid,

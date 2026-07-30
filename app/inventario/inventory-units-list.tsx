@@ -2,6 +2,7 @@
 
 import { useActionState, useMemo, useState } from 'react'
 import { normalizeSearchText } from '@/lib/item-format'
+import { formatDateTime } from '@/lib/format-date'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { PaginationControls } from '@/components/pagination-controls'
 import { updateUnitStatusWithState } from './actions'
@@ -30,6 +31,7 @@ type InventoryUnit = {
   maintenance_records: Array<{
     id: string
     date: string | null
+    created_at: string | null
     activity: string
     responsible: string
     maintenance_type: string
@@ -295,7 +297,7 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                             </span>
                           </div>
                           <p className="mt-1 text-xs text-slate-500">
-                            {record.date || '-'} · {record.responsible}
+                            {record.created_at ? formatDateTime(record.created_at) : record.date || '-'} · {record.responsible}
                           </p>
                           {record.observations && (
                             <p className="mt-2 text-xs text-slate-600">{record.observations}</p>

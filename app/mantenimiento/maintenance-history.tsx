@@ -11,12 +11,14 @@ import {
   unitConditionBadgeClass,
 } from '@/lib/status-format'
 import { normalizeSearchText } from '@/lib/item-format'
+import { formatDateTime } from '@/lib/format-date'
 
 type MaintenanceRecord = {
   id: string
   activity: string
   responsible: string
   maintenance_date: string
+  created_at: string | null
   maintenance_type: string
   observations: string | null
   item: {
@@ -77,6 +79,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
       const responsible = normalizeSearchText(record.responsible)
       const observations = normalizeSearchText(record.observations)
       const date = normalizeSearchText(record.maintenance_date)
+      const createdAt = normalizeSearchText(record.created_at)
       const unitLabel = normalizeSearchText(getUnitLabel(record))
 
       const matchesSearch =
@@ -87,6 +90,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
         responsible.includes(term) ||
         observations.includes(term) ||
         date.includes(term) ||
+        createdAt.includes(term) ||
         unitLabel.includes(term)
 
       return matchesType && matchesUnitState && matchesSearch
@@ -141,6 +145,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
             <option value="">Todos los tipos</option>
             <option value="preventive">Preventivo</option>
             <option value="corrective">Correctivo</option>
+            <option value="general">Trabajo general</option>
           </select>
           <select
             value={unitStateFilter}
@@ -200,7 +205,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
                     </span>
                     <span className="truncate text-slate-700">{record.activity}</span>
                     <span className="truncate text-slate-600">{record.responsible}</span>
-                    <span className="text-slate-500">{record.maintenance_date}</span>
+                    <span className="text-slate-500">{record.created_at ? formatDateTime(record.created_at) : record.maintenance_date}</span>
                     <span>
                       <span
                         className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${typeBadgeClass(
@@ -221,7 +226,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm text-slate-500">{selectedRecord.maintenance_date}</p>
+                    <p className="text-sm text-slate-500">{selectedRecord.created_at ? formatDateTime(selectedRecord.created_at) : selectedRecord.maintenance_date}</p>
                     <h3 className="mt-1 text-lg font-semibold">
                       {getItemName(selectedRecord)}
                     </h3>

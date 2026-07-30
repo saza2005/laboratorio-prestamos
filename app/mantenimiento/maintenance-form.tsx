@@ -37,6 +37,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
   const [selectedItemId, setSelectedItemId] = useState('')
   const [selectedUnitId, setSelectedUnitId] = useState('')
   const [markUnitUnavailable, setMarkUnitUnavailable] = useState(false)
+  const [maintenanceType, setMaintenanceType] = useState('')
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
@@ -89,6 +90,10 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
     setSelectedItemId(itemId)
     setSelectedUnitId('')
     setMarkUnitUnavailable(false)
+    setMaintenanceType((currentType) => {
+      if (itemId === 'general') return 'general'
+      return currentType === 'general' ? '' : currentType
+    })
     setAddedItemName(
       itemId === 'general'
         ? 'Trabajo general'
@@ -101,6 +106,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
     setSelectedItemId('')
     setSelectedUnitId('')
     setMarkUnitUnavailable(false)
+    setMaintenanceType('')
   }
 
   function clearFilters() {
@@ -371,10 +377,17 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
         className="rounded border p-2"
       />
 
-      <select name="maintenance_type" required className="rounded border p-2">
+      <select
+        name="maintenance_type"
+        required
+        value={maintenanceType}
+        onChange={(event) => setMaintenanceType(event.target.value)}
+        className="rounded border p-2"
+      >
         <option value="">Tipo</option>
-        <option value="preventive">Preventivo</option>
-        <option value="corrective">Correctivo</option>
+        {!isGeneralMaintenance && <option value="preventive">Preventivo</option>}
+        {!isGeneralMaintenance && <option value="corrective">Correctivo</option>}
+        {isGeneralMaintenance && <option value="general">Trabajo general</option>}
       </select>
 
       <textarea

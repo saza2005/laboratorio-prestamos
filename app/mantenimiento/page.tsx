@@ -31,7 +31,9 @@ export default async function MantenimientoPage() {
     .select('id, name, code, category, item_units(id, asset_code, serial_code, condition, availability_status)')
     .eq('item_type', 'equipment')
     .eq('status', 'active')
-    .order('name')
+    .order('category', { ascending: true })
+    .order('name', { ascending: true })
+    .order('code', { ascending: true })
     .limit(INVENTORY_CATALOG_LIMIT)
 
   if (itemsError) {
@@ -44,7 +46,8 @@ export default async function MantenimientoPage() {
       asset_codes:
         item.item_units
           ?.map((unit) => unit.asset_code)
-          .filter((code): code is string => Boolean(code)) ?? [],
+          .filter((code): code is string => Boolean(code))
+          .sort((a, b) => a.localeCompare(b, 'es')) ?? [],
       units:
         item.item_units?.map((unit) => ({
           id: unit.id,
@@ -62,12 +65,14 @@ export default async function MantenimientoPage() {
       activity,
       responsible,
       maintenance_date,
+      created_at,
       maintenance_type,
       observations,
       items:items(name, code),
       item_units:item_units!maintenance_records_item_unit_id_fkey(asset_code, serial_code, condition, availability_status)
     `)
     .order('maintenance_date', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(ADMIN_HISTORY_LIMIT)
 
   if (recordsError) {
@@ -80,6 +85,7 @@ export default async function MantenimientoPage() {
       activity: record.activity,
       responsible: record.responsible,
       maintenance_date: record.maintenance_date,
+      created_at: record.created_at,
       maintenance_type: record.maintenance_type,
       observations: record.observations,
       item: Array.isArray(record.items) ? record.items[0] ?? null : record.items,

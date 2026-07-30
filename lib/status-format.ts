@@ -187,6 +187,8 @@ export function formatMaintenanceType(type: string | null | undefined) {
       return 'Preventivo'
     case 'corrective':
       return 'Correctivo'
+    case 'general':
+      return 'Trabajo general'
     default:
       return type ?? '-'
   }
@@ -198,6 +200,8 @@ export function maintenanceTypeBadgeClass(type: string | null | undefined) {
       return 'bg-blue-100 text-blue-700'
     case 'corrective':
       return 'bg-amber-100 text-amber-700'
+    case 'general':
+      return 'bg-slate-100 text-slate-700'
     default:
       return 'bg-slate-100 text-slate-700'
   }

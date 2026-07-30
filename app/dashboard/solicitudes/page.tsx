@@ -9,6 +9,7 @@ import { RequestsTable } from './requests-table'
 import { RequestActionsPanel } from './request-actions-panel'
 import { ADMIN_REQUESTS_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { compareRequestsByOperationalPriority, getVisibleRequestStatus } from '@/lib/request-delivery-status'
 
 export default async function DashboardSolicitudesPage() {
   let auth
@@ -79,7 +80,7 @@ const { data: rawRequests, error } = await supabase
       )
     )
   `)
-  .order('requested_at', { ascending: false })
+  .order('requested_at', { ascending: true })
   .limit(ADMIN_REQUESTS_LIMIT)
 
   if (error) {
@@ -184,7 +185,12 @@ const requests =
             })(),
           })) ?? [],
       })) ?? [],
-  })) ?? []
+  }))
+    .map((request) => ({
+      ...request,
+      status: getVisibleRequestStatus(request),
+    }))
+    .sort(compareRequestsByOperationalPriority) ?? []
 
   const trackedItemIds = Array.from(
     new Set(
@@ -239,7 +245,12 @@ const requests =
     availableUnits = [
       ...(firstUnitsPage.data ?? []),
       ...(secondUnitsPage.data ?? []),
-    ]
+    ].sort((a, b) =>
+      (a.asset_code || a.serial_code || a.model || '').localeCompare(
+        b.asset_code || b.serial_code || b.model || '',
+        'es'
+      )
+    )
   }
 
   const requestsWithActions = requests.map((req) => {

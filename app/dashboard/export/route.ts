@@ -14,6 +14,7 @@ import {
   formatRequestStatus,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { formatDateTime } from '@/lib/format-date'
 
 
 export async function GET(request: NextRequest) {
@@ -92,6 +93,7 @@ export async function GET(request: NextRequest) {
         activity,
         responsible,
         maintenance_date,
+        created_at,
         maintenance_type,
         observations,
         items:items(name, code)
@@ -99,6 +101,7 @@ export async function GET(request: NextRequest) {
       .gte('maintenance_date', startDate)
       .lt('maintenance_date', endDate)
       .order('maintenance_date', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (maintenanceError) {
       return new Response('No se pudo cargar el mantenimiento', { status: 500 })
@@ -112,6 +115,7 @@ export async function GET(request: NextRequest) {
       { header: 'Actividad', key: 'activity', width: 35 },
       { header: 'Responsable', key: 'responsible', width: 30 },
       { header: 'Fecha', key: 'date', width: 18 },
+      { header: 'Registrado', key: 'createdAt', width: 22 },
       { header: 'Tipo', key: 'type', width: 18 },
       { header: 'Observaciones', key: 'observations', width: 40 },
     ]
@@ -125,6 +129,7 @@ export async function GET(request: NextRequest) {
         activity: record.activity,
         responsible: record.responsible,
         date: record.maintenance_date,
+        createdAt: record.created_at ? formatDateTime(record.created_at) : '-',
         type: formatMaintenanceType(record.maintenance_type),
         observations: record.observations ?? '-',
       })
@@ -193,7 +198,7 @@ export async function GET(request: NextRequest) {
       `)
       .gte('requested_at', startTimestamp)
       .lt('requested_at', endTimestamp)
-      .order('requested_at', { ascending: false })
+      .order('requested_at', { ascending: true })
 
     if (requestsError) {
       return new Response('No se pudieron cargar las solicitudes', { status: 500 })
@@ -326,7 +331,9 @@ export async function GET(request: NextRequest) {
     const { data: inventory, error: inventoryError } = await supabase
       .from('items')
       .select('code, name, category, item_type, stock_total, stock_available, status, location')
+      .order('category', { ascending: true })
       .order('name', { ascending: true })
+      .order('code', { ascending: true })
 
     if (inventoryError) {
       return new Response('No se pudo cargar el inventario', { status: 500 })

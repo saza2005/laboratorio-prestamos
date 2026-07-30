@@ -42,7 +42,9 @@ export default async function InventarioPage() {
       location,
       item_units(asset_code, condition, availability_status)
     `)
-    .order('created_at', { ascending: false })
+    .order('category', { ascending: true })
+    .order('name', { ascending: true })
+    .order('code', { ascending: true })
     .limit(INVENTORY_CATALOG_LIMIT)
 
   if (error) {
@@ -55,7 +57,8 @@ export default async function InventarioPage() {
       asset_codes:
         item.item_units
           ?.map((unit) => unit.asset_code)
-          .filter((code): code is string => Boolean(code)) ?? [],
+          .filter((code): code is string => Boolean(code))
+          .sort((a, b) => a.localeCompare(b, 'es')) ?? [],
       unit_conditions:
         item.item_units
           ?.map((unit) => unit.condition)
@@ -192,10 +195,12 @@ export default async function InventarioPage() {
           activity,
           responsible,
           maintenance_date,
+          created_at,
           maintenance_type,
           observations
         `)
         .order('maintenance_date', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(INVENTORY_UNIT_MAINTENANCE_LIMIT),
       supabase
         .from('inventory_movements')
@@ -256,6 +261,7 @@ export default async function InventarioPage() {
     Array<{
       id: string
       date: string | null
+      created_at?: string | null
       type: string
       title: string
       description: string
@@ -269,6 +275,7 @@ export default async function InventarioPage() {
     entry: {
       id: string
       date: string | null
+      created_at?: string | null
       type: string
       title: string
       description: string
@@ -365,6 +372,7 @@ export default async function InventarioPage() {
     addItemHistory(record.item_id, {
       id: record.id,
       date: record.maintenance_date,
+      created_at: record.created_at,
       type: `maintenance_${record.maintenance_type}`,
       title: 'Mantenimiento',
       description: `${record.activity}${record.observations ? ` · ${record.observations}` : ''}`,
@@ -377,6 +385,7 @@ export default async function InventarioPage() {
     Array<{
       id: string
       date: string | null
+      created_at: string | null
       activity: string
       responsible: string
       maintenance_type: string
@@ -390,6 +399,7 @@ export default async function InventarioPage() {
     entries.push({
       id: record.id,
       date: record.maintenance_date,
+      created_at: record.created_at,
       activity: record.activity,
       responsible: record.responsible,
       maintenance_type: record.maintenance_type,
@@ -431,8 +441,8 @@ export default async function InventarioPage() {
     ...unit,
     maintenance_records: (maintenanceByUnit.get(unit.id) ?? [])
       .sort((a, b) => {
-        const dateA = a.date ? new Date(a.date).getTime() : 0
-        const dateB = b.date ? new Date(b.date).getTime() : 0
+        const dateA = new Date(a.created_at ?? a.date ?? '').getTime() || 0
+        const dateB = new Date(b.created_at ?? b.date ?? '').getTime() || 0
         return dateB - dateA
       })
       .slice(0, 5),
@@ -449,8 +459,8 @@ export default async function InventarioPage() {
       itemId,
       entries
         .sort((a, b) => {
-          const dateA = a.date ? new Date(a.date).getTime() : 0
-          const dateB = b.date ? new Date(b.date).getTime() : 0
+          const dateA = new Date(a.created_at ?? a.date ?? '').getTime() || 0
+          const dateB = new Date(b.created_at ?? b.date ?? '').getTime() || 0
           return dateB - dateA
         })
         .slice(0, 12),
