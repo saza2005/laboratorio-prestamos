@@ -19,6 +19,8 @@ type InventoryItem = {
   status: string
   location: string | null
   asset_codes: string[]
+  unit_conditions: string[]
+  unit_availability_statuses: string[]
 }
 
 type ItemHistoryEntry = {
@@ -40,6 +42,32 @@ function formatHistoryType(type: string) {
   return formatMovementType(type)
 }
 
+function getOperationalItemStatus(item: InventoryItem) {
+  if (item.status !== 'active') return item.status
+
+  if (!item.track_individual || item.unit_availability_statuses.length === 0) {
+    return item.status
+  }
+
+  if (item.stock_available > 0) return item.status
+
+  if (item.unit_conditions.includes('maintenance')) {
+    return 'maintenance'
+  }
+
+  if (
+    item.unit_conditions.some((condition) =>
+      condition === 'damaged' || condition === 'retired'
+    ) ||
+    item.unit_availability_statuses.every(
+      (availability) => availability === 'unavailable'
+    )
+  ) {
+    return 'inactive'
+  }
+
+  return item.status
+}
 function historyTypeClass(type: string) {
   if (type === 'loan') {
     return 'bg-blue-50 text-blue-700 ring-blue-200'
@@ -106,7 +134,8 @@ export function InventoryList({
 
     return items.filter((item) => {
       const matchesCategory = !category || item.category === category
-      const matchesStatus = !status || item.status === status
+      const operationalStatus = getOperationalItemStatus(item)
+      const matchesStatus = !status || operationalStatus === status
       const matchesSearch =
         !query ||
         normalizeSearchText(item.name).includes(query) ||
@@ -243,10 +272,10 @@ export function InventoryList({
                   <span className="text-slate-600">{item.stock_total}</span>
                   <span
                     className={`rounded-full px-2 py-1 text-xs font-medium ring-1 ${inventoryStatusBadgeClass(
-                      item.status
+                      getOperationalItemStatus(item)
                     )}`}
                   >
-                    {formatInventoryStatus(item.status)}
+                    {formatInventoryStatus(getOperationalItemStatus(item))}
                   </span>
                 </button>
               ))}
@@ -267,10 +296,10 @@ export function InventoryList({
                   <div className="flex shrink-0 items-center gap-2">
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-medium ring-1 ${inventoryStatusBadgeClass(
-                        selectedItem.status
+                        getOperationalItemStatus(selectedItem)
                       )}`}
                     >
-                      {formatInventoryStatus(selectedItem.status)}
+                      {formatInventoryStatus(getOperationalItemStatus(selectedItem))}
                     </span>
                     <button
                       type="button"

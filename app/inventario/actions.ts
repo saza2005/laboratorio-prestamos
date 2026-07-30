@@ -9,6 +9,10 @@ export type InventoryActionState = {
   error: string | null
 }
 
+export type UnitStatusActionState = {
+  error: string | null
+}
+
 async function persistItem(formData: FormData) {
   const { supabase, profile } = await getAuthProfile()
 
@@ -95,4 +99,51 @@ export async function createItemWithState(
   }
 
   redirect('/inventario')
+}
+export async function updateUnitStatusWithState(
+  _prevState: UnitStatusActionState,
+  formData: FormData
+): Promise<UnitStatusActionState> {
+  try {
+    await persistUnitStatus(formData)
+  } catch (error) {
+    return {
+      error: getActionErrorMessage(
+        error,
+        'No se pudo actualizar el estado de la unidad. Intente nuevamente.'
+      ),
+    }
+  }
+
+  redirect('/inventario')
+}
+
+async function persistUnitStatus(formData: FormData) {
+  const { supabase, profile } = await getAuthProfile()
+
+  if (!canManageInventory(profile.role)) {
+    throw new Error('No tiene permisos para gestionar inventario.')
+  }
+
+  const unitId = String(formData.get('unit_id') || '').trim()
+  const condition = String(formData.get('condition') || '').trim()
+  const notes = String(formData.get('notes') || '').trim()
+
+  if (!unitId) {
+    throw new Error('Unidad inválida.')
+  }
+
+  if (!['good', 'damaged', 'maintenance', 'retired'].includes(condition)) {
+    throw new Error('La condición seleccionada no es válida.')
+  }
+
+  const { error } = await supabase.rpc('update_item_unit_status_transaction', {
+    p_unit_id: unitId,
+    p_condition: condition,
+    p_notes: notes || null,
+  })
+
+  if (error) {
+    throw new Error(error.message)
+  }
 }

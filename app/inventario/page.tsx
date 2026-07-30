@@ -40,7 +40,7 @@ export default async function InventarioPage() {
       stock_available,
       status,
       location,
-      item_units(asset_code)
+      item_units(asset_code, condition, availability_status)
     `)
     .order('created_at', { ascending: false })
     .limit(INVENTORY_CATALOG_LIMIT)
@@ -56,6 +56,14 @@ export default async function InventarioPage() {
         item.item_units
           ?.map((unit) => unit.asset_code)
           .filter((code): code is string => Boolean(code)) ?? [],
+      unit_conditions:
+        item.item_units
+          ?.map((unit) => unit.condition)
+          .filter((condition): condition is string => Boolean(condition)) ?? [],
+      unit_availability_statuses:
+        item.item_units
+          ?.map((unit) => unit.availability_status)
+          .filter((status): status is string => Boolean(status)) ?? [],
     })) ?? []
 
   const unitSelect = `

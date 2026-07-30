@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useActionState, useMemo, useState } from 'react'
 import { normalizeSearchText } from '@/lib/item-format'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { PaginationControls } from '@/components/pagination-controls'
+import { updateUnitStatusWithState } from './actions'
 import {
   formatUnitAvailability,
   formatUnitCondition,
@@ -34,6 +35,10 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
   const [availability, setAvailability] = useState('')
   const [page, setPage] = useState(1)
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null)
+  const [unitStatusState, unitStatusAction, unitStatusPending] = useActionState(
+    updateUnitStatusWithState,
+    { error: null }
+  )
 
   const filteredUnits = useMemo(() => {
     const query = normalizeSearchText(search)
@@ -129,7 +134,6 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
             <option value="">Toda disponibilidad</option>
             <option value="available">Disponible</option>
             <option value="loaned">Prestado</option>
-            <option value="maintenance">Mantenimiento</option>
             <option value="unavailable">No disponible</option>
           </select>
           {hasFilters && (
@@ -254,6 +258,64 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
                   <p><span className="font-medium text-slate-700">Ingreso:</span> {selectedUnit.entry_date || '-'}</p>
                   <p><span className="font-medium text-slate-700">Asignación:</span> {selectedUnit.assignment_date || '-'}</p>
                 </div>
+
+                <form action={unitStatusAction} className="border-t border-slate-200 pt-4">
+                  <input type="hidden" name="unit_id" value={selectedUnit.id} />
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <h4 className="font-medium text-slate-800">Actualizar estado de la unidad</h4>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Las unidades dañadas, en mantenimiento o retiradas dejan de estar disponibles para préstamos.
+                      </p>
+                    </div>
+
+                    {selectedUnit.availability_status === 'loaned' && (
+                      <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-amber-200">
+                        Esta unidad está prestada. Debe devolverse antes de modificar su estado.
+                      </p>
+                    )}
+
+                    {unitStatusState.error && (
+                      <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200">
+                        {unitStatusState.error}
+                      </p>
+                    )}
+
+                    <label className="text-sm font-medium text-slate-700">
+                      Condición
+                      <select
+                        name="condition"
+                        defaultValue={selectedUnit.condition}
+                        disabled={selectedUnit.availability_status === 'loaned' || unitStatusPending}
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 disabled:text-slate-500"
+                      >
+                        <option value="good">Bueno y disponible</option>
+                        <option value="damaged">Dañado / no disponible</option>
+                        <option value="maintenance">En mantenimiento</option>
+                        <option value="retired">Retirado / ya no sirve</option>
+                      </select>
+                    </label>
+
+                    <label className="text-sm font-medium text-slate-700">
+                      Nota interna
+                      <textarea
+                        name="notes"
+                        rows={3}
+                        disabled={selectedUnit.availability_status === 'loaned' || unitStatusPending}
+                        placeholder="Motivo del cambio, diagnóstico o responsable"
+                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 disabled:text-slate-500"
+                      />
+                    </label>
+
+                    <button
+                      type="submit"
+                      disabled={selectedUnit.availability_status === 'loaned' || unitStatusPending}
+                      className="w-fit rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                    >
+                      {unitStatusPending ? 'Guardando...' : 'Guardar estado'}
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
           </DetailDrawer>
