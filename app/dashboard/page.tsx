@@ -36,6 +36,33 @@ import {
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { compareRequestsByOperationalPriority } from '@/lib/request-delivery-status'
 
+type DashboardReturnItem = {
+  quantity_damaged?: number | null
+  quantity_missing?: number | null
+}
+
+function hasDashboardReturnDamagedItems(items: DashboardReturnItem[]) {
+  return items.some((item) => (item.quantity_damaged ?? 0) > 0)
+}
+
+function hasDashboardReturnMissingItems(items: DashboardReturnItem[]) {
+  return items.some((item) => (item.quantity_missing ?? 0) > 0)
+}
+
+function formatDashboardReturnResult(items: DashboardReturnItem[], loanStatus?: string | null) {
+  if (hasDashboardReturnMissingItems(items)) return 'Devolución con faltantes'
+  if (hasDashboardReturnDamagedItems(items)) return 'Devolución con dañados'
+  if (loanStatus === 'partial_return' || loanStatus === 'overdue') return 'Devolución parcial registrada'
+  return 'Devolución registrada'
+}
+
+function dashboardReturnBadgeClass(items: DashboardReturnItem[], loanStatus?: string | null) {
+  if (hasDashboardReturnMissingItems(items)) return 'bg-red-50 text-red-700 ring-red-200'
+  if (hasDashboardReturnDamagedItems(items)) return 'bg-amber-50 text-amber-700 ring-amber-200'
+  if (loanStatus === 'partial_return' || loanStatus === 'overdue') return 'bg-amber-50 text-amber-700 ring-amber-200'
+  return 'bg-emerald-50 text-emerald-700 ring-emerald-200'
+}
+
 export default async function DashboardPage({
   searchParams,
 }: {
@@ -210,8 +237,10 @@ export default async function DashboardPage({
           id,
           received_at,
           notes,
+          return_items(quantity_damaged, quantity_missing),
           receiver:profiles!returns_received_by_fkey(full_name, email),
           loans:loans(
+            status,
             borrower:profiles!loans_user_id_fkey(full_name, email)
           )
         `)
@@ -415,21 +444,23 @@ export default async function DashboardPage({
         | { full_name?: string; email?: string }
         | null
       const loan = firstOrNull(returnEntry.loans) as
-        | { borrower?: { full_name?: string; email?: string } | { full_name?: string; email?: string }[] | null }
+        | { status?: string | null; borrower?: { full_name?: string; email?: string } | { full_name?: string; email?: string }[] | null }
         | null
       const borrower = firstOrNull(loan?.borrower) as
         | { full_name?: string; email?: string }
         | null
 
+      const returnItems = returnEntry.return_items ?? []
+
       return {
         id: `return-${returnEntry.id}`,
         date: returnEntry.received_at,
         module: 'Devoluciones',
-        title: 'Devolución registrada',
-        description: `Préstamo de ${borrower?.full_name ?? borrower?.email ?? 'usuario'}${returnEntry.notes ? ` · ${returnEntry.notes}` : ''}`,
+        title: formatDashboardReturnResult(returnItems, loan?.status),
+        description: `Préstamo de ${borrower?.full_name ?? borrower?.email ?? 'usuario'} · ${returnItems.length} ítem(s)${returnEntry.notes ? ` · ${returnEntry.notes}` : ''}`,
         actor: receiver?.full_name ?? receiver?.email ?? 'Sistema',
         href: '/devoluciones',
-        className: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+        className: dashboardReturnBadgeClass(returnItems, loan?.status),
       }
     }),
     ...(recentMaintenanceResult.data ?? []).map((record) => {

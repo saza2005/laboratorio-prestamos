@@ -227,40 +227,57 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  const formatReturnResult = (totals: {
+    damaged: number
+    missing: number
+    loanStatus?: string | null
+  }) => {
+    if (totals.missing > 0) return 'Con faltantes'
+    if (totals.damaged > 0) return 'Con dañados'
+    if (totals.loanStatus === 'partial_return' || totals.loanStatus === 'overdue') return 'Devolución parcial'
+    return 'Sin observaciones'
+  }
+
   if (includeModule('returns')) {
     const { data: returns, error: returnsError } = await supabase
       .from('return_items')
       .select(`
+        return_id,
         quantity_ok,
         quantity_damaged,
         quantity_missing,
         notes,
         created_at,
-        returns:returns(received_at),
+        returns:returns!inner(received_at),
         loan_items:loan_items(
           items:items(name, code),
-          loans:loans(profiles:profiles!loans_user_id_fkey(full_name, email))
+          loans:loans(status, profiles:profiles!loans_user_id_fkey(full_name, email))
         )
       `)
-      .gte('created_at', startTimestamp)
-      .lt('created_at', endTimestamp)
-      .order('created_at', { ascending: false })
+      .gte('returns.received_at', startTimestamp)
+      .lt('returns.received_at', endTimestamp)
+      .order('received_at', { ascending: false, referencedTable: 'returns' })
 
     if (returnsError) {
       return new Response('No se pudieron cargar las devoluciones', { status: 500 })
     }
 
-    const returnsSheet = workbook.addWorksheet('Devoluciones')
-    returnsSheet.columns = [
-      { header: 'Ítem', key: 'item', width: 30 },
-      { header: 'Código', key: 'code', width: 18 },
-      { header: 'Usuario', key: 'user', width: 30 },
-      { header: 'Fecha', key: 'date', width: 22 },
-      { header: 'OK', key: 'ok', width: 10 },
-      { header: 'Dañados', key: 'damaged', width: 10 },
-      { header: 'Faltantes', key: 'missing', width: 10 },
-      { header: 'Notas', key: 'notes', width: 40 },
-    ]
+    const returnGroups = new Map<
+      string,
+      {
+        returnId: string
+        returnItems: number
+        items: string[]
+        codes: string[]
+        user: string
+        date: string
+        ok: number
+        damaged: number
+        missing: number
+        loanStatus: string | null
+        notes: string[]
+      }
+    >()
 
     for (const returnEntry of returns ?? []) {
       const returnRecord = firstOrNull(returnEntry.returns)
@@ -268,16 +285,73 @@ export async function GET(request: NextRequest) {
       const item = firstOrNull(loanItem?.items)
       const loan = firstOrNull(loanItem?.loans)
       const borrower = firstOrNull(loan?.profiles)
+      const returnId = returnEntry.return_id
+      const existing = returnGroups.get(returnId)
+      const itemName = item?.name ?? 'Ítem sin nombre'
+      const itemCode = item?.code ?? '-'
+      const notes = returnEntry.notes?.trim()
 
-      returnsSheet.addRow({
-        item: item?.name ?? '-',
-        code: item?.code ?? '-',
+      if (existing) {
+        existing.returnItems += 1
+        existing.items.push(`${itemName} (${returnEntry.quantity_ok + returnEntry.quantity_damaged + returnEntry.quantity_missing})`)
+        existing.codes.push(itemCode)
+        existing.ok += returnEntry.quantity_ok
+        existing.damaged += returnEntry.quantity_damaged
+        existing.missing += returnEntry.quantity_missing
+        if (notes) existing.notes.push(notes)
+        continue
+      }
+
+      returnGroups.set(returnId, {
+        returnId,
+        returnItems: 1,
+        items: [`${itemName} (${returnEntry.quantity_ok + returnEntry.quantity_damaged + returnEntry.quantity_missing})`],
+        codes: [itemCode],
         user: borrower?.full_name ?? '-',
         date: returnRecord?.received_at ?? returnEntry.created_at ?? '-',
         ok: returnEntry.quantity_ok,
         damaged: returnEntry.quantity_damaged,
         missing: returnEntry.quantity_missing,
-        notes: returnEntry.notes ?? '-',
+        loanStatus: loan?.status ?? null,
+        notes: notes ? [notes] : [],
+      })
+    }
+
+    const returnsSheet = workbook.addWorksheet('Devoluciones')
+    returnsSheet.columns = [
+      { header: 'ID devolución', key: 'returnId', width: 38 },
+      { header: 'Materiales en devolución', key: 'returnItems', width: 22 },
+      { header: 'Materiales', key: 'items', width: 45 },
+      { header: 'Códigos', key: 'codes', width: 28 },
+      { header: 'Usuario', key: 'user', width: 30 },
+      { header: 'Fecha', key: 'date', width: 22 },
+      { header: 'OK', key: 'ok', width: 10 },
+      { header: 'Dañados', key: 'damaged', width: 10 },
+      { header: 'Faltantes', key: 'missing', width: 10 },
+      { header: 'Resultado', key: 'result', width: 20 },
+      { header: 'Notas', key: 'notes', width: 40 },
+    ]
+
+    const sortedReturnGroups = [...returnGroups.values()].sort((a, b) => {
+      const dateA = a.date === '-' ? 0 : new Date(a.date).getTime()
+      const dateB = b.date === '-' ? 0 : new Date(b.date).getTime()
+
+      return dateB - dateA
+    })
+
+    for (const returnGroup of sortedReturnGroups) {
+      returnsSheet.addRow({
+        returnId: returnGroup.returnId,
+        returnItems: returnGroup.returnItems,
+        items: returnGroup.items.join(' | '),
+        codes: [...new Set(returnGroup.codes)].join(' | '),
+        user: returnGroup.user,
+        date: returnGroup.date,
+        ok: returnGroup.ok,
+        damaged: returnGroup.damaged,
+        missing: returnGroup.missing,
+        result: formatReturnResult(returnGroup),
+        notes: returnGroup.notes.length > 0 ? [...new Set(returnGroup.notes)].join(' | ') : '-',
       })
     }
   }

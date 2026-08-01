@@ -197,7 +197,7 @@ export function InventoryList({
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_minmax(180px,240px)_minmax(160px,220px)_auto]">
+        <div className="grid gap-3 md:grid-cols-[minmax(320px,1fr)_minmax(180px,240px)_minmax(160px,220px)_auto]">
           <input
             type="search"
             value={search}

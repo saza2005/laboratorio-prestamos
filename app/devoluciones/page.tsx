@@ -10,6 +10,8 @@ import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
+const RETURN_HISTORY_ITEM_FETCH_LIMIT = ADMIN_HISTORY_LIMIT * 5
+
 export default async function DevolucionesPage() {
   let auth
 
@@ -94,6 +96,8 @@ export default async function DevolucionesPage() {
       loan_items:loan_items(
         id,
         quantity,
+        returned_quantity,
+        missing_quantity,
         item_id,
         item_unit_id,
         loan_id,
@@ -102,12 +106,13 @@ export default async function DevolucionesPage() {
         loans:loans(
           id,
           user_id,
+          status,
           borrower_profile:profiles!loans_user_id_fkey(full_name, email)
         )
       )
     `)
     .order('created_at', { ascending: false, referencedTable: 'returns' })
-    .limit(ADMIN_HISTORY_LIMIT)
+    .limit(RETURN_HISTORY_ITEM_FETCH_LIMIT)
   if (returnHistoryError) {
     throw new Error(returnHistoryError.message)
   }
@@ -179,6 +184,7 @@ export default async function DevolucionesPage() {
 
       return {
         id: entry.id,
+        return_id: entry.return_id,
         quantity_ok: entry.quantity_ok,
         quantity_damaged: entry.quantity_damaged,
         quantity_missing: entry.quantity_missing,
@@ -189,6 +195,8 @@ export default async function DevolucionesPage() {
         unit_code: unitData?.asset_code ?? unitData?.serial_code ?? null,
         borrower_name: borrowerProfile?.full_name ?? 'Sin nombre',
         receiver_name: receiverProfile?.full_name ?? 'Sin nombre',
+        loan_status: loanData?.status ?? null,
+        pending_quantity: Math.max(0, (loanItemData?.quantity ?? 0) - (loanItemData?.returned_quantity ?? 0) - (loanItemData?.missing_quantity ?? 0)),
       }
     }) ?? []
   return (

@@ -6,6 +6,10 @@ import { materialsDeliveredTemplate } from './templates/materials-delivered'
 import { requestApprovedTemplate } from './templates/request-approved'
 import { requestCreatedTemplate } from './templates/request-created'
 import { requestRejectedTemplate } from './templates/request-rejected'
+import {
+  ReturnMaterialSummary,
+  returnRegisteredTemplate,
+} from './templates/return-registered'
 import type { MaterialSummary } from './templates/shared'
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>
@@ -18,6 +22,10 @@ type TransactionalEmailInput =
   | {
       type: 'materials-delivered'
       loanId: string
+    }
+  | {
+      type: 'return-registered'
+      returnId: string
     }
 
 type RequestEmailDetails = {
@@ -67,6 +75,31 @@ type LoanEmailDetails = {
   }>
 }
 
+type ReturnEmailDetails = {
+  id: string
+  received_at: string | null
+  notes: string | null
+  loan: {
+    expected_return_date?: string | null
+    status?: string | null
+    borrower?: {
+      full_name?: string | null
+      email?: string | null
+    } | null
+  } | null
+  return_items: Array<{
+    quantity_ok: number
+    quantity_damaged: number
+    quantity_missing: number
+    loan_item: {
+      item: {
+        code?: string | null
+        name?: string | null
+      } | null
+    } | null
+  }>
+}
+
 export async function sendTransactionalEmail(
   supabase: SupabaseServerClient,
   input: TransactionalEmailInput
@@ -77,12 +110,21 @@ export async function sendTransactionalEmail(
       return
     }
 
+    if (input.type === 'return-registered') {
+      await sendReturnRegisteredEmail(supabase, input.returnId)
+      return
+    }
+
     await sendRequestEmail(supabase, input.type, input.requestId)
   } catch (error) {
     console.error('La operación se completó, pero el correo no pudo enviarse.', {
       type: input.type,
       entityId:
-        input.type === 'materials-delivered' ? input.loanId : input.requestId,
+        input.type === 'materials-delivered'
+          ? input.loanId
+          : input.type === 'return-registered'
+            ? input.returnId
+            : input.requestId,
       error: error instanceof Error ? error.message : 'Error desconocido',
     })
   }
@@ -175,6 +217,44 @@ async function sendMaterialsDeliveredEmail(
     text: template.text,
     html: template.html,
     eventKey: `loan-delivered:${loan.id}`,
+  })
+}
+
+async function sendReturnRegisteredEmail(
+  supabase: SupabaseServerClient,
+  returnId: string
+) {
+  const returnRecord = await getReturnDetails(supabase, returnId)
+  const recipientEmail = returnRecord.loan?.borrower?.email?.trim()
+
+  if (!recipientEmail) {
+    throw new Error('La devolución no tiene un correo de destinatario.')
+  }
+
+  const borrowerName =
+    returnRecord.loan?.borrower?.full_name?.trim() || recipientEmail
+  const materials = getReturnMaterials(returnRecord)
+  const hasIssues = materials.some(
+    (material) => material.quantityDamaged > 0 || material.quantityMissing > 0
+  )
+  const template = returnRegisteredTemplate({
+    borrowerName,
+    returnId: returnRecord.id,
+    receivedAt: returnRecord.received_at,
+    expectedReturnDate: returnRecord.loan?.expected_return_date ?? null,
+    materials,
+    hasIssues,
+    isPartialReturn: returnRecord.loan?.status === 'partial_return' || returnRecord.loan?.status === 'overdue',
+    notes: returnRecord.notes,
+    requestUrl: `${getAppUrl()}/solicitudes/mis-prestamos`,
+  })
+
+  await sendEmail({
+    to: recipientEmail,
+    subject: template.subject,
+    text: template.text,
+    html: template.html,
+    eventKey: `return-registered:${returnRecord.id}`,
   })
 }
 
@@ -290,6 +370,51 @@ async function getLoanDetails(
   }
 }
 
+async function getReturnDetails(
+  supabase: SupabaseServerClient,
+  returnId: string
+): Promise<ReturnEmailDetails> {
+  const { data, error } = await supabase
+    .from('returns')
+    .select(
+      `
+      id,
+      received_at,
+      notes,
+      loan:loans!returns_loan_id_fkey(
+        expected_return_date,
+        status,
+        borrower:profiles!loans_user_id_fkey(full_name, email)
+      ),
+      return_items(
+        quantity_ok,
+        quantity_damaged,
+        quantity_missing,
+        loan_item:loan_items(
+          item:items(code, name)
+        )
+      )
+    `
+    )
+    .eq('id', returnId)
+    .single()
+
+  if (error || !data) {
+    throw new Error(error?.message || 'No se pudo cargar la devolución.')
+  }
+
+  const raw = data as unknown as {
+    loan?: ReturnEmailDetails['loan'] | ReturnEmailDetails['loan'][]
+    return_items?: ReturnEmailDetails['return_items'] | null
+  } & Omit<ReturnEmailDetails, 'loan' | 'return_items'>
+
+  return {
+    ...raw,
+    loan: normalizeRelation(raw.loan),
+    return_items: raw.return_items ?? [],
+  }
+}
+
 function normalizeRelation<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) return value[0] ?? null
   return value ?? null
@@ -329,6 +454,18 @@ function getLoanMaterials(loan: LoanEmailDetails): MaterialSummary[] {
       quantity: item.quantity,
     }))
   )
+}
+
+function getReturnMaterials(
+  returnRecord: ReturnEmailDetails
+): ReturnMaterialSummary[] {
+  return returnRecord.return_items.map((item) => ({
+    code: item.loan_item?.item?.code ?? null,
+    name: item.loan_item?.item?.name ?? 'Material sin nombre',
+    quantityOk: item.quantity_ok,
+    quantityDamaged: item.quantity_damaged,
+    quantityMissing: item.quantity_missing,
+  }))
 }
 
 function mergeMaterials(materials: MaterialSummary[]) {

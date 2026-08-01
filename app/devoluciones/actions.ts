@@ -4,9 +4,15 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageReturns } from '@/lib/supabase/auth/roles'
 import { getActionErrorMessage } from '@/lib/action-error'
+import { sendTransactionalEmail } from '@/lib/email/send-transactional-email'
 
 export type ReturnActionState = {
   error: string | null
+}
+
+export type FullReturnActionState = {
+  error: string | null
+  success: string | null
 }
 
 type ParsedReturnInput = {
@@ -27,7 +33,7 @@ async function persistReturn(formData: FormData): Promise<void> {
   const input = parseReturnFormData(formData)
   validateReturnInput(input)
 
-  const { error } = await supabase.rpc('register_return_transaction', {
+  const { data: returnId, error } = await supabase.rpc('register_return_transaction', {
     p_loan_item_id: input.loanItemId,
     p_quantity_ok: input.quantityOk,
     p_quantity_damaged: input.quantityDamaged,
@@ -38,6 +44,13 @@ async function persistReturn(formData: FormData): Promise<void> {
 
   if (error) {
     throw new Error(error.message)
+  }
+
+  if (returnId) {
+    await sendTransactionalEmail(supabase, {
+      type: 'return-registered',
+      returnId,
+    })
   }
 }
 
@@ -59,6 +72,55 @@ export async function createReturnWithState(
   redirect('/devoluciones')
 }
 
+export async function createFullReturnWithState(
+  _prevState: FullReturnActionState,
+  formData: FormData
+): Promise<FullReturnActionState> {
+  try {
+    const { supabase, user, profile } = await getAuthProfile()
+
+    if (!canManageReturns(profile.role)) {
+      throw new Error('No tiene permisos para registrar devoluciones.')
+    }
+
+    const loanId = String(formData.get('loan_id') || '').trim()
+    const notes = String(formData.get('notes') || '').trim()
+
+    if (!loanId) {
+      throw new Error('Debe seleccionar un préstamo.')
+    }
+
+    const { data: returnId, error } = await supabase.rpc(
+      'register_full_return_transaction',
+      {
+        p_loan_id: loanId,
+        p_notes: notes || null,
+        p_received_by: user.id,
+      }
+    )
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    if (returnId) {
+      await sendTransactionalEmail(supabase, {
+        type: 'return-registered',
+        returnId,
+      })
+    }
+  } catch (error) {
+    return {
+      error: getActionErrorMessage(
+        error,
+        'No se pudo registrar la devolución completa. Intente nuevamente.'
+      ),
+      success: null,
+    }
+  }
+
+  redirect('/devoluciones')
+}
 function parseReturnFormData(formData: FormData): ParsedReturnInput {
   return {
     loanItemId: String(formData.get('loan_item_id') || '').trim(),

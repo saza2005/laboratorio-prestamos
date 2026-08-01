@@ -1,7 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useActionState, useMemo, useState } from 'react'
 import { DetailDrawer } from '@/components/detail-drawer'
+import { useConfirmSubmit } from '@/components/confirm-submit'
+import { createFullReturnWithState } from './actions'
 import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
 import { formatLoanStatus, loanStatusBadgeClass as statusBadgeClass } from '@/lib/status-format'
@@ -79,6 +81,96 @@ function getMatchingGroups(item: PendingLoanItem) {
     .filter((group) => group.matchingItems.length > 0)
 }
 
+function getLoanPendingItems(loanItems: PendingLoanItem[], loanId?: string) {
+  if (!loanId) return []
+  return loanItems.filter(
+    (item) => item.loans?.id === loanId && getPending(item) > 0
+  )
+}
+
+function getLoanPendingTotal(items: PendingLoanItem[]) {
+  return items.reduce((total, item) => total + getPending(item), 0)
+}
+
+function getLoanPendingItemLabels(items: PendingLoanItem[]) {
+  return items
+    .slice(0, 4)
+    .map((item) => (item.items?.name ?? 'Ítem') + ' (' + getPending(item) + ')')
+    .join(', ')
+}
+
+function FullReturnForm({
+  loanId,
+  pendingItems,
+  pendingTotal,
+}: {
+  loanId: string
+  pendingItems: PendingLoanItem[]
+  pendingTotal: number
+}) {
+  const [state, formAction, isPending] = useActionState(
+    createFullReturnWithState,
+    { error: null, success: null }
+  )
+  const confirmSubmit = useConfirmSubmit({
+    title: 'Registrar devolución completa',
+    message: 'Confirma que todos los materiales pendientes de este préstamo fueron recibidos en buen estado.',
+    confirmLabel: 'Registrar completa',
+  })
+
+  return (
+    <form
+      action={formAction}
+      onSubmit={confirmSubmit.onSubmit}
+      className='rounded-xl border border-emerald-200 bg-emerald-50 p-4'
+    >
+      {confirmSubmit.dialog}
+      <input type='hidden' name='loan_id' value={loanId} />
+
+      <div className='flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between'>
+        <div>
+          <p className='font-semibold text-emerald-900'>
+            Devolver préstamo completo
+          </p>
+          <p className='mt-1 text-sm text-emerald-800'>
+            Registra como buen estado todo lo pendiente de este préstamo.
+          </p>
+          <p className='mt-2 text-sm text-emerald-900'>
+            Pendiente total: <span className='font-semibold'>{pendingTotal}</span> en {pendingItems.length} ítem(s).
+          </p>
+          <p className='mt-1 text-xs text-emerald-800'>
+            {getLoanPendingItemLabels(pendingItems)}
+            {pendingItems.length > 4 ? ' ...' : ''}
+          </p>
+        </div>
+
+        <button
+          type='submit'
+          disabled={isPending || pendingTotal <= 0}
+          className='shrink-0 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50'
+        >
+          {isPending ? 'Registrando...' : 'Devolución completa'}
+        </button>
+      </div>
+
+      <label className='mt-3 block text-sm font-medium text-emerald-950'>
+        Nota general
+      </label>
+      <textarea
+        name='notes'
+        rows={2}
+        placeholder='Opcional'
+        className='mt-1 w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm text-slate-800'
+      />
+
+      {state.error && (
+        <p className='mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
+          {state.error}
+        </p>
+      )}
+    </form>
+  )
+}
 export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -98,6 +190,7 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
         .map((group) => `${group.group_name} ${group.leader?.full_name ?? ''}`)
         .join(' ')
       const groups = normalizeSearchText(groupsText)
+      const loanId = normalizeSearchText(item.loans?.id)
 
       const matchesSearch =
         !term ||
@@ -106,15 +199,32 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
         itemName.includes(term) ||
         itemCode.includes(term) ||
         unitCode.includes(term) ||
+        loanId.includes(term) ||
         groups.includes(term)
 
       return matchesStatus && matchesSearch
     })
   }, [loanItems, search, statusFilter])
 
+  const filteredLoans = useMemo(() => {
+    const loans = new Map<string, PendingLoanItem>()
+
+    for (const item of filteredItems) {
+      const loanId = item.loans?.id
+      if (!loanId || loans.has(loanId)) continue
+      loans.set(loanId, item)
+    }
+
+    return [...loans.values()]
+  }, [filteredItems])
+
   const selectedItem = selectedId
-    ? filteredItems.find((item) => item.id === selectedId) ?? null
+    ? filteredLoans.find((item) => item.loans?.id === selectedId) ?? null
     : null
+  const selectedLoanPendingItems = selectedItem
+    ? getLoanPendingItems(loanItems, selectedItem.loans?.id)
+    : []
+  const selectedLoanPendingTotal = getLoanPendingTotal(selectedLoanPendingItems)
 
   function closeItem() {
     setSelectedId(null)
@@ -134,16 +244,16 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
         <div>
           <h2 className="text-xl font-semibold">Préstamos pendientes</h2>
           <p className="text-sm text-slate-500">
-            Selecciona un registro para revisar cantidades, usuario, unidad y grupos.
+            Selecciona un préstamo para revisar sus materiales pendientes.
           </p>
           <p className="mt-1 text-sm text-slate-500">
-            Resultados: {filteredItems.length} de {loanItems.length}
+            Resultados: {filteredLoans.length} préstamo(s)
           </p>
         </div>
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px_auto]">
+        <div className="grid gap-3 md:grid-cols-[minmax(390px,1fr)_190px_auto]">
           <input
             type="text"
-            placeholder="Buscar por usuario, ítem, código, unidad o grupo"
+            placeholder="Buscar por préstamo, usuario, ítem, código, unidad o grupo"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
@@ -170,26 +280,27 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
         </div>
       </div>
 
-      {filteredItems.length > 0 ? (
+      {filteredLoans.length > 0 ? (
         <>
           <div className="overflow-hidden rounded-lg border border-slate-200">
             <div className="hidden grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_120px_92px_132px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Usuario</span>
-              <span>Ítem</span>
-              <span>Unidad</span>
+              <span>Materiales</span>
+              <span>Ítems</span>
               <span>Pendiente</span>
               <span>Estado</span>
             </div>
 
             <div className="divide-y divide-slate-200">
-              {filteredItems.map((item) => {
-                const selected = selectedItem?.id === item.id
+              {filteredLoans.map((item) => {
+                const loanPendingItems = getLoanPendingItems(loanItems, item.loans?.id)
+                const selected = selectedItem?.loans?.id === item.loans?.id
 
                 return (
                   <button
-                    key={item.id}
+                    key={item.loans?.id ?? item.id}
                     type="button"
-                    onClick={() => setSelectedId(item.id)}
+                    onClick={() => setSelectedId(item.loans?.id ?? null)}
                     className={`grid w-full gap-2 px-4 py-3 text-left text-sm transition md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_120px_92px_132px] md:items-center md:gap-3 ${
                       selected ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'
                     }`}
@@ -204,14 +315,16 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
                     </span>
                     <span className="min-w-0">
                       <span className="block truncate font-medium text-slate-800">
-                        {item.items?.name ?? 'Ítem'}
+                        {getLoanPendingItemLabels(loanPendingItems) || 'Sin materiales'}
                       </span>
                       <span className="block truncate text-xs text-slate-500">
-                        {item.items?.code ?? '-'}
+                        Préstamo: {item.loans?.id ?? '-'}
                       </span>
                     </span>
-                    <span className="truncate text-slate-600">{getUnitCode(item)}</span>
-                    <span className="font-semibold text-amber-700">{getPending(item)}</span>
+                    <span className="truncate text-slate-600">{loanPendingItems.length}</span>
+                    <span className="font-semibold text-amber-700">
+                      {getLoanPendingTotal(loanPendingItems)}
+                    </span>
                     <span>
                       <span
                         className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass(
@@ -233,10 +346,10 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="text-lg font-semibold">
-                      {selectedItem.items?.name ?? 'Ítem'}
+                      Préstamo pendiente
                     </h3>
                     <p className="text-sm text-slate-500">
-                      {selectedItem.items?.code ?? '-'} | Unidad: {getUnitCode(selectedItem)}
+                      {selectedLoanPendingItems.length} ítem(s) pendiente(s) | Préstamo: {selectedItem.loans?.id ?? '-'}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -283,11 +396,41 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 rounded-lg bg-slate-50 p-3 text-center text-sm">
-                  <p><span className="block text-xs text-slate-500">Prestado</span>{selectedItem.quantity}</p>
-                  <p><span className="block text-xs text-slate-500">Devuelto</span>{selectedItem.returned_quantity}</p>
-                  <p><span className="block text-xs text-slate-500">Perdido</span>{selectedItem.missing_quantity ?? 0}</p>
-                  <p><span className="block text-xs text-slate-500">Pendiente</span>{getPending(selectedItem)}</p>
+                <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-50 p-3 text-center text-sm sm:grid-cols-4">
+                  <p><span className="block text-xs text-slate-500">Ítems pendientes</span>{selectedLoanPendingItems.length}</p>
+                  <p><span className="block text-xs text-slate-500">Total pendiente</span>{selectedLoanPendingTotal}</p>
+                  <p><span className="block text-xs text-slate-500">Entrega</span>{selectedItem.loans?.delivery_date ? formatDateTime(selectedItem.loans.delivery_date) : '-'}</p>
+                  <p><span className="block text-xs text-slate-500">Estado</span>{formatLoanStatus(selectedItem.loans?.status)}</p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-white p-4">
+                  <p className="mb-3 font-medium text-slate-800">Materiales pendientes</p>
+                  <div className="space-y-2">
+                    {selectedLoanPendingItems.map((loanItem) => (
+                      <div
+                        key={loanItem.id}
+                        className="grid gap-2 rounded-lg bg-slate-50 p-3 text-sm sm:grid-cols-[minmax(0,1fr)_120px_110px]"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate font-medium text-slate-800">
+                            {loanItem.items?.name ?? 'Ítem'}
+                          </p>
+                          <p className="truncate text-xs text-slate-500">
+                            {loanItem.items?.code ?? '-'}
+                            {getUnitCode(loanItem) !== '-' ? ` | Unidad: ${getUnitCode(loanItem)}` : ''}
+                          </p>
+                        </div>
+                        <p className="text-slate-600">
+                          <span className="block text-xs text-slate-500">Prestado</span>
+                          {loanItem.quantity}
+                        </p>
+                        <p className="font-semibold text-amber-700">
+                          <span className="block text-xs text-slate-500">Pendiente</span>
+                          {getPending(loanItem)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {getMatchingGroups(selectedItem).length > 0 && (
@@ -311,8 +454,16 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
                   </div>
                 )}
 
+                {selectedItem.loans?.id && selectedLoanPendingTotal > 0 && (
+                  <FullReturnForm
+                    loanId={selectedItem.loans.id}
+                    pendingItems={selectedLoanPendingItems}
+                    pendingTotal={selectedLoanPendingTotal}
+                  />
+                )}
+
                 <p className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800">
-                  Para registrar la devolución, selecciona este ítem en el formulario superior.
+                  Usa la devolución completa solo cuando todo lo pendiente volvió en buen estado. Para daños o faltantes, selecciona el ítem en el formulario superior.
                 </p>
               </div>
             )}

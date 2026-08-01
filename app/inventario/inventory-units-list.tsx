@@ -116,7 +116,7 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
           </p>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_220px_220px_auto]">
+        <div className="grid gap-3 lg:grid-cols-[minmax(320px,1fr)_220px_220px_auto]">
           <input
             type="search"
             value={search}

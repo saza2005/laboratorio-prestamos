@@ -178,7 +178,7 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
   return (
     <div className="space-y-4">
       <div className="rounded-2xl bg-white p-4 shadow sm:p-6">
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_minmax(160px,220px)_minmax(180px,240px)_minmax(180px,auto)]">
+        <div className="grid gap-3 md:grid-cols-[minmax(320px,1fr)_minmax(160px,220px)_minmax(180px,240px)_minmax(180px,auto)]">
           <input
             type="text"
             placeholder="Buscar por usuario, correo, ítem, código o unidad patrimonial"

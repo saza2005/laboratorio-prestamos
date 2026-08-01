@@ -86,7 +86,7 @@ export function MovementsTable({
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_160px_160px_160px_auto]">
+        <div className="grid gap-3 md:grid-cols-[minmax(300px,1fr)_160px_160px_160px_auto]">
           <input
             type="text"
             placeholder="Buscar por ítem, código, usuario o notas"

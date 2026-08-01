@@ -133,7 +133,7 @@ export function LoansList({ loans }: LoansListProps) {
   return (
     <div className="space-y-4">
       <div className="rounded-lg border border-slate-200 bg-white p-4">
-        <div className="grid gap-3 md:grid-cols-[minmax(220px,1fr)_190px_auto]">
+        <div className="grid gap-3 md:grid-cols-[minmax(300px,1fr)_190px_auto]">
           <input
             type="text"
             placeholder="Buscar por ítem, código o tipo"
