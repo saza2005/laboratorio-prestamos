@@ -6,7 +6,12 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test tests/public tests/auth",
+    "test:e2e:roles": "playwright test tests/roles",
+    "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit",
+    "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",
@@ -19,6 +24,7 @@
     "resend": "^6.18.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
