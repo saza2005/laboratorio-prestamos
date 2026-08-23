@@ -188,7 +188,7 @@ export function InventoryList({
   const hasFilters = Boolean(search || category || status)
 
   return (
-    <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
+    <section className="surface-card p-4 sm:p-6">
       <div className="mb-4 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Ítems registrados</h2>

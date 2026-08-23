@@ -9,6 +9,7 @@ import { MaintenanceForm } from './maintenance-form'
 import { MaintenanceHistory } from './maintenance-history'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { ModuleTabs } from '@/components/module-tabs'
+import { PageHeader } from '@/components/page-header'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function MantenimientoPage() {
@@ -95,13 +96,13 @@ export default async function MantenimientoPage() {
     })) ?? []
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Mantenimiento de equipos</h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+    <main className="app-page">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <PageHeader
+          eyebrow="Cuidado de activos"
+          title="Mantenimiento de equipos"
+          description="Registra intervenciones y consulta el historial técnico de los bienes."
+          meta={<>
               <span className="text-slate-600">Usuario: {profile?.full_name}</span>
               <span
                 className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
@@ -110,16 +111,14 @@ export default async function MantenimientoPage() {
               >
                 {formatUserRole(profile?.role)}
               </span>
-            </div>
-          </div>
-
-          <Link
+            </>}
+          actions={<Link
             href="/dashboard"
-            className="rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
+            className="button-secondary"
           >
             Volver al dashboard
-          </Link>
-        </div>
+          </Link>}
+        />
 
         <ModuleTabs
           tabs={[
@@ -135,7 +134,7 @@ export default async function MantenimientoPage() {
             },
           ]}
         >
-          <div className="bg-white rounded-2xl shadow p-6">
+          <div className="surface-card p-5 sm:p-6">
             <h2 className="text-xl font-semibold mb-4">Registrar mantenimiento</h2>
 
             <MaintenanceForm items={maintenanceItems} />

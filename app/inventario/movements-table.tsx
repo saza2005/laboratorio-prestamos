@@ -76,7 +76,7 @@ export function MovementsTable({
   const hasFilters = Boolean(search || typeFilter || fromDate || toDate)
 
   return (
-    <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
+    <section className="surface-card mt-8 p-4 sm:p-6">
       <div className="mb-4 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Movimientos de inventario</h2>

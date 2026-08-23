@@ -107,7 +107,7 @@ export function InventoryUnitsList({ units }: { units: InventoryUnit[] }) {
   const hasFilters = Boolean(search || condition || availability)
 
   return (
-    <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
+    <section className="surface-card mt-8 p-4 sm:p-6">
       <div className="mb-4 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Unidades individuales</h2>

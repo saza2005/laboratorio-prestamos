@@ -3,6 +3,7 @@ import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
 import { getOwnRequests, getRequestPortalAuth } from '../shared'
 import { USER_HISTORY_LIMIT } from '@/lib/query-limits'
 import { RequestsList } from './requests-list'
+import { PageHeader } from '@/components/page-header'
 
 export default async function MisSolicitudesPage() {
   const { supabase, user, profile } = await getRequestPortalAuth()
@@ -14,36 +15,27 @@ export default async function MisSolicitudesPage() {
   const individualRequests = requests.length - groupedRequests
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-8">
+    <main className="app-page">
       <div className="mx-auto max-w-6xl space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Mis solicitudes</h1>
-            <p className="mt-1 text-slate-600">
-              Historial y estado de tus últimas {USER_HISTORY_LIMIT} solicitudes.
-            </p>
-          </div>
-
-          <Link
+        <PageHeader eyebrow="Seguimiento" title="Mis solicitudes" description={`Historial y estado de tus últimas ${USER_HISTORY_LIMIT} solicitudes.`} actions={<Link
             href="/solicitudes"
-            className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-slate-900"
+            className="button-secondary"
           >
             Volver al portal
-          </Link>
-        </div>
+          </Link>} />
 
         <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">Total</p>
             <p className="mt-2 text-3xl font-bold">{requests.length}</p>
           </div>
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">Pendientes</p>
             <p className="mt-2 text-3xl font-bold text-amber-700">
               {requests.filter((req) => req.status === 'pending').length}
             </p>
           </div>
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">
               {canCreateGroups ? 'Grupales' : 'Individuales'}
             </p>
@@ -53,7 +45,7 @@ export default async function MisSolicitudesPage() {
           </div>
         </section>
 
-        <section className="rounded-lg bg-white p-4 shadow sm:p-6">
+        <section className="surface-card p-4 sm:p-6">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold">Listado de solicitudes</h2>

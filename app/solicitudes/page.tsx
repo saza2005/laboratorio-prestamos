@@ -22,9 +22,9 @@ export default async function SolicitudesPage() {
   ).length
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-8">
+    <main className="app-page">
       <div className="mx-auto max-w-6xl space-y-6">
-        <section className="rounded-lg bg-white p-5 shadow sm:p-6">
+        <section className="surface-card overflow-hidden p-5 sm:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <h1 className="text-3xl font-bold">Portal de laboratorio</h1>
@@ -50,19 +50,19 @@ export default async function SolicitudesPage() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">Solicitudes pendientes</p>
             <p className="mt-2 text-3xl font-bold text-amber-700">{pendingRequests}</p>
           </div>
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">Préstamos activos</p>
             <p className="mt-2 text-3xl font-bold text-blue-700">{activeLoans}</p>
           </div>
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">Préstamos vencidos</p>
             <p className="mt-2 text-3xl font-bold text-red-700">{overdueLoans}</p>
           </div>
-          <div className="rounded-lg bg-white p-5 shadow">
+          <div className="surface-card p-5">
             <p className="text-sm text-slate-500">
               {canCreateGroups ? 'Solicitudes grupales' : 'Solicitudes registradas'}
             </p>
@@ -81,29 +81,29 @@ export default async function SolicitudesPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <Link href="/solicitudes/nueva" className="rounded-lg bg-white p-5 shadow transition hover:bg-slate-50">
+            <Link href="/solicitudes/nueva" className="surface-card p-5 transition hover:-translate-y-0.5 hover:border-blue-300">
               <h3 className="font-semibold">Nueva solicitud individual</h3>
               <p className="mt-2 text-sm text-slate-600">Solicita materiales para uso personal.</p>
             </Link>
 
             {canCreateGroups && (
-              <Link href="/solicitudes/grupal" className="rounded-lg bg-white p-5 shadow transition hover:bg-slate-50">
+              <Link href="/solicitudes/grupal" className="surface-card p-5 transition hover:-translate-y-0.5 hover:border-blue-300">
                 <h3 className="font-semibold">Nueva solicitud grupal</h3>
                 <p className="mt-2 text-sm text-slate-600">Crea grupos y asigna materiales por equipo.</p>
               </Link>
             )}
 
-            <Link href="/solicitudes/mis-solicitudes" className="rounded-lg bg-white p-5 shadow transition hover:bg-slate-50">
+            <Link href="/solicitudes/mis-solicitudes" className="surface-card p-5 transition hover:-translate-y-0.5 hover:border-blue-300">
               <h3 className="font-semibold">Mis solicitudes</h3>
               <p className="mt-2 text-sm text-slate-600">Revisa estados, materiales y solicitudes pendientes.</p>
             </Link>
 
-            <Link href="/solicitudes/mis-prestamos" className="rounded-lg bg-white p-5 shadow transition hover:bg-slate-50">
+            <Link href="/solicitudes/mis-prestamos" className="surface-card p-5 transition hover:-translate-y-0.5 hover:border-blue-300">
               <h3 className="font-semibold">Mis préstamos</h3>
               <p className="mt-2 text-sm text-slate-600">Consulta préstamos activos, pendientes y devueltos.</p>
             </Link>
 
-            <Link href="/solicitudes/catalogo" className="rounded-lg bg-white p-5 shadow transition hover:bg-slate-50">
+            <Link href="/solicitudes/catalogo" className="surface-card p-5 transition hover:-translate-y-0.5 hover:border-blue-300">
               <h3 className="font-semibold">Catálogo disponible</h3>
               <p className="mt-2 text-sm text-slate-600">Busca materiales por nombre, categoría o código patrimonial.</p>
             </Link>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PageHeader } from '@/components/page-header'
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import {
@@ -276,23 +277,19 @@ const requests =
   })
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <main className="app-page">
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Gestión de solicitudes</h1>
-            <p className="text-slate-600">
-              Revisión y aprobación de solicitudes de préstamo
-            </p>
-          </div>
-
-          <Link
+        <PageHeader
+          eyebrow="Operación"
+          title="Gestión de solicitudes"
+          description="Revisa, aprueba y prepara las solicitudes de préstamo del laboratorio."
+          actions={<Link
             href="/dashboard"
-            className="inline-block text-center rounded-lg bg-slate-800 text-white px-4 py-2 hover:bg-slate-900 transition"
+            className="button-secondary"
           >
             Volver al dashboard
-          </Link>
-        </div>
+          </Link>}
+        />
         <RequestsTable requests={requestsWithActions} limit={100} />
       </div>
     </main>

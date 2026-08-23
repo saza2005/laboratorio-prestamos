@@ -23,7 +23,7 @@ export function PaginationControls({
           type="button"
           onClick={onPrevious}
           disabled={currentPage === 1}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="button-quiet disabled:cursor-not-allowed disabled:opacity-50"
         >
           Anterior
         </button>
@@ -31,7 +31,7 @@ export function PaginationControls({
           type="button"
           onClick={onNext}
           disabled={currentPage === totalPages}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="button-quiet disabled:cursor-not-allowed disabled:opacity-50"
         >
           Siguiente
         </button>

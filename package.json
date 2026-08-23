@@ -11,7 +11,8 @@
     "test:e2e:smoke": "playwright test tests/public tests/auth",
     "test:e2e:roles": "playwright test tests/roles",
     "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit",
-    "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit"
+    "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit",
+    "test:e2e:mutations": "playwright test tests/workflows/mutations.spec.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",

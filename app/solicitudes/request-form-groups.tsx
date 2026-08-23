@@ -6,6 +6,7 @@ import { useIsHydrated } from '@/lib/use-is-hydrated'
 import { createRequestWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
 import { stockAvailabilityBadgeClass } from '@/lib/status-format'
+import { filterProfilesForSelection } from '@/lib/profile-search'
 
 type ItemOption = {
   id: string
@@ -29,6 +30,7 @@ type GroupItem = {
 type Group = {
   group_name: string
   leader_student_id: string
+  leader_search: string
   items: GroupItem[]
   search: string
   category: string
@@ -40,6 +42,7 @@ function makeGroup(index: number): Group {
   return {
     group_name: `Grupo ${index + 1}`,
     leader_student_id: '',
+    leader_search: '',
     items: [],
     search: '',
     category: '',
@@ -166,7 +169,10 @@ export function RequestFormGroups({
 
   function updateGroup(
     index: number,
-    field: keyof Pick<Group, 'leader_student_id' | 'search' | 'category'>,
+    field: keyof Pick<
+      Group,
+      'leader_student_id' | 'leader_search' | 'search' | 'category'
+    >,
     value: string
   ) {
     setGroups((prev) =>
@@ -289,6 +295,11 @@ export function RequestFormGroups({
         const duplicateLeader =
           group.leader_student_id &&
           selectedLeaderIds.filter((id) => id === group.leader_student_id).length > 1
+        const visibleStudents = filterProfilesForSelection(
+          students,
+          group.leader_search,
+          group.leader_student_id
+        )
 
         return (
           <div key={groupIndex} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -311,8 +322,30 @@ export function RequestFormGroups({
             </div>
 
             <div className="mb-4">
-              <label className="mb-1 block text-sm font-medium">Jefe de grupo</label>
+              <label
+                htmlFor={`leader-search-${groupIndex}`}
+                className="mb-1 block text-sm font-medium"
+              >
+                Buscar estudiante
+              </label>
+              <input
+                id={`leader-search-${groupIndex}`}
+                type="search"
+                value={group.leader_search}
+                onChange={(event) =>
+                  updateGroup(groupIndex, 'leader_search', event.target.value)
+                }
+                placeholder="Buscar estudiante por nombre"
+                className="mb-2 w-full rounded-lg border border-slate-300 px-3 py-2"
+              />
+              <label
+                htmlFor={`leader-${groupIndex}`}
+                className="mb-1 block text-sm font-medium"
+              >
+                Jefe de grupo
+              </label>
               <select
+                id={`leader-${groupIndex}`}
                 value={group.leader_student_id}
                 onChange={(event) =>
                   updateGroup(groupIndex, 'leader_student_id', event.target.value)
@@ -320,7 +353,7 @@ export function RequestFormGroups({
                 className="w-full rounded-lg border border-slate-300 px-3 py-2"
               >
                 <option value="">Seleccionar jefe de grupo</option>
-                {students.map((student) => (
+                {visibleStudents.map((student) => (
                   <option
                     key={student.id}
                     value={student.id}
@@ -333,6 +366,11 @@ export function RequestFormGroups({
                   </option>
                 ))}
               </select>
+              {visibleStudents.length === 0 && (
+                <p className="mt-2 text-sm text-slate-500">
+                  No se encontraron estudiantes con ese criterio.
+                </p>
+              )}
               <input
                 type="hidden"
                 name={`groups[${groupIndex}][leader_student_id]`}

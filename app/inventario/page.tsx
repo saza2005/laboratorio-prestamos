@@ -9,6 +9,7 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LIMIT, INVENTORY_UNIT_MAINTENANCE_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
+import { PageHeader } from '@/components/page-header'
 import { formatLoanStatus, formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 
@@ -468,12 +469,13 @@ export default async function InventarioPage() {
   )
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Gestión de Inventario</h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+    <main className="app-page">
+      <div className="app-container">
+        <PageHeader
+          eyebrow="Bienes del laboratorio"
+          title="Gestión de inventario"
+          description="Consulta existencias, unidades patrimoniales, movimientos y estado operativo."
+          meta={<>
               <span className="text-slate-600">Usuario: {profile?.full_name}</span>
               <span
                 className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
@@ -482,16 +484,14 @@ export default async function InventarioPage() {
               >
                 {formatUserRole(profile?.role)}
               </span>
-            </div>
-          </div>
-
-          <Link
+            </>}
+          actions={<Link
             href="/dashboard"
-            className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
+            className="button-secondary"
           >
             Volver al dashboard
-          </Link>
-        </div>
+          </Link>}
+        />
 
         <ModuleTabs
           tabs={[
@@ -523,7 +523,7 @@ export default async function InventarioPage() {
 
           <MovementsTable data={normalizedMovements} limit={100} />
 
-          <div className="rounded-2xl bg-white shadow p-6">
+          <div className="surface-card p-5 sm:p-6">
             <h2 className="text-xl font-semibold mb-4">Agregar nuevo item</h2>
 
             <ItemForm />

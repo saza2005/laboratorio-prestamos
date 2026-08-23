@@ -1,0 +1,19 @@
+# Copia estos valores en tu entorno local; no guardes credenciales en Git.
+PLAYWRIGHT_BASE_URL=http://localhost:3000
+
+# Cuentas separadas de prueba para las pruebas administrativas.
+E2E_ADMIN_EMAIL=<admin-e2e-email>
+E2E_ADMIN_PASSWORD=<admin-e2e-password>
+
+E2E_LAB_STAFF_EMAIL=<lab-staff-e2e-email>
+E2E_LAB_STAFF_PASSWORD=<lab-staff-e2e-password>
+
+E2E_TEACHER_EMAIL=<teacher-e2e-email>
+E2E_TEACHER_PASSWORD=<teacher-e2e-password>
+
+E2E_STUDENT_EMAIL=<student-e2e-email>
+E2E_STUDENT_PASSWORD=<student-e2e-password>
+
+# Prueba mutacional opt-in. No la actives contra producción.
+E2E_MUTATIONS=false
+E2E_ITEM_CODE=<e2e-item-code>

@@ -51,7 +51,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 text-slate-900 sm:px-6">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 text-slate-900 shadow sm:p-8">
+      <div className="surface-card w-full max-w-md overflow-hidden text-slate-900">
+        <div className="h-1.5 bg-blue-700" />
+        <div className="p-6 sm:p-8">
+        <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Acceso institucional</p>
         <h1 className="text-2xl font-bold mb-2 text-slate-900">
           Iniciar sesión
         </h1>
@@ -94,6 +97,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           >
             Volver al inicio
           </Link>
+        </div>
         </div>
       </div>
     </main>

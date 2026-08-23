@@ -1,4 +1,19 @@
+import fs from "node:fs"
+import path from "node:path"
 import { defineConfig, devices } from "@playwright/test"
+
+function loadLocalE2EEnv() {
+  const envPath = path.join(process.cwd(), "tests/.env.e2e.local")
+  if (!fs.existsSync(envPath)) return
+
+  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const match = line.match(/^([A-Z][A-Z0-9_]*)=(.*)$/)
+    if (!match || process.env[match[1]]) continue
+    process.env[match[1]] = match[2].trim().replace(/^\"|\"$/g, "")
+  }
+}
+
+loadLocalE2EEnv()
 
 export default defineConfig({
   testDir: "./tests",
