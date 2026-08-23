@@ -9,6 +9,7 @@ import {
   canSeeLoansModule,
   canSeeReturnsModule,
   canSeeReportsModule,
+  canManageUsers,
 } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
@@ -114,6 +115,7 @@ export default async function DashboardPage({
   const canSeeLoans = canSeeLoansModule(profile.role)
   const canSeeReturns = canSeeReturnsModule(profile.role)
   const canSeeReports = canSeeReportsModule(profile.role)
+  const canSeeUsers = canManageUsers(profile.role)
 
   const [dashboardSummaryResult, lowStockItemsResult] = await Promise.all([
     supabase.rpc('get_dashboard_operational_summary', {
@@ -488,9 +490,9 @@ export default async function DashboardPage({
     .slice(0, DASHBOARD_ACTIVITY_LIMIT)
   
   return (
-    <main className="min-h-screen bg-slate-50 p-4 text-slate-900 sm:p-8">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <section className="rounded-lg bg-white p-5 shadow sm:p-6">
+    <main className="app-page">
+      <div className="app-container space-y-6">
+        <section className="surface-card overflow-hidden p-5 sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <h1 className="text-3xl font-bold">Dashboard del laboratorio</h1>
@@ -552,24 +554,24 @@ export default async function DashboardPage({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Ítems registrados</p>
               <p className="mt-2 text-3xl font-bold">{totalItems}</p>
             </div>
 
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Stock total</p>
               <p className="mt-2 text-3xl font-bold">{totalStock}</p>
             </div>
 
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Disponible</p>
               <p className="mt-2 text-3xl font-bold text-green-700">
                 {totalAvailable}
               </p>
             </div>
 
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">En uso / no disponible</p>
               <p className="mt-2 text-3xl font-bold text-amber-700">
                 {totalUnavailable}
@@ -578,22 +580,22 @@ export default async function DashboardPage({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Préstamos activos</p>
               <p className="mt-2 text-3xl font-bold text-blue-700">{activeLoans}</p>
             </div>
 
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Devoluciones parciales</p>
               <p className="mt-2 text-3xl font-bold text-amber-700">{partialLoans}</p>
             </div>
 
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Préstamos vencidos</p>
               <p className="mt-2 text-3xl font-bold text-red-700">{overdueLoans}</p>
             </div>
 
-            <div className="rounded-lg bg-white p-5 shadow">
+            <div className="surface-card p-5">
               <p className="text-sm text-slate-500">Préstamos cerrados</p>
               <p className="mt-2 text-3xl font-bold text-green-700">{returnedLoans}</p>
             </div>
@@ -608,11 +610,11 @@ export default async function DashboardPage({
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
             {canSeeLoans && (
               <Link
                 href="/prestamos"
-                className="block rounded-lg bg-white p-5 shadow transition hover:bg-slate-50"
+                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
               >
                 <h3 className="font-semibold">Préstamos</h3>
                 <p className="mt-2 text-sm text-slate-600">
@@ -624,7 +626,7 @@ export default async function DashboardPage({
             {canSeeReturns && (
               <Link
                 href="/devoluciones"
-                className="block rounded-lg bg-white p-5 shadow transition hover:bg-slate-50"
+                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
               >
                 <h3 className="font-semibold">Devoluciones</h3>
                 <p className="mt-2 text-sm text-slate-600">
@@ -636,7 +638,7 @@ export default async function DashboardPage({
             {canSeeInventory && (
               <Link
                 href="/inventario"
-                className="block rounded-lg bg-white p-5 shadow transition hover:bg-slate-50"
+                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
               >
                 <h3 className="font-semibold">Inventario</h3>
                 <p className="mt-2 text-sm text-slate-600">
@@ -648,7 +650,7 @@ export default async function DashboardPage({
             {canSeeInventory && (
               <Link
                 href="/mantenimiento"
-                className="block rounded-lg bg-white p-5 shadow transition hover:bg-slate-50"
+                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
               >
                 <h3 className="font-semibold">Mantenimiento</h3>
                 <p className="mt-2 text-sm text-slate-600">
@@ -660,11 +662,23 @@ export default async function DashboardPage({
             {canSeeLoans && (
               <Link
                 href="/dashboard/solicitudes"
-                className="block rounded-lg bg-white p-5 shadow transition hover:bg-slate-50"
+                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
               >
                 <h3 className="font-semibold">Solicitudes</h3>
                 <p className="mt-2 text-sm text-slate-600">
                   Revisión y aprobación de solicitudes
+                </p>
+              </Link>
+            )}
+
+            {canSeeUsers && (
+              <Link
+                href="/dashboard/usuarios"
+                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
+              >
+                <h3 className="font-semibold">Usuarios</h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  Administración de usuarios y roles
                 </p>
               </Link>
             )}
@@ -1143,6 +1157,13 @@ export default async function DashboardPage({
               </form>
 
               {canSeeReports && (
+                <div className="flex flex-col gap-3">
+                <Link
+                  href="/dashboard/analitica"
+                  className="rounded-lg bg-indigo-600 px-4 py-2 text-center font-medium text-white transition hover:bg-indigo-700"
+                >
+                  Analítica de uso de bienes
+                </Link>
                 <form
                   action="/dashboard/export"
                   className="flex flex-col gap-3 sm:flex-row sm:items-end"
@@ -1174,6 +1195,7 @@ export default async function DashboardPage({
                     Exportar Excel
                   </button>
                 </form>
+                </div>
               )}
             </div>
           </div>

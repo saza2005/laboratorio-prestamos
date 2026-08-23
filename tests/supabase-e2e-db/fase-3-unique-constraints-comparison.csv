@@ -1,0 +1,19 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,columns,serial_code,serial_code,MATCH,MATCH,none,
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,columns,qr_code,qr_code,MATCH,MATCH,none,
+public|item_units|item_units_qr_code_key,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,columns,serial_code,serial_code,MATCH,MATCH,none,
+public|item_units|item_units_serial_code_key,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,columns,code,code,MATCH,MATCH,none,
+public|items|items_code_key,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,columns,request_id,request_id,MATCH,MATCH,none,
+public|loans|loans_request_id_key,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,columns,email,email,MATCH,MATCH,none,
+public|profiles|profiles_email_key,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.

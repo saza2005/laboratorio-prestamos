@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/test-results/
 
 # next.js
 /.next/
@@ -39,3 +40,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# E2E local state
+.e2e-state/
+/supabase/.temp/
+**/supabase/.temp/
+
+# Accidental local path retained outside version control
+/ scripts/

@@ -1,0 +1,5 @@
+role,required_auth_user,required_profile,email_pattern,required_metadata,allowed_actions,forbidden_actions,creation_method,cleanup_method,notes
+admin,yes,yes,<alias>@ucuenca.edu.ec,email;full_name,"inventario; préstamos; devoluciones; mantenimiento; reportes","portal estudiante; acciones sin rol",Admin API + perfil separado,"datos por UUID; Auth al final",correo exclusivo E2E
+lab_staff,yes,yes,<alias>@ucuenca.edu.ec,email;full_name,"operación de laboratorio","cambiar a admin; portal estudiante",Admin API + perfil separado,"datos por UUID; Auth al final",correo exclusivo E2E
+teacher,yes,yes,<alias>@ucuenca.edu.ec,email;full_name,"solicitudes individuales y grupales","inventario; aprobar; entregar; devolver",Admin API + perfil separado,"solicitudes relacionadas; Auth al final",policy grupal exige teacher
+student,yes,yes,<alias>@ucuenca.edu.ec,email;full_name,"solicitudes individuales; sus préstamos","solicitudes grupales; operaciones staff",Admin API + perfil separado,"solicitudes relacionadas; Auth al final",rol por defecto OAuth

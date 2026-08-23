@@ -177,7 +177,7 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-white p-4 shadow sm:p-6">
+      <div className="surface-card p-4 sm:p-6">
         <div className="grid gap-3 md:grid-cols-[minmax(320px,1fr)_minmax(160px,220px)_minmax(180px,240px)_minmax(180px,auto)]">
           <input
             type="text"
@@ -227,7 +227,7 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
 
       {filteredLoans.length > 0 ? (
         <>
-          <div className="overflow-hidden rounded-2xl bg-white shadow">
+          <div className="surface-card overflow-hidden">
             <div className="hidden grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_112px_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Entrega</span>
               <span>Usuario</span>
@@ -429,7 +429,7 @@ export function LoansList({ loans, currentDate }: LoansListProps) {
           </DetailDrawer>
         </>
       ) : (
-        <div className="rounded-2xl bg-white p-6 shadow">
+        <div className="surface-card p-6">
           <p className="text-slate-500">No hay préstamos que coincidan con los filtros.</p>
         </div>
       )}

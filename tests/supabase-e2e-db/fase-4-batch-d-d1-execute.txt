@@ -1,0 +1,6 @@
+maintenance_before: 0
+inventory_movements_before: 5
+unit_001_before: good/available
+unit_002_before: good/available
+E2E_MAINTENANCE_ACTIVE_01: WOULD_CREATE_AND_UPDATE_UNIT
+E2E_MAINTENANCE_ACTIVE_01: CREATED

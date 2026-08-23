@@ -1,0 +1,289 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|audit_logs|audit_logs_user_id_fkey|1,column_name,user_id,user_id,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|audit_logs|audit_logs_user_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|audit_logs_user_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_created_by_fkey|1,column_name,created_by,created_by,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_created_by_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_created_by_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|item_units|item_units_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_created_by_fkey|1,column_name,created_by,created_by,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|items|items_created_by_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_created_by_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,delete_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,column_name,loan_group_id,loan_group_id,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,referenced_table,loan_groups,loan_groups,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_loan_group_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_leader_student_id_fkey|1,column_name,leader_student_id,leader_student_id,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,delete_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_groups|loan_groups_leader_student_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_leader_student_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_loan_id_fkey|1,column_name,loan_id,loan_id,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,referenced_table,loans,loans,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_groups|loan_groups_loan_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_loan_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_request_group_id_fkey|1,column_name,request_group_id,request_group_id,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,referenced_table,request_groups,request_groups,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_groups|loan_groups_request_group_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_request_group_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,delete_rule,RESTRICT,RESTRICT,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_items|loan_items_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_item_unit_id_fkey|1,column_name,item_unit_id,item_unit_id,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,referenced_table,item_units,item_units,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_items|loan_items_item_unit_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_item_unit_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_loan_id_fkey|1,column_name,loan_id,loan_id,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,referenced_table,loans,loans,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loan_items|loan_items_loan_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_loan_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_delivered_by_fkey|1,column_name,delivered_by,delivered_by,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loans|loans_delivered_by_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_delivered_by_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_fkey|1,column_name,request_id,request_id,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,referenced_table,requests,requests,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loans|loans_request_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_user_id_fkey|1,column_name,user_id,user_id,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,delete_rule,RESTRICT,RESTRICT,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|loans|loans_user_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_user_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_created_by_fkey|1,column_name,created_by,created_by,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,delete_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_created_by_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_created_by_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,column_name,item_unit_id,item_unit_id,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,referenced_table,item_units,item_units,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_item_unit_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_id_fkey|1,column_name,id,id,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,referenced_schema,auth,auth,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,referenced_table,users,users,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|profiles|profiles_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,delete_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|request_group_items|request_group_items_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_request_group_id_fkey|1,column_name,request_group_id,request_group_id,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,referenced_table,request_groups,request_groups,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|request_group_items|request_group_items_request_group_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_request_group_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_leader_student_id_fkey|1,column_name,leader_student_id,leader_student_id,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,delete_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|request_groups|request_groups_leader_student_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_leader_student_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_request_id_fkey|1,column_name,request_id,request_id,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,referenced_table,requests,requests,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|request_groups|request_groups_request_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_request_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_item_id_fkey|1,column_name,item_id,item_id,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,referenced_table,items,items,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,delete_rule,RESTRICT,RESTRICT,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|request_items|request_items_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_request_id_fkey|1,column_name,request_id,request_id,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,referenced_table,requests,requests,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|request_items|request_items_request_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_request_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_approved_by_fkey|1,column_name,approved_by,approved_by,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|requests|requests_approved_by_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_approved_by_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_user_id_fkey|1,column_name,user_id,user_id,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|requests|requests_user_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_user_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_loan_item_id_fkey|1,column_name,loan_item_id,loan_item_id,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,referenced_table,loan_items,loan_items,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|return_items|return_items_loan_item_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_loan_item_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_return_id_fkey|1,column_name,return_id,return_id,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,referenced_table,returns,returns,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|return_items|return_items_return_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_return_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_loan_id_fkey|1,column_name,loan_id,loan_id,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,referenced_table,loans,loans,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,delete_rule,CASCADE,CASCADE,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|returns|returns_loan_id_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_loan_id_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_received_by_fkey|1,column_name,received_by,received_by,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,referenced_schema,public,public,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,referenced_table,profiles,profiles,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,referenced_column,id,id,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,update_rule,NO ACTION,NO ACTION,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,delete_rule,SET NULL,SET NULL,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,match_option,SIMPLE,SIMPLE,MATCH,MATCH,none,
+public|returns|returns_received_by_fkey|1,deferrable,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_received_by_fkey|1,initially_deferred,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.

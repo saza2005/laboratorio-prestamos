@@ -1,0 +1,7 @@
+object_type,total
+public_tables,19
+public_enums,7
+public_functions,24
+public_policies,45
+rls_enabled_tables,19
+non_internal_triggers,5

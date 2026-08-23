@@ -1,0 +1,5 @@
+"alias","auth_uuid_masked","role","insert_columns","derived_values","defaults_used","required_fields_complete","conflict_key","notes"
+"e2e_admin","<uuid-masked>","admin","id,full_name,email,role","id from auth state; full_name=E2E Admin; email from matching Auth user; role=admin","career,is_active,created_at,updated_at","yes","id and email",""
+"e2e_lab_staff","<uuid-masked>","lab_staff","id,full_name,email,role","id from auth state; full_name=E2E Laboratory Staff; email from matching Auth user; role=lab_staff","career,is_active,created_at,updated_at","yes","id and email",""
+"e2e_teacher","<uuid-masked>","teacher","id,full_name,email,role","id from auth state; full_name=E2E Teacher; email from matching Auth user; role=teacher","career,is_active,created_at,updated_at","yes","id and email",""
+"e2e_student","<uuid-masked>","student","id,full_name,email,role","id from auth state; full_name=E2E Student; email from matching Auth user; role=student","career,is_active,created_at,updated_at","yes","id and email",""

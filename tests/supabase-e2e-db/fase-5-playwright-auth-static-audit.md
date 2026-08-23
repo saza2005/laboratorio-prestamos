@@ -1,0 +1,24 @@
+# FASE 5.2A — Auditoría estática de auth setup Playwright
+
+- Playwright ejecutado: no.
+- Login automático ejecutado: no.
+- storageState generado: no.
+- Credenciales hardcodeadas: 0.
+- Correos hardcodeados: 0.
+- Contraseñas impresas: no.
+- Tokens impresos: no.
+- Cookies impresas: no.
+- Service role enviada a Next: no.
+- Service role enviada a Playwright: no; el runner filtra SUPABASE_SERVICE_ROLE_KEY.
+- Confirmaciones de escritura enviadas: no.
+- Proyecto normal referenciado: no.
+- Rutas storageState ignoradas: sí, cubiertas por .e2e-state/.
+- Validación Project Ref: sí.
+- Separación Next/Playwright: sí.
+- Setup aislado por rol: sí.
+- Acciones de negocio alcanzables desde setup: no.
+- Sobrescritura accidental de estados: bloqueada si el archivo ya existe.
+- Dependencias añadidas: no.
+- Sintaxis: PASS.
+- TypeScript: PASS.
+- Lint dirigido: PASS.

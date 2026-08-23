@@ -1,0 +1,17 @@
+test_id,file,title,role,project,already_executed,category,safe_for_first_run,requires_storage_state,requires_no_deps,pending,execution_block,reason
+AUTH-01,tests/auth/login.spec.ts,muestra el formulario de inicio de sesión,anonymous,chromium-*,no,READ_ONLY,yes,no,yes,no,C,requiere proyecto sin storageState no disponible en la configuración actual
+AUTH-02,tests/auth/login.spec.ts,redirige todas las rutas protegidas al login cuando no hay sesión,anonymous,chromium-*,no,READ_ONLY,no,no,yes,no,C,no es safe_for_first_run y requiere contexto anónimo
+AUTH-03,tests/auth/login.spec.ts,muestra los mensajes de seguridad del acceso institucional,public,chromium-admin,no,READ_ONLY,yes,yes,yes,yes,PA,solo navegación GET y aserciones; se ejecutará sin dependencies
+AUTH-04,tests/auth/login.spec.ts,muestra un error controlado con credenciales vacías,public,chromium-admin,no,READ_ONLY,yes,yes,yes,yes,PA,solo navegación GET y aserciones; se ejecutará sin dependencies
+PUB-01,tests/public/pages.spec.ts,muestra la página de inicio y sus accesos principales,public,chromium-admin,yes,READ_ONLY,yes,yes,yes,no,PA,ya ejecutado PASS en FASE 5.3B
+PUB-02,tests/public/pages.spec.ts,muestra el registro institucional y permite volver al login,public,chromium-admin,yes,READ_ONLY,yes,yes,yes,no,PA,ya ejecutado PASS en FASE 5.3B
+ROLE-01,tests/roles/access.spec.ts,admin: acceso a módulos administrativos,admin,chromium-admin,no,AUTH_ONLY,no,yes,no,no,C,login interno no autorizado
+ROLE-02,tests/roles/access.spec.ts,lab_staff: acceso a módulos administrativos,lab_staff,chromium-lab-staff,no,AUTH_ONLY,no,yes,no,no,C,login interno no autorizado
+UNIT-01,tests/unit/email-policy.spec.ts,acepta correos válidos del dominio institucional,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+UNIT-02,tests/unit/email-policy.spec.ts,rechaza dominios externos o formatos incompletos,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+UNIT-03,tests/unit/email-policy.spec.ts,normaliza correo para comparaciones y persistencia,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+UNIT-04,tests/unit/roles.spec.ts,admin y lab_staff pueden usar los módulos operativos,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+UNIT-05,tests/unit/roles.spec.ts,teacher puede usar solicitudes grupales pero no módulos operativos,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+UNIT-06,tests/unit/roles.spec.ts,student puede usar solicitudes individuales pero no crear grupos,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+UNIT-07,tests/unit/roles.spec.ts,roles ausentes o inválidos no reciben permisos,none,chromium-admin,no,READ_ONLY,yes,no,yes,yes,U,aserciones puras de función; sin webServer
+SETUP-01,tests/e2e/auth.setup.ts,create isolated auth state,all,auth-*,no,AUTH_ONLY,no,yes,no,no,C,setup de Auth no autorizado en esta fase

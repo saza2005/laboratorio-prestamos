@@ -1,0 +1,1 @@
+{"upToDate":false,"dryRun":false,"migrations":["20260806154909_revoke_authenticated_legacy_rpcs.sql"],"seeds":[],"roles":[],"message":"Finished supabase db push."}

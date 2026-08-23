@@ -1,0 +1,21 @@
+Initialising login role...
+Connecting to remote database...
+Applying migration 20260806001035_harden_all_anon_function_execute.sql...
+Warning: failed to cache migrations catalog: error exporting pg-delta catalog: error running script:
+Error: timeout exceeded when trying to connect
+    at file:///var/tmp/sb-compile-edge-runtime/node_modules/localhost/pg-pool/3.14.0/index.js:45:11
+    at eventLoopTick (ext:core/01_core.js:214:9)
+    at async extractForeignDataWrappers (file:///var/tmp/sb-compile-edge-runtime/node_modules/localhost/@supabase/pg-delta/1.0.0-alpha.33/dist/core/objects/foreign-data-wrapper/foreign-data-wrapper/foreign-data-wrapper.model.js:75:31)
+    at async Promise.all (index 21)
+    at async extractCatalog (file:///var/tmp/sb-compile-edge-runtime/node_modules/localhost/@supabase/pg-delta/1.0.0-alpha.33/dist/core/catalog.model.js:198:337)
+    at async file:///var/tmp/sb-compile-edge-runtime/index.ts:18:19
+PGDELTA_SCRIPT_ERROR
+runtime has escaped from the event loop unexpectedly: event loop error: Error
+    at file:///var/tmp/sb-compile-edge-runtime/index.ts:27:9
+    at eventLoopTick (ext:core/01_core.js:214:9)
+main worker has been destroyed
+event loop error: Error
+    at file:///var/tmp/sb-compile-edge-runtime/index.ts:27:9
+    at eventLoopTick (ext:core/01_core.js:214:9)
+
+{"upToDate":false,"dryRun":false,"migrations":["20260806001035_harden_all_anon_function_execute.sql"],"seeds":[],"roles":[],"message":"Finished supabase db push."}

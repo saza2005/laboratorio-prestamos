@@ -1,0 +1,67 @@
+Initialising login role...
+Creating shadow database...
+Initialising schema...
+v1.68.1: Pulling from supabase/storage-api
+a7cbec045c25: Pulling fs layer
+d8dcdd2f1a0e: Pulling fs layer
+a428f7a50cd7: Pulling fs layer
+955eb75c56ce: Pulling fs layer
+ae0ce68aae4c: Pulling fs layer
+8d516377da2e: Pulling fs layer
+ed302fb03522: Pulling fs layer
+b095c0034da7: Pulling fs layer
+5cbd4c658774: Pulling fs layer
+72ceb3975480: Pulling fs layer
+6eba60c3e77f: Pulling fs layer
+2cb2279a693c: Pulling fs layer
+f2e177fbbb9b: Pulling fs layer
+ec36b2547e1b: Download complete
+d8dcdd2f1a0e: Download complete
+955eb75c56ce: Download complete
+a428f7a50cd7: Download complete
+b095c0034da7: Download complete
+f2e177fbbb9b: Download complete
+6eba60c3e77f: Download complete
+ae0ce68aae4c: Download complete
+ed302fb03522: Download complete
+72ceb3975480: Download complete
+5cbd4c658774: Download complete
+2cb2279a693c: Download complete
+8d516377da2e: Download complete
+72ceb3975480: Pull complete
+2cb2279a693c: Pull complete
+b095c0034da7: Pull complete
+a7cbec045c25: Download complete
+955eb75c56ce: Pull complete
+6eba60c3e77f: Pull complete
+ed302fb03522: Pull complete
+a7cbec045c25: Pull complete
+d8dcdd2f1a0e: Pull complete
+5cbd4c658774: Pull complete
+8d516377da2e: Pull complete
+a428f7a50cd7: Pull complete
+a428f7a50cd7: Pull complete
+f2e177fbbb9b: Pull complete
+ae0ce68aae4c: Pull complete
+Digest: sha256:e751ad76d681f981ff208c62498587b853a31bd221652646dc8611c63d3ab53e
+Status: Downloaded newer image for public.ecr.aws/supabase/storage-api:v1.68.1
+v2.195.0: Pulling from supabase/gotrue
+3b1d86731cf1: Pulling fs layer
+ad8aa6f5f9a9: Pulling fs layer
+fd855b1da301: Pulling fs layer
+049ff6750d35: Download complete
+ad8aa6f5f9a9: Download complete
+fd855b1da301: Download complete
+3b1d86731cf1: Download complete
+ad8aa6f5f9a9: Pull complete
+fd855b1da301: Pull complete
+3b1d86731cf1: Pull complete
+Digest: sha256:362659ca70eaa75ba05bbaf963caa84c1c5afe5e8fbf0777e17b830dd5f0f60a
+Status: Downloaded newer image for public.ecr.aws/supabase/gotrue:v2.195.0
+Seeding globals from roles.sql...
+Applying migration 20260805220647_baseline_public_schema.sql...
+Applying migration 20260805223410_harden_anon_rpc_execute.sql...
+Diffing schemas: public
+Finished [36msupabase db diff[39m on branch [36mmain[39m.
+
+{"diff":"-- Migration unit 1: schema_changes\n-- Transaction mode: transactional\n-- Boundary reason: default\n\nSET check_function_bodies = false;\n\nGRANT ALL ON FUNCTION public.approve_request_transaction(uuid, jsonb) TO anon;\n\nGRANT ALL ON FUNCTION public.cancel_own_request_transaction(uuid) TO anon;\n\nGRANT ALL ON FUNCTION public.create_inventory_item_transaction(text, text, text, text, text, boolean, integer, integer, text, text) TO anon;\n\nGRANT ALL ON FUNCTION public.create_loan_transaction(uuid, uuid, integer, date, text, uuid) TO anon;\n\nGRANT ALL ON FUNCTION public.create_loan_transaction(uuid, uuid, integer, date, text, uuid) TO authenticated;\n\nGRANT ALL ON FUNCTION public.create_loan_with_unit_transaction(uuid, uuid, uuid, integer, date, text, uuid) TO anon;\n\nGRANT ALL ON FUNCTION public.create_loan_with_unit_transaction(uuid, uuid, uuid, integer, date, text, uuid) TO authenticated;\n\nGRANT ALL ON FUNCTION public.create_multi_item_loan_transaction(uuid, jsonb, date, text, uuid) TO anon;\n\nGRANT ALL ON FUNCTION public.create_request_transaction(text, text, date, jsonb, jsonb) TO anon;\n\nGRANT ALL ON FUNCTION public.deliver_approved_request_with_units(uuid, jsonb, jsonb, uuid, text) TO anon;\n\nGRANT ALL ON FUNCTION public.deliver_approved_request_with_units(uuid, jsonb, uuid, text) TO anon;\n\nGRANT ALL ON FUNCTION public.deliver_approved_request_with_units(uuid, jsonb, uuid, text) TO authenticated;\n\nGRANT ALL ON FUNCTION public.deliver_approved_request(uuid, uuid, text) TO anon;\n\nGRANT ALL ON FUNCTION public.deliver_approved_request(uuid, uuid, text) TO authenticated;\n\nGRANT ALL ON FUNCTION public.ensure_google_institutional_profile() TO anon;\n\nGRANT ALL ON FUNCTION public.get_dashboard_inventory_summary() TO anon;\n\nGRANT ALL ON FUNCTION public.get_dashboard_operational_summary(date, date, date, date) TO anon;\n\nGRANT ALL ON FUNCTION public.get_my_role() TO anon;\n\nGRANT ALL ON FUNCTION public.handle_new_user() TO anon;\n\nGRANT ALL ON FUNCTION public.increment_stock(uuid, integer) TO anon;\n\nGRANT ALL ON FUNCTION public.increment_stock(uuid, integer) TO authenticated;\n\nGRANT ALL ON FUNCTION public.is_admin_or_lab_staff() TO anon;\n\nGRANT ALL ON FUNCTION public.is_teacher() TO anon;\n\nGRANT ALL ON FUNCTION public.register_return_transaction(uuid, integer, integer, integer, text, uuid) TO anon;\n\nGRANT ALL ON FUNCTION public.reject_request_transaction(uuid, text) TO anon;\n\nGRANT ALL ON FUNCTION public.set_updated_at() TO anon;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.inventory_import_items_staging TO anon;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.inventory_import_items_staging TO authenticated;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.inventory_import_units_staging TO anon;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.inventory_import_units_staging TO authenticated;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.item_units_import_staging TO anon;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.item_units_import_staging TO authenticated;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.loan_group_items TO anon;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.loan_groups TO anon;\n\nGRANT DELETE, INSERT, SELECT, UPDATE ON public.maintenance_records TO anon;","file":null,"files":[],"schemas":["public"],"engine":"pg-delta","dropStatements":[],"message":"Diff complete."}

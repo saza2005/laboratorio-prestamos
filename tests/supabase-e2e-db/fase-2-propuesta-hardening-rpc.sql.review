@@ -1,0 +1,29 @@
+-- FASE 2 Prompt 2.3B - propuesta de hardening RPC
+-- Archivo de revisión: no es una migración ejecutable.
+-- No ejecutar todavía. No modifica tablas, funciones, RLS ni triggers.
+
+-- Estas tres funciones son mutacionales y actualmente tienen EXECUTE efectivo
+-- para anon. Sus cuerpos rechazan auth.uid() nulo y validan rol, pero el
+-- permiso anónimo no aporta funcionalidad y amplía la superficie de ataque.
+revoke execute on function public.register_full_return_transaction(uuid, text, uuid) from public;
+revoke execute on function public.register_full_return_transaction(uuid, text, uuid) from anon;
+grant execute on function public.register_full_return_transaction(uuid, text, uuid) to authenticated;
+
+revoke execute on function public.register_maintenance_record_transaction(
+  uuid, uuid, text, text, date, text, text, boolean
+) from public;
+revoke execute on function public.register_maintenance_record_transaction(
+  uuid, uuid, text, text, date, text, text, boolean
+) from anon;
+grant execute on function public.register_maintenance_record_transaction(
+  uuid, uuid, text, text, date, text, text, boolean
+) to authenticated;
+
+revoke execute on function public.update_item_unit_status_transaction(uuid, text, text) from public;
+revoke execute on function public.update_item_unit_status_transaction(uuid, text, text) from anon;
+grant execute on function public.update_item_unit_status_transaction(uuid, text, text) to authenticated;
+
+-- No se modifica service_role.
+-- No se revoca authenticated: las Server Actions de mantenimiento y devoluciones
+-- utilizan estas RPC con una sesión autenticada.
+-- No se cambia set_updated_at porque los cinco triggers locales lo utilizan.

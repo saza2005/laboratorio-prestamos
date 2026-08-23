@@ -1,0 +1,28 @@
+function_signature,dependency_type,referenced_schema,referenced_object,referenced_object_type
+"public.approve_request_transaction(p_request_id uuid, p_items jsonb)",other,public,public,schema
+public.cancel_own_request_transaction(p_request_id uuid),other,public,public,schema
+"public.create_inventory_item_transaction(p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text)",other,public,public,schema
+"public.create_loan_transaction(p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid)",other,public,public,schema
+"public.create_loan_with_unit_transaction(p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid)",other,public,public,schema
+"public.create_multi_item_loan_transaction(p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid)",other,public,public,schema
+"public.create_request_transaction(p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb)",other,public,public,schema
+"public.deliver_approved_request(p_request_id uuid, p_delivered_by uuid, p_notes text)",other,public,public,schema
+"public.deliver_approved_request_with_units(p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text)",other,public,public,schema
+"public.deliver_approved_request_with_units(p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text)",other,public,public,schema
+public.ensure_google_institutional_profile(),other,public,public,schema
+public.get_dashboard_inventory_summary(),other,public,public,schema
+"public.get_dashboard_operational_summary(p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date)",other,public,public,schema
+public.get_my_role(),other,public,public,schema
+public.get_my_role(),type,public,user_role,type
+public.handle_new_user(),other,public,public,schema
+"public.increment_stock(item_id_input uuid, quantity_input integer)",other,public,public,schema
+public.is_admin_or_lab_staff(),other,public,public,schema
+public.is_teacher(),other,public,public,schema
+"public.register_full_return_transaction(p_loan_id uuid, p_notes text, p_received_by uuid)",function,auth,uid,function
+"public.register_full_return_transaction(p_loan_id uuid, p_notes text, p_received_by uuid)",other,public,public,schema
+"public.register_maintenance_record_transaction(p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean)",other,public,public,schema
+"public.register_return_transaction(p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid)",function,auth,uid,function
+"public.register_return_transaction(p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid)",other,public,public,schema
+"public.reject_request_transaction(p_request_id uuid, p_rejection_reason text)",other,public,public,schema
+public.set_updated_at(),other,public,public,schema
+"public.update_item_unit_status_transaction(p_unit_id uuid, p_condition text, p_notes text)",other,public,public,schema

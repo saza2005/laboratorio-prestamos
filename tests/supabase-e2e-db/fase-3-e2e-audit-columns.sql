@@ -1,0 +1,2 @@
+-- Read-only audit for Supabase E2E. Do not run against production.
+select table_schema, table_name, ordinal_position, column_name, data_type, udt_schema, udt_name, character_maximum_length, numeric_precision, numeric_scale, datetime_precision, is_nullable, column_default, identity_generation, is_generated, generation_expression, collation_name from information_schema.columns where table_schema='public' order by table_name, ordinal_position;

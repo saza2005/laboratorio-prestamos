@@ -1,0 +1,10 @@
+step,mutating_selector,ui_contract_selector,same_selector,mutating_action,ui_contract_action,fully_exercised,risk,correction_required
+navigation,shared helper,shared helper,yes,goto,goto,yes,low,no
+item,shared helper,shared helper,yes,click local UI,click local UI,yes,low,no
+quantity,shared helper,shared helper,yes,fill 1,fill 1,yes,low,no
+purpose,shared helper,shared helper,yes,fill marker,fill dummy,yes,low,no
+comments,shared helper,shared helper,yes,fill comments,fill dummy,yes,low,no
+scheduled_return_date,shared helper,shared helper,yes,fill date,fill dummy,yes,low,no
+form validity,shared helper,shared helper,yes,read local validity,read local validity,yes,low,no
+submit button,shared helper,shared helper,yes,locate only,locate only,yes,low,no
+submit action,click submit,not executed,no,submit,stop before submit,no,controlled,none

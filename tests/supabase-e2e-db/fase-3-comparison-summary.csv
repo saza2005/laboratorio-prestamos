@@ -1,0 +1,14 @@
+category,local_total,e2e_total,matches,format_only,platform_metadata,security_differences,structural_differences,missing_local,missing_e2e,blocking,notes
+columns,170,170,170,1231,0,0,0,0,0,no,
+primary_keys,18,18,18,0,0,0,0,0,0,no,
+foreign_keys,32,32,32,64,0,0,0,0,0,no,
+unique_constraints,6,6,6,12,0,0,0,0,0,no,
+check_constraints,19,19,19,19,0,0,0,0,0,no,
+indexes,48,48,48,240,0,0,0,0,0,no,
+enums,33,33,33,0,0,0,0,0,0,no,
+functions,24,24,19,163,0,5,0,0,0,yes,Cinco funciones legacy tienen authenticated=true únicamente en E2E; anon/public no están expuestos.
+function_dependencies,27,27,27,0,0,0,0,0,0,no,
+triggers,5,5,5,5,0,0,0,0,0,no,
+rls,19,19,19,38,0,0,0,0,0,no,
+policies,45,45,45,32,0,0,0,0,0,no,
+table_permissions,57,57,57,420,0,0,0,0,0,no,Grants de tablas conocidos; staging requiere decisión separada.

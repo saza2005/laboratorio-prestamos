@@ -36,7 +36,7 @@ for (const roleCase of roleCases) {
       await page.goto("/auth/login")
       await page.locator("#login-email").fill(email as string)
       await page.locator("#login-password").fill(password as string)
-      await page.getByRole("button", { name: "Entrar" }).click()
+      await page.getByRole("button", { name: "Entrar", exact: true }).click()
       await expect(page).not.toHaveURL(new RegExp("/auth/login"))
 
       for (const route of roleCase.routes) {

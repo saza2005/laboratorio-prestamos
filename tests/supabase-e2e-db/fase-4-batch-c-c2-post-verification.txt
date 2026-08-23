@@ -1,0 +1,6 @@
+loans_before: 2
+loan_items_before: 2
+returns_before: 1
+return_items_before: 1
+E2E_LOAN_PARTIAL_RETURN: ALREADY_EXISTS_MATCHING
+mode: dry-run; writes: 0; test_data_state: unchanged

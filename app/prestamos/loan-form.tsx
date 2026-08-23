@@ -6,6 +6,7 @@ import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createLoanWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
 import { stockAvailabilityBadgeClass } from '@/lib/status-format'
+import { filterProfilesForSelection } from '@/lib/profile-search'
 
 type Item = {
   id: string
@@ -29,6 +30,7 @@ type ItemUnit = {
 type User = {
   id: string
   full_name: string
+  email: string
   role: string
 }
 
@@ -61,6 +63,7 @@ export function LoanForm({
     error: null,
   })
   const [selectedUserId, setSelectedUserId] = useState('')
+  const [userSearch, setUserSearch] = useState('')
   const [rows, setRows] = useState<LoanRow[]>([])
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
@@ -74,6 +77,11 @@ export function LoanForm({
   const itemMap = useMemo(
     () => new Map(items.map((item) => [item.id, item])),
     [items]
+  )
+
+  const visibleUsers = useMemo(
+    () => filterProfilesForSelection(users, userSearch, selectedUserId),
+    [selectedUserId, userSearch, users]
   )
 
   const categories = useMemo(
@@ -205,8 +213,25 @@ export function LoanForm({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium">Usuario</label>
+          <label
+            htmlFor="loan-user-search"
+            className="mb-1 block text-sm font-medium"
+          >
+            Buscar estudiante o docente
+          </label>
+          <input
+            id="loan-user-search"
+            type="search"
+            value={userSearch}
+            onChange={(event) => setUserSearch(event.target.value)}
+            placeholder="Buscar por nombre o correo"
+            className="mb-2 w-full rounded-lg border px-3 py-2"
+          />
+          <label htmlFor="loan-user" className="mb-1 block text-sm font-medium">
+            Usuario
+          </label>
           <select
+            id="loan-user"
             name="user_id"
             required
             value={selectedUserId}
@@ -215,12 +240,17 @@ export function LoanForm({
             className="w-full rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100"
           >
             <option value="">Seleccione</option>
-            {users.map((user) => (
+            {visibleUsers.map((user) => (
               <option key={user.id} value={user.id}>
-                {user.full_name} ({user.role})
+                {user.full_name} · {user.email} ({user.role})
               </option>
             ))}
           </select>
+          {visibleUsers.length === 0 && (
+            <p className="mt-2 text-sm text-slate-500">
+              No se encontraron usuarios con ese criterio.
+            </p>
+          )}
         </div>
 
         <div>

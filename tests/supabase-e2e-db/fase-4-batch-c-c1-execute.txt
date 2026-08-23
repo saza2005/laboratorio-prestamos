@@ -1,0 +1,5 @@
+E2E_LOAN_ACTIVE: CREATED
+operation: deliver_approved_request_with_units
+invocations: 1
+C2: not_executed
+C3: not_executed

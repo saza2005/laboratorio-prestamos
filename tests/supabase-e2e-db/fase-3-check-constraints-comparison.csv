@@ -1,0 +1,39 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|inventory_movements|inventory_movements_movement_type_check,definition,"CHECK (movement_type = ANY (ARRAY['loan_out'::text, 'return_ok'::text, 'return_damaged'::text, 'return_missing'::text, 'adjustment_up'::text, 'adjustment_down'::text]))","CHECK (movement_type = ANY (ARRAY['loan_out'::text, 'return_ok'::text, 'return_damaged'::text, 'return_missing'::text, 'adjustment_up'::text, 'adjustment_down'::text]))",MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_movement_type_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_quantity_check,definition,CHECK (quantity > 0),CHECK (quantity > 0),MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_quantity_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_stock_available_check,definition,CHECK (stock_available >= 0),CHECK (stock_available >= 0),MATCH,MATCH,none,
+public|items|items_stock_available_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_stock_total_check,definition,CHECK (stock_total >= 0),CHECK (stock_total >= 0),MATCH,MATCH,none,
+public|items|items_stock_total_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|stock_available_not_greater_than_total,definition,CHECK (stock_available <= stock_total),CHECK (stock_available <= stock_total),MATCH,MATCH,none,
+public|items|stock_available_not_greater_than_total,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_quantity_check,definition,CHECK (quantity > 0),CHECK (quantity > 0),MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_quantity_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_damaged_quantity_check,definition,CHECK (damaged_quantity >= 0),CHECK (damaged_quantity >= 0),MATCH,MATCH,none,
+public|loan_items|loan_items_damaged_quantity_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_quantity_check,definition,CHECK (quantity > 0),CHECK (quantity > 0),MATCH,MATCH,none,
+public|loan_items|loan_items_quantity_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_returned_quantity_check,definition,CHECK (returned_quantity >= 0),CHECK (returned_quantity >= 0),MATCH,MATCH,none,
+public|loan_items|loan_items_returned_quantity_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_maintenance_type_check,definition,"CHECK (maintenance_type = ANY (ARRAY['preventive'::text, 'corrective'::text, 'general'::text]))","CHECK (maintenance_type = ANY (ARRAY['preventive'::text, 'corrective'::text, 'general'::text]))",MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_maintenance_type_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_quantity_check,definition,CHECK (quantity > 0),CHECK (quantity > 0),MATCH,MATCH,none,
+public|request_group_items|request_group_items_quantity_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_quantity_approved_check,definition,CHECK (quantity_approved >= 0),CHECK (quantity_approved >= 0),MATCH,MATCH,none,
+public|request_items|request_items_quantity_approved_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_quantity_damaged_check,definition,CHECK (quantity_damaged >= 0),CHECK (quantity_damaged >= 0),MATCH,MATCH,none,
+public|request_items|request_items_quantity_damaged_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_quantity_delivered_check,definition,CHECK (quantity_delivered >= 0),CHECK (quantity_delivered >= 0),MATCH,MATCH,none,
+public|request_items|request_items_quantity_delivered_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_quantity_requested_check,definition,CHECK (quantity_requested > 0),CHECK (quantity_requested > 0),MATCH,MATCH,none,
+public|request_items|request_items_quantity_requested_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_quantity_returned_check,definition,CHECK (quantity_returned >= 0),CHECK (quantity_returned >= 0),MATCH,MATCH,none,
+public|request_items|request_items_quantity_returned_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_quantity_damaged_check,definition,CHECK (quantity_damaged >= 0),CHECK (quantity_damaged >= 0),MATCH,MATCH,none,
+public|return_items|return_items_quantity_damaged_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_quantity_missing_check,definition,CHECK (quantity_missing >= 0),CHECK (quantity_missing >= 0),MATCH,MATCH,none,
+public|return_items|return_items_quantity_missing_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_quantity_ok_check,definition,CHECK (quantity_ok >= 0),CHECK (quantity_ok >= 0),MATCH,MATCH,none,
+public|return_items|return_items_quantity_ok_check,validated,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.

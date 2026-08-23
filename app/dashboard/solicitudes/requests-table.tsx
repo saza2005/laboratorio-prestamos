@@ -180,7 +180,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-white p-4 shadow sm:p-6">
+      <div className="surface-card p-4 sm:p-6">
         <div className="grid gap-3 md:grid-cols-3">
           <input
             type="text"
@@ -226,7 +226,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
 
       {filteredRequests.length > 0 ? (
         <>
-          <div className="overflow-hidden rounded-2xl bg-white shadow">
+          <div className="surface-card overflow-hidden">
             <div className="hidden grid-cols-[128px_minmax(0,1.2fr)_112px_minmax(0,1fr)_124px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
               <span>Fecha</span>
               <span>Solicitante</span>
@@ -429,7 +429,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
           </DetailDrawer>
         </>
       ) : (
-        <div className="rounded-2xl bg-white p-6 shadow">
+        <div className="surface-card p-6">
           <p className="text-slate-500">
             No hay solicitudes que coincidan con los filtros.
           </p>

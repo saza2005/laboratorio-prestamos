@@ -1,0 +1,10 @@
+GET / -> 200
+GET /auth/login -> 200
+GET /auth/callback -> 307 to /auth/login?error=google_auth_failed
+GET /dashboard -> 200; unauthenticated error state rendered, no 500
+Forms submitted: 0
+Login executed: no
+Playwright executed: no
+Secrets in HTML: 0
+E2E emails in HTML: 0
+E2E UUIDs in HTML: 0

@@ -119,7 +119,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
   const hasFilters = Boolean(search || typeFilter || unitStateFilter)
 
   return (
-    <section className="rounded-2xl bg-white p-4 shadow sm:p-6">
+    <section className="surface-card p-4 sm:p-6">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h2 className="text-xl font-semibold">Historial</h2>

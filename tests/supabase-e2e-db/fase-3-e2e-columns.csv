@@ -1,0 +1,171 @@
+table_schema,table_name,ordinal_position,column_name,data_type,udt_schema,udt_name,character_maximum_length,numeric_precision,numeric_scale,datetime_precision,is_nullable,column_default,identity_generation,is_generated,generation_expression,collation_name
+public,audit_logs,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,audit_logs,2,user_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,audit_logs,3,action,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,audit_logs,4,entity,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,audit_logs,5,entity_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,audit_logs,6,details,jsonb,pg_catalog,jsonb,null,null,null,null,NO,'{}'::jsonb,null,NEVER,null,null
+public,audit_logs,7,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,inventory_import_items_staging,1,code,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,2,name,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,3,description,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_items_staging,4,category,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,5,item_type,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,6,track_individual,boolean,pg_catalog,bool,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,7,stock_total,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,8,stock_available,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,9,status,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_items_staging,10,location,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_units_staging,1,item_code,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_units_staging,2,asset_code,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_units_staging,3,old_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_units_staging,4,serial_code,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_units_staging,5,model,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_units_staging,6,brand,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_units_staging,7,entry_date,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_units_staging,8,assignment_date,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_import_units_staging,9,condition,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_units_staging,10,availability_status,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_import_units_staging,11,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_movements,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,inventory_movements,2,item_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_movements,3,movement_type,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,inventory_movements,4,quantity,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,inventory_movements,5,reference_table,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_movements,6,reference_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_movements,7,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_movements,8,created_by,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,inventory_movements,9,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,item_units,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,item_units,2,item_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,item_units,3,serial_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,4,qr_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,5,condition,USER-DEFINED,public,unit_condition,null,null,null,null,NO,'good'::unit_condition,null,NEVER,null,null
+public,item_units,6,availability_status,USER-DEFINED,public,unit_availability,null,null,null,null,NO,'available'::unit_availability,null,NEVER,null,null
+public,item_units,7,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,8,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,item_units,9,updated_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,item_units,10,asset_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,11,old_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,12,model,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,13,brand,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units,14,entry_date,date,pg_catalog,date,null,null,null,0,YES,null,null,NEVER,null,null
+public,item_units,15,assignment_date,date,pg_catalog,date,null,null,null,0,YES,null,null,NEVER,null,null
+public,item_units_import_staging,1,item_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,2,asset_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,3,old_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,4,serial_code,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,5,model,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,6,brand,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,7,entry_date,date,pg_catalog,date,null,null,null,0,YES,null,null,NEVER,null,null
+public,item_units_import_staging,8,assignment_date,date,pg_catalog,date,null,null,null,0,YES,null,null,NEVER,null,null
+public,item_units_import_staging,9,condition,USER-DEFINED,public,unit_condition,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,10,availability_status,USER-DEFINED,public,unit_availability,null,null,null,null,YES,null,null,NEVER,null,null
+public,item_units_import_staging,11,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,items,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,items,2,code,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,items,3,name,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,items,4,description,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,items,5,category,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,items,6,item_type,USER-DEFINED,public,item_type,null,null,null,null,NO,null,null,NEVER,null,null
+public,items,7,track_individual,boolean,pg_catalog,bool,null,null,null,null,NO,false,null,NEVER,null,null
+public,items,8,stock_total,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,items,9,stock_available,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,items,10,status,USER-DEFINED,public,item_status,null,null,null,null,NO,'active'::item_status,null,NEVER,null,null
+public,items,11,location,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,items,12,created_by,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,items,13,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,items,14,updated_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,loan_group_items,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,loan_group_items,2,loan_group_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loan_group_items,3,item_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loan_group_items,4,quantity,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,loan_group_items,5,created_at,timestamp without time zone,pg_catalog,timestamp,null,null,null,6,YES,now(),null,NEVER,null,null
+public,loan_groups,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,loan_groups,2,loan_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loan_groups,3,request_group_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loan_groups,4,group_name,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,loan_groups,5,leader_student_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loan_groups,6,created_at,timestamp without time zone,pg_catalog,timestamp,null,null,null,6,YES,now(),null,NEVER,null,null
+public,loan_items,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,loan_items,2,loan_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,loan_items,3,item_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,loan_items,4,item_unit_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loan_items,5,quantity,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,loan_items,6,returned_quantity,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,loan_items,7,damaged_quantity,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,loan_items,8,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,loan_items,9,missing_quantity,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,loans,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,loans,2,request_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loans,3,user_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,loans,4,delivered_by,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,loans,5,delivery_date,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,loans,6,expected_return_date,date,pg_catalog,date,null,null,null,0,YES,null,null,NEVER,null,null
+public,loans,7,returned_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,YES,null,null,NEVER,null,null
+public,loans,8,status,USER-DEFINED,public,loan_status,null,null,null,null,NO,'active'::loan_status,null,NEVER,null,null
+public,loans,9,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,loans,10,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,loans,11,updated_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,maintenance_records,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,maintenance_records,2,item_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,maintenance_records,3,activity,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,maintenance_records,4,responsible,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,maintenance_records,5,maintenance_date,date,pg_catalog,date,null,null,null,0,NO,null,null,NEVER,null,null
+public,maintenance_records,6,observations,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,maintenance_records,7,maintenance_type,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,maintenance_records,8,created_by,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,maintenance_records,9,created_at,timestamp without time zone,pg_catalog,timestamp,null,null,null,6,YES,now(),null,NEVER,null,null
+public,maintenance_records,10,item_unit_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,profiles,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,profiles,2,full_name,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,profiles,3,email,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,profiles,4,role,USER-DEFINED,public,user_role,null,null,null,null,NO,'student'::user_role,null,NEVER,null,null
+public,profiles,5,career,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,profiles,6,is_active,boolean,pg_catalog,bool,null,null,null,null,NO,true,null,NEVER,null,null
+public,profiles,7,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,profiles,8,updated_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,request_group_items,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,request_group_items,2,request_group_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,request_group_items,3,item_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,request_group_items,4,quantity,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,request_groups,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,request_groups,2,request_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,request_groups,3,group_name,text,pg_catalog,text,null,null,null,null,NO,null,null,NEVER,null,null
+public,request_groups,4,leader_student_id,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,request_groups,5,created_at,timestamp without time zone,pg_catalog,timestamp,null,null,null,6,YES,now(),null,NEVER,null,null
+public,request_items,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,request_items,2,request_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,request_items,3,item_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,request_items,4,quantity_requested,integer,pg_catalog,int4,null,32,0,null,NO,null,null,NEVER,null,null
+public,request_items,5,quantity_approved,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,request_items,6,quantity_delivered,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,request_items,7,quantity_returned,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,request_items,8,quantity_damaged,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,request_items,9,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,requests,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,requests,2,user_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,requests,3,requested_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,requests,4,status,USER-DEFINED,public,request_status,null,null,null,null,NO,'pending'::request_status,null,NEVER,null,null
+public,requests,5,purpose,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,requests,6,comments,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,requests,7,scheduled_return_date,date,pg_catalog,date,null,null,null,0,YES,null,null,NEVER,null,null
+public,requests,8,approved_by,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,requests,9,approved_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,YES,null,null,NEVER,null,null
+public,requests,10,rejection_reason,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,requests,11,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,requests,12,updated_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,return_items,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,return_items,2,return_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,return_items,3,loan_item_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,return_items,4,quantity_ok,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,return_items,5,quantity_damaged,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,return_items,6,quantity_missing,integer,pg_catalog,int4,null,32,0,null,NO,0,null,NEVER,null,null
+public,return_items,7,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,return_items,8,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,returns,1,id,uuid,pg_catalog,uuid,null,null,null,null,NO,gen_random_uuid(),null,NEVER,null,null
+public,returns,2,loan_id,uuid,pg_catalog,uuid,null,null,null,null,NO,null,null,NEVER,null,null
+public,returns,3,received_by,uuid,pg_catalog,uuid,null,null,null,null,YES,null,null,NEVER,null,null
+public,returns,4,received_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null
+public,returns,5,notes,text,pg_catalog,text,null,null,null,null,YES,null,null,NEVER,null,null
+public,returns,6,created_at,timestamp with time zone,pg_catalog,timestamptz,null,null,null,6,NO,now(),null,NEVER,null,null

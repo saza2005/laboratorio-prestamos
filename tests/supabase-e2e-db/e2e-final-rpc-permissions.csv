@@ -1,0 +1,4 @@
+function_signature,anon_can_execute,authenticated_can_execute,service_role_can_execute
+"register_full_return_transaction(uuid,text,uuid)",false,true,true
+"register_maintenance_record_transaction(uuid,uuid,text,text,date,text,text,boolean)",false,true,true
+"update_item_unit_status_transaction(uuid,text,text)",false,true,true

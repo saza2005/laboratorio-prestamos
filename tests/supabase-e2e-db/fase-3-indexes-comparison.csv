@@ -1,0 +1,289 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|audit_logs|audit_logs_pkey,index_definition,CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id),CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id),MATCH,MATCH,none,
+public|audit_logs|audit_logs_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|audit_logs_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|audit_logs_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|audit_logs_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|audit_logs_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_entity,index_definition,CREATE INDEX idx_audit_logs_entity ON public.audit_logs USING btree (entity),CREATE INDEX idx_audit_logs_entity ON public.audit_logs USING btree (entity),MATCH,MATCH,none,
+public|audit_logs|idx_audit_logs_entity,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_entity,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_entity,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_entity,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_entity,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_user_id,index_definition,CREATE INDEX idx_audit_logs_user_id ON public.audit_logs USING btree (user_id),CREATE INDEX idx_audit_logs_user_id ON public.audit_logs USING btree (user_id),MATCH,MATCH,none,
+public|audit_logs|idx_audit_logs_user_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_user_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_user_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_user_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|idx_audit_logs_user_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|inventory_import_items_staging_pkey,index_definition,CREATE UNIQUE INDEX inventory_import_items_staging_pkey ON public.inventory_import_items_staging USING btree (code),CREATE UNIQUE INDEX inventory_import_items_staging_pkey ON public.inventory_import_items_staging USING btree (code),MATCH,MATCH,none,
+public|inventory_import_items_staging|inventory_import_items_staging_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|inventory_import_items_staging_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|inventory_import_items_staging_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|inventory_import_items_staging_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|inventory_import_items_staging_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_pkey,index_definition,CREATE UNIQUE INDEX inventory_import_units_staging_pkey ON public.inventory_import_units_staging USING btree (asset_code),CREATE UNIQUE INDEX inventory_import_units_staging_pkey ON public.inventory_import_units_staging USING btree (asset_code),MATCH,MATCH,none,
+public|inventory_import_units_staging|inventory_import_units_staging_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,index_definition,CREATE UNIQUE INDEX inventory_import_units_staging_serial_code_key ON public.inventory_import_units_staging USING btree (serial_code),CREATE UNIQUE INDEX inventory_import_units_staging_serial_code_key ON public.inventory_import_units_staging USING btree (serial_code),MATCH,MATCH,none,
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|inventory_import_units_staging_serial_code_key,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_at,index_definition,CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements USING btree (created_at DESC),CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements USING btree (created_at DESC),MATCH,MATCH,none,
+public|inventory_movements|idx_inventory_movements_created_at,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_at,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_at,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_at,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_at,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_by,index_definition,CREATE INDEX idx_inventory_movements_created_by ON public.inventory_movements USING btree (created_by),CREATE INDEX idx_inventory_movements_created_by ON public.inventory_movements USING btree (created_by),MATCH,MATCH,none,
+public|inventory_movements|idx_inventory_movements_created_by,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_by,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_by,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_by,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_created_by,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_item_id,index_definition,CREATE INDEX idx_inventory_movements_item_id ON public.inventory_movements USING btree (item_id),CREATE INDEX idx_inventory_movements_item_id ON public.inventory_movements USING btree (item_id),MATCH,MATCH,none,
+public|inventory_movements|idx_inventory_movements_item_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_item_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_item_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_item_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_item_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_reference_id,index_definition,CREATE INDEX idx_inventory_movements_reference_id ON public.inventory_movements USING btree (reference_id),CREATE INDEX idx_inventory_movements_reference_id ON public.inventory_movements USING btree (reference_id),MATCH,MATCH,none,
+public|inventory_movements|idx_inventory_movements_reference_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_reference_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_reference_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_reference_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|idx_inventory_movements_reference_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_pkey,index_definition,CREATE UNIQUE INDEX inventory_movements_pkey ON public.inventory_movements USING btree (id),CREATE UNIQUE INDEX inventory_movements_pkey ON public.inventory_movements USING btree (id),MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_availability,index_definition,CREATE INDEX idx_item_units_availability ON public.item_units USING btree (availability_status),CREATE INDEX idx_item_units_availability ON public.item_units USING btree (availability_status),MATCH,MATCH,none,
+public|item_units|idx_item_units_availability,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_availability,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_availability,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_availability,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_availability,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id,index_definition,CREATE INDEX idx_item_units_item_id ON public.item_units USING btree (item_id),CREATE INDEX idx_item_units_item_id ON public.item_units USING btree (item_id),MATCH,MATCH,none,
+public|item_units|idx_item_units_item_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id_availability_status,index_definition,"CREATE INDEX idx_item_units_item_id_availability_status ON public.item_units USING btree (item_id, availability_status)","CREATE INDEX idx_item_units_item_id_availability_status ON public.item_units USING btree (item_id, availability_status)",MATCH,MATCH,none,
+public|item_units|idx_item_units_item_id_availability_status,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id_availability_status,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id_availability_status,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id_availability_status,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|idx_item_units_item_id_availability_status,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_pkey,index_definition,CREATE UNIQUE INDEX item_units_pkey ON public.item_units USING btree (id),CREATE UNIQUE INDEX item_units_pkey ON public.item_units USING btree (id),MATCH,MATCH,none,
+public|item_units|item_units_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,index_definition,CREATE UNIQUE INDEX item_units_qr_code_key ON public.item_units USING btree (qr_code),CREATE UNIQUE INDEX item_units_qr_code_key ON public.item_units USING btree (qr_code),MATCH,MATCH,none,
+public|item_units|item_units_qr_code_key,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_qr_code_key,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,index_definition,CREATE UNIQUE INDEX item_units_serial_code_key ON public.item_units USING btree (serial_code),CREATE UNIQUE INDEX item_units_serial_code_key ON public.item_units USING btree (serial_code),MATCH,MATCH,none,
+public|item_units|item_units_serial_code_key,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|item_units_serial_code_key,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_category,index_definition,CREATE INDEX idx_items_category ON public.items USING btree (category),CREATE INDEX idx_items_category ON public.items USING btree (category),MATCH,MATCH,none,
+public|items|idx_items_category,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_category,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_category,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_category,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_category,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_status,index_definition,CREATE INDEX idx_items_status ON public.items USING btree (status),CREATE INDEX idx_items_status ON public.items USING btree (status),MATCH,MATCH,none,
+public|items|idx_items_status,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_status,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_status,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_status,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|idx_items_status,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,index_definition,CREATE UNIQUE INDEX items_code_key ON public.items USING btree (code),CREATE UNIQUE INDEX items_code_key ON public.items USING btree (code),MATCH,MATCH,none,
+public|items|items_code_key,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_code_key,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_pkey,index_definition,CREATE UNIQUE INDEX items_pkey ON public.items USING btree (id),CREATE UNIQUE INDEX items_pkey ON public.items USING btree (id),MATCH,MATCH,none,
+public|items|items_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_pkey,index_definition,CREATE UNIQUE INDEX loan_group_items_pkey ON public.loan_group_items USING btree (id),CREATE UNIQUE INDEX loan_group_items_pkey ON public.loan_group_items USING btree (id),MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|loan_group_items_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_pkey,index_definition,CREATE UNIQUE INDEX loan_groups_pkey ON public.loan_groups USING btree (id),CREATE UNIQUE INDEX loan_groups_pkey ON public.loan_groups USING btree (id),MATCH,MATCH,none,
+public|loan_groups|loan_groups_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|idx_loan_items_loan_id,index_definition,CREATE INDEX idx_loan_items_loan_id ON public.loan_items USING btree (loan_id),CREATE INDEX idx_loan_items_loan_id ON public.loan_items USING btree (loan_id),MATCH,MATCH,none,
+public|loan_items|idx_loan_items_loan_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|idx_loan_items_loan_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|idx_loan_items_loan_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|idx_loan_items_loan_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|idx_loan_items_loan_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_pkey,index_definition,CREATE UNIQUE INDEX loan_items_pkey ON public.loan_items USING btree (id),CREATE UNIQUE INDEX loan_items_pkey ON public.loan_items USING btree (id),MATCH,MATCH,none,
+public|loan_items|loan_items_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_expected_return_date,index_definition,CREATE INDEX idx_loans_expected_return_date ON public.loans USING btree (expected_return_date),CREATE INDEX idx_loans_expected_return_date ON public.loans USING btree (expected_return_date),MATCH,MATCH,none,
+public|loans|idx_loans_expected_return_date,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_expected_return_date,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_expected_return_date,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_expected_return_date,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_expected_return_date,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_status,index_definition,CREATE INDEX idx_loans_status ON public.loans USING btree (status),CREATE INDEX idx_loans_status ON public.loans USING btree (status),MATCH,MATCH,none,
+public|loans|idx_loans_status,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_status,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_status,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_status,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_status,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_user_id,index_definition,CREATE INDEX idx_loans_user_id ON public.loans USING btree (user_id),CREATE INDEX idx_loans_user_id ON public.loans USING btree (user_id),MATCH,MATCH,none,
+public|loans|idx_loans_user_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_user_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_user_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_user_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|idx_loans_user_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_pkey,index_definition,CREATE UNIQUE INDEX loans_pkey ON public.loans USING btree (id),CREATE UNIQUE INDEX loans_pkey ON public.loans USING btree (id),MATCH,MATCH,none,
+public|loans|loans_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,index_definition,CREATE UNIQUE INDEX loans_request_id_key ON public.loans USING btree (request_id),CREATE UNIQUE INDEX loans_request_id_key ON public.loans USING btree (request_id),MATCH,MATCH,none,
+public|loans|loans_request_id_key,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_request_id_key,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_item_unit_id,index_definition,CREATE INDEX idx_maintenance_records_item_unit_id ON public.maintenance_records USING btree (item_unit_id),CREATE INDEX idx_maintenance_records_item_unit_id ON public.maintenance_records USING btree (item_unit_id),MATCH,MATCH,none,
+public|maintenance_records|idx_maintenance_records_item_unit_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_item_unit_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_item_unit_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_item_unit_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_item_unit_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_maintenance_date,index_definition,CREATE INDEX idx_maintenance_records_maintenance_date ON public.maintenance_records USING btree (maintenance_date),CREATE INDEX idx_maintenance_records_maintenance_date ON public.maintenance_records USING btree (maintenance_date),MATCH,MATCH,none,
+public|maintenance_records|idx_maintenance_records_maintenance_date,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_maintenance_date,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_maintenance_date,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_maintenance_date,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|idx_maintenance_records_maintenance_date,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_pkey,index_definition,CREATE UNIQUE INDEX maintenance_records_pkey ON public.maintenance_records USING btree (id),CREATE UNIQUE INDEX maintenance_records_pkey ON public.maintenance_records USING btree (id),MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|idx_profiles_role,index_definition,CREATE INDEX idx_profiles_role ON public.profiles USING btree (role),CREATE INDEX idx_profiles_role ON public.profiles USING btree (role),MATCH,MATCH,none,
+public|profiles|idx_profiles_role,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|idx_profiles_role,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|idx_profiles_role,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|idx_profiles_role,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|idx_profiles_role,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,index_definition,CREATE UNIQUE INDEX profiles_email_key ON public.profiles USING btree (email),CREATE UNIQUE INDEX profiles_email_key ON public.profiles USING btree (email),MATCH,MATCH,none,
+public|profiles|profiles_email_key,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_email_key,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_pkey,index_definition,CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id),CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id),MATCH,MATCH,none,
+public|profiles|profiles_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_pkey,index_definition,CREATE UNIQUE INDEX request_group_items_pkey ON public.request_group_items USING btree (id),CREATE UNIQUE INDEX request_group_items_pkey ON public.request_group_items USING btree (id),MATCH,MATCH,none,
+public|request_group_items|request_group_items_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_pkey,index_definition,CREATE UNIQUE INDEX request_groups_pkey ON public.request_groups USING btree (id),CREATE UNIQUE INDEX request_groups_pkey ON public.request_groups USING btree (id),MATCH,MATCH,none,
+public|request_groups|request_groups_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|idx_request_items_request_id,index_definition,CREATE INDEX idx_request_items_request_id ON public.request_items USING btree (request_id),CREATE INDEX idx_request_items_request_id ON public.request_items USING btree (request_id),MATCH,MATCH,none,
+public|request_items|idx_request_items_request_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|idx_request_items_request_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|idx_request_items_request_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|idx_request_items_request_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|idx_request_items_request_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_pkey,index_definition,CREATE UNIQUE INDEX request_items_pkey ON public.request_items USING btree (id),CREATE UNIQUE INDEX request_items_pkey ON public.request_items USING btree (id),MATCH,MATCH,none,
+public|request_items|request_items_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_requested_at,index_definition,CREATE INDEX idx_requests_requested_at ON public.requests USING btree (requested_at),CREATE INDEX idx_requests_requested_at ON public.requests USING btree (requested_at),MATCH,MATCH,none,
+public|requests|idx_requests_requested_at,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_requested_at,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_requested_at,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_requested_at,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_requested_at,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_status,index_definition,CREATE INDEX idx_requests_status ON public.requests USING btree (status),CREATE INDEX idx_requests_status ON public.requests USING btree (status),MATCH,MATCH,none,
+public|requests|idx_requests_status,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_status,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_status,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_status,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_status,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_user_id,index_definition,CREATE INDEX idx_requests_user_id ON public.requests USING btree (user_id),CREATE INDEX idx_requests_user_id ON public.requests USING btree (user_id),MATCH,MATCH,none,
+public|requests|idx_requests_user_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_user_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_user_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_user_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|idx_requests_user_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_pkey,index_definition,CREATE UNIQUE INDEX requests_pkey ON public.requests USING btree (id),CREATE UNIQUE INDEX requests_pkey ON public.requests USING btree (id),MATCH,MATCH,none,
+public|requests|requests_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|idx_return_items_created_at,index_definition,CREATE INDEX idx_return_items_created_at ON public.return_items USING btree (created_at),CREATE INDEX idx_return_items_created_at ON public.return_items USING btree (created_at),MATCH,MATCH,none,
+public|return_items|idx_return_items_created_at,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|idx_return_items_created_at,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|idx_return_items_created_at,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|idx_return_items_created_at,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|idx_return_items_created_at,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_pkey,index_definition,CREATE UNIQUE INDEX return_items_pkey ON public.return_items USING btree (id),CREATE UNIQUE INDEX return_items_pkey ON public.return_items USING btree (id),MATCH,MATCH,none,
+public|return_items|return_items_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|idx_returns_loan_id,index_definition,CREATE INDEX idx_returns_loan_id ON public.returns USING btree (loan_id),CREATE INDEX idx_returns_loan_id ON public.returns USING btree (loan_id),MATCH,MATCH,none,
+public|returns|idx_returns_loan_id,is_unique,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|idx_returns_loan_id,is_primary,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|idx_returns_loan_id,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|idx_returns_loan_id,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|idx_returns_loan_id,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_pkey,index_definition,CREATE UNIQUE INDEX returns_pkey ON public.returns USING btree (id),CREATE UNIQUE INDEX returns_pkey ON public.returns USING btree (id),MATCH,MATCH,none,
+public|returns|returns_pkey,is_unique,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_pkey,is_primary,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_pkey,is_valid,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_pkey,is_ready,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_pkey,predicate,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.

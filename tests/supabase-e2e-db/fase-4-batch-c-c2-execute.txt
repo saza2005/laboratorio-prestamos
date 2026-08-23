@@ -1,0 +1,6 @@
+loans_before: 1
+loan_items_before: 1
+returns_before: 0
+return_items_before: 0
+E2E_LOAN_PARTIAL_RETURN: WOULD_CREATE_AND_RETURN_PARTIAL
+E2E_LOAN_PARTIAL_RETURN: CREATED

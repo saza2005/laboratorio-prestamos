@@ -1,0 +1,2 @@
+-- Read-only audit for Supabase E2E. Do not run against production.
+select ns.nspname as table_schema, cls.relname as table_name, cls.relrowsecurity as rls_enabled, cls.relforcerowsecurity as rls_forced, owner.rolname as owner from pg_class cls join pg_namespace ns on ns.oid=cls.relnamespace join pg_roles owner on owner.oid=cls.relowner where ns.nspname='public' and cls.relkind in ('r','p') order by cls.relname;

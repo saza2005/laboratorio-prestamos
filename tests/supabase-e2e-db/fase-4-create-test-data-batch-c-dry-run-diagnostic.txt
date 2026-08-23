@@ -1,0 +1,8 @@
+loans_before: 0
+loan_items_before: 0
+returns_before: 0
+return_items_before: 0
+E2E_LOAN_ACTIVE: WOULD_CREATE
+E2E_LOAN_PARTIAL_RETURN: WOULD_CREATE_AND_RETURN_PARTIAL
+E2E_LOAN_FULL_RETURN: WOULD_CREATE_AND_RETURN_FULL
+mode: dry-run; writes: 0; test_data_state: unchanged

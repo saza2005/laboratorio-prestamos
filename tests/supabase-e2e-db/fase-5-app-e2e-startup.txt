@@ -1,0 +1,7 @@
+APP_ENVIRONMENT: PASS
+PROJECT_REF_MATCH: PASS
+BROWSER_SAFE_VARS: PASS
+FORBIDDEN_SECRETS: 0
+Next.js 16.2.2 (webpack)
+Local: http://localhost:3000
+Ready: yes

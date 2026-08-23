@@ -1,0 +1,6 @@
+table_schema,table_name,trigger_name,enabled,timing,events,orientation,condition,function_signature,trigger_definition
+public,item_units,trg_item_units_updated_at,enabled,BEFORE,UPDATE,ROW,,public.set_updated_at(),CREATE TRIGGER trg_item_units_updated_at BEFORE UPDATE ON public.item_units FOR EACH ROW EXECUTE FUNCTION set_updated_at()
+public,items,trg_items_updated_at,enabled,BEFORE,UPDATE,ROW,,public.set_updated_at(),CREATE TRIGGER trg_items_updated_at BEFORE UPDATE ON public.items FOR EACH ROW EXECUTE FUNCTION set_updated_at()
+public,loans,trg_loans_updated_at,enabled,BEFORE,UPDATE,ROW,,public.set_updated_at(),CREATE TRIGGER trg_loans_updated_at BEFORE UPDATE ON public.loans FOR EACH ROW EXECUTE FUNCTION set_updated_at()
+public,profiles,trg_profiles_updated_at,enabled,BEFORE,UPDATE,ROW,,public.set_updated_at(),CREATE TRIGGER trg_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()
+public,requests,trg_requests_updated_at,enabled,BEFORE,UPDATE,ROW,,public.set_updated_at(),CREATE TRIGGER trg_requests_updated_at BEFORE UPDATE ON public.requests FOR EACH ROW EXECUTE FUNCTION set_updated_at()

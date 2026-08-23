@@ -1,0 +1,19 @@
+loans: 1
+loan_items: 1
+loan_groups: 0
+loan_group_items: 0
+returns: 0
+return_items: 0
+E2E_LOAN_ACTIVE: ALREADY_EXISTS_MATCHING
+loan_status: active
+request_status: delivered
+quantity: 1
+returned_quantity: 0
+pending_quantity: 1
+stock_bulk: 9/10
+stock_tracked: 2/2
+item_units: good/available
+inventory_movements: 1 loan_out quantity=1
+C2: not_created
+C3: not_created
+mode: dry-run; writes: 0; test_data_state: unchanged

@@ -1,0 +1,2 @@
+-- Read-only audit for Supabase E2E. Do not run against production.
+select ns.nspname as table_schema, cls.relname as table_name, con.conname as constraint_name, att.attname as column_name, key.ord as column_position from pg_constraint con join pg_class cls on cls.oid=con.conrelid join pg_namespace ns on ns.oid=cls.relnamespace cross join lateral unnest(con.conkey) with ordinality key(attnum,ord) join pg_attribute att on att.attrelid=cls.oid and att.attnum=key.attnum where ns.nspname='public' and con.contype='p' order by cls.relname, con.conname, key.ord;

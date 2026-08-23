@@ -1,0 +1,3 @@
+operation,unit_condition_before,unit_availability_before,maintenance_status_before,rpc,unit_condition_after,unit_availability_after,maintenance_status_after,available_stock_effect,movement_effect,valid,evidence,notes
+start D1,good,available,none,register_maintenance_record_transaction(...,true),maintenance,unavailable,active,-1,adjustment_down 1,yes,baseline function body and app action,D1 selected unit only
+close deferred,maintenance,unavailable,active,not executed,good,available,closed,+1,adjustment_up 1,deferred,update_item_unit_status_transaction and no close task,not part of D1

@@ -1,0 +1,7 @@
+table_schema,table_name,constraint_name,columns,deferrable,initially_deferred
+public,inventory_import_units_staging,inventory_import_units_staging_serial_code_key,serial_code,false,false
+public,item_units,item_units_qr_code_key,qr_code,false,false
+public,item_units,item_units_serial_code_key,serial_code,false,false
+public,items,items_code_key,code,false,false
+public,loans,loans_request_id_key,request_id,false,false
+public,profiles,profiles_email_key,email,false,false

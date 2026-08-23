@@ -1,0 +1,6 @@
+function_signature,exists_local,public_before,anon_before,authenticated_before,service_role_before,classification,active_replacement,validated,notes
+"public.create_loan_transaction(uuid, uuid, integer, date, text, uuid)",true,false,false,false,true,LEGACY_UNUSED,"create_multi_item_loan_transaction",true,"Sin uso activo; firma legacy aprobada para revocación."
+"public.create_loan_with_unit_transaction(uuid, uuid, uuid, integer, date, text, uuid)",true,false,false,false,true,REPLACED_RPC,"create_multi_item_loan_transaction",true,"Reemplazada por el flujo multi-item."
+"public.deliver_approved_request(uuid, uuid, text)",true,false,false,false,true,REPLACED_RPC,"deliver_approved_request_with_units(uuid,jsonb,jsonb,uuid,text)",true,"Variante antigua reemplazada."
+"public.deliver_approved_request_with_units(uuid, jsonb, uuid, text)",true,false,false,false,true,REPLACED_RPC,"deliver_approved_request_with_units(uuid,jsonb,jsonb,uuid,text)",true,"La UI usa la sobrecarga de cinco argumentos."
+"public.increment_stock(uuid, integer)",true,false,false,false,true,LEGACY_UNUSED,"create_inventory_item_transaction",true,"Helper legacy sin llamada activa."

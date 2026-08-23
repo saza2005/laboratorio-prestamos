@@ -4,18 +4,18 @@ La suite usa Playwright y no debe ejecutarse contra datos reales de producción.
 
 ## Cuentas de prueba
 
-Configura cuentas separadas para admin y lab_staff mediante variables de entorno:
+Configura cuentas separadas mediante variables de entorno. Usa valores locales y nunca los guardes en Git:
 
-E2E_ADMIN_EMAIL=admin-de-prueba@ucuenca.edu.ec
-E2E_ADMIN_PASSWORD=...
-E2E_LAB_STAFF_EMAIL=labstaff-de-prueba@ucuenca.edu.ec
-E2E_LAB_STAFF_PASSWORD=...
-
-npm run test:e2e
+```text
+E2E_ADMIN_EMAIL=<admin-e2e-email>
+E2E_ADMIN_PASSWORD=<admin-e2e-password>
+E2E_LAB_STAFF_EMAIL=<lab-staff-e2e-email>
+E2E_LAB_STAFF_PASSWORD=<lab-staff-e2e-password>
+```
 
 Si no se configuran las variables, las pruebas administrativas se marcan como omitidas.
 
-Las pruebas de student y teacher requieren posteriormente una estrategia de sesión Google institucional o un proyecto Supabase de pruebas con acceso por contraseña habilitado exclusivamente para cuentas E2E.
+Las pruebas de student y teacher requieren una estrategia de sesión institucional o un proyecto Supabase de pruebas con acceso por contraseña habilitado exclusivamente para cuentas E2E.
 
 ## Comandos por nivel
 
@@ -40,3 +40,19 @@ Verificación segura previa a un commit:
     npm run check:safe
 
 Este comando no levanta el servidor ni abre el navegador.
+
+La plantilla sin secretos está en `tests/e2e-config.example` y el plan de datos en `tests/TEST_DATA.md`.
+
+## Ejecutar con cuentas locales
+
+Crea `tests/.env.e2e.local` a partir de `tests/e2e-config.example` y coloca allí las credenciales de prueba. Ese archivo está ignorado por Git. No lo compartas ni lo subas.
+
+Después ejecuta:
+
+    timeout 90s npm run test:e2e:roles
+
+El test mutacional de solicitud solo se ejecuta con `E2E_MUTATIONS=true` y `E2E_ITEM_CODE` configurado. Crea y cancela una solicitud E2E; no lo actives contra producción.
+
+Para ejecutar solo la prueba mutacional:
+
+    timeout 90s npm run test:e2e:mutations

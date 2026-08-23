@@ -1,0 +1,514 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|audit_logs|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|anon,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|audit_logs|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|authenticated,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|audit_logs|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|service_role,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|inventory_import_items_staging|anon,select_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|anon,insert_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|anon,update_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|anon,delete_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|anon,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|inventory_import_items_staging|authenticated,select_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|authenticated,insert_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|authenticated,update_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|authenticated,delete_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_items_staging|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|authenticated,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|inventory_import_items_staging|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging|service_role,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|inventory_import_units_staging|anon,select_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|anon,insert_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|anon,update_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|anon,delete_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|anon,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|inventory_import_units_staging|authenticated,select_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|authenticated,insert_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|authenticated,update_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|authenticated,delete_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|inventory_import_units_staging|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|authenticated,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|inventory_import_units_staging|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging|service_role,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|inventory_movements|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|anon,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|inventory_movements|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|authenticated,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|inventory_movements|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|service_role,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|item_units|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|item_units|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|item_units|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|item_units_import_staging|anon,select_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|anon,insert_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|anon,update_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|anon,delete_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|anon,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|item_units_import_staging|authenticated,select_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|authenticated,insert_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|authenticated,update_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|authenticated,delete_privilege,f,true,DIFFERENCE,STAGING_REQUIRES_DECISION,medium,Grant de tabla staging diferido para decisión funcional.
+public|item_units_import_staging|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|authenticated,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|item_units_import_staging|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging|service_role,applicable_policy_count,0,0,MATCH,MATCH,none,
+public|items|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|items|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|items|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|loan_group_items|anon,select_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_group_items|anon,insert_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_group_items|anon,update_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_group_items|anon,delete_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_group_items|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|anon,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|loan_group_items|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|authenticated,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|loan_group_items|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items|service_role,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|loan_groups|anon,select_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_groups|anon,insert_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_groups|anon,update_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_groups|anon,delete_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|loan_groups|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|anon,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|loan_groups|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|authenticated,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|loan_groups|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|service_role,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|loan_items|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|loan_items|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|loan_items|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|loans|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|loans|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|loans|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|maintenance_records|anon,select_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|maintenance_records|anon,insert_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|maintenance_records|anon,update_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|maintenance_records|anon,delete_privilege,f,true,DIFFERENCE,KNOWN_TABLE_GRANT_EXCEPTION,low,Grant de tabla conocido; RLS y policies anon bloquean filas anon.
+public|maintenance_records|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|anon,applicable_policy_count,4,4,MATCH,MATCH,none,
+public|maintenance_records|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|authenticated,applicable_policy_count,4,4,MATCH,MATCH,none,
+public|maintenance_records|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|service_role,applicable_policy_count,4,4,MATCH,MATCH,none,
+public|profiles|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|anon,applicable_policy_count,5,5,MATCH,MATCH,none,
+public|profiles|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|authenticated,applicable_policy_count,5,5,MATCH,MATCH,none,
+public|profiles|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|service_role,applicable_policy_count,5,5,MATCH,MATCH,none,
+public|request_group_items|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|anon,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|request_group_items|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|authenticated,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|request_group_items|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|service_role,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|request_groups|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|anon,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|request_groups|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|authenticated,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|request_groups|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|service_role,applicable_policy_count,2,2,MATCH,MATCH,none,
+public|request_items|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|request_items|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|request_items|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|requests|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|requests|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|requests|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|return_items|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|return_items|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|return_items|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|returns|anon,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|anon,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|returns|authenticated,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|authenticated,applicable_policy_count,3,3,MATCH,MATCH,none,
+public|returns|service_role,select_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,insert_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,update_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,delete_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,truncate_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,references_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,trigger_privilege,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|service_role,applicable_policy_count,3,3,MATCH,MATCH,none,

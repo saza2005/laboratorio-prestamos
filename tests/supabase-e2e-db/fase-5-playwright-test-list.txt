@@ -1,0 +1,66 @@
+Listing tests:
+  [auth-admin] › e2e/auth.setup.ts:14:1 › create isolated auth state
+  [auth-lab-staff] › e2e/auth.setup.ts:14:1 › create isolated auth state
+  [auth-teacher] › e2e/auth.setup.ts:14:1 › create isolated auth state
+  [auth-student] › e2e/auth.setup.ts:14:1 › create isolated auth state
+  [chromium-admin] › auth/login.spec.ts:18:7 › Autenticación y protección de rutas › muestra el formulario de inicio de sesión
+  [chromium-admin] › auth/login.spec.ts:30:7 › Autenticación y protección de rutas › redirige todas las rutas protegidas al login cuando no hay sesión
+  [chromium-admin] › auth/login.spec.ts:37:7 › Autenticación y protección de rutas › muestra los mensajes de seguridad del acceso institucional
+  [chromium-admin] › auth/login.spec.ts:49:7 › Autenticación y protección de rutas › muestra un error controlado con credenciales vacías
+  [chromium-admin] › public/pages.spec.ts:4:7 › Pantallas públicas › muestra la página de inicio y sus accesos principales
+  [chromium-admin] › public/pages.spec.ts:19:7 › Pantallas públicas › muestra el registro institucional y permite volver al login
+  [chromium-admin] › roles/access.spec.ts:27:9 › admin: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-admin] › roles/access.spec.ts:27:9 › lab_staff: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-admin] › unit/email-policy.spec.ts:9:7 › Política de correo institucional › acepta correos válidos del dominio institucional
+  [chromium-admin] › unit/email-policy.spec.ts:15:7 › Política de correo institucional › rechaza dominios externos o formatos incompletos
+  [chromium-admin] › unit/email-policy.spec.ts:28:7 › Política de correo institucional › normaliza correo para comparaciones y persistencia
+  [chromium-admin] › unit/roles.spec.ts:17:7 › Matriz de permisos por rol › admin y lab_staff pueden usar los módulos operativos
+  [chromium-admin] › unit/roles.spec.ts:33:7 › Matriz de permisos por rol › teacher puede usar solicitudes grupales, pero no módulos operativos
+  [chromium-admin] › unit/roles.spec.ts:43:7 › Matriz de permisos por rol › student puede usar solicitudes individuales, pero no crear grupos
+  [chromium-admin] › unit/roles.spec.ts:53:7 › Matriz de permisos por rol › roles ausentes o inválidos no reciben permisos
+  [chromium-lab-staff] › auth/login.spec.ts:18:7 › Autenticación y protección de rutas › muestra el formulario de inicio de sesión
+  [chromium-lab-staff] › auth/login.spec.ts:30:7 › Autenticación y protección de rutas › redirige todas las rutas protegidas al login cuando no hay sesión
+  [chromium-lab-staff] › auth/login.spec.ts:37:7 › Autenticación y protección de rutas › muestra los mensajes de seguridad del acceso institucional
+  [chromium-lab-staff] › auth/login.spec.ts:49:7 › Autenticación y protección de rutas › muestra un error controlado con credenciales vacías
+  [chromium-lab-staff] › public/pages.spec.ts:4:7 › Pantallas públicas › muestra la página de inicio y sus accesos principales
+  [chromium-lab-staff] › public/pages.spec.ts:19:7 › Pantallas públicas › muestra el registro institucional y permite volver al login
+  [chromium-lab-staff] › roles/access.spec.ts:27:9 › admin: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-lab-staff] › roles/access.spec.ts:27:9 › lab_staff: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-lab-staff] › unit/email-policy.spec.ts:9:7 › Política de correo institucional › acepta correos válidos del dominio institucional
+  [chromium-lab-staff] › unit/email-policy.spec.ts:15:7 › Política de correo institucional › rechaza dominios externos o formatos incompletos
+  [chromium-lab-staff] › unit/email-policy.spec.ts:28:7 › Política de correo institucional › normaliza correo para comparaciones y persistencia
+  [chromium-lab-staff] › unit/roles.spec.ts:17:7 › Matriz de permisos por rol › admin y lab_staff pueden usar los módulos operativos
+  [chromium-lab-staff] › unit/roles.spec.ts:33:7 › Matriz de permisos por rol › teacher puede usar solicitudes grupales, pero no módulos operativos
+  [chromium-lab-staff] › unit/roles.spec.ts:43:7 › Matriz de permisos por rol › student puede usar solicitudes individuales, pero no crear grupos
+  [chromium-lab-staff] › unit/roles.spec.ts:53:7 › Matriz de permisos por rol › roles ausentes o inválidos no reciben permisos
+  [chromium-teacher] › auth/login.spec.ts:18:7 › Autenticación y protección de rutas › muestra el formulario de inicio de sesión
+  [chromium-teacher] › auth/login.spec.ts:30:7 › Autenticación y protección de rutas › redirige todas las rutas protegidas al login cuando no hay sesión
+  [chromium-teacher] › auth/login.spec.ts:37:7 › Autenticación y protección de rutas › muestra los mensajes de seguridad del acceso institucional
+  [chromium-teacher] › auth/login.spec.ts:49:7 › Autenticación y protección de rutas › muestra un error controlado con credenciales vacías
+  [chromium-teacher] › public/pages.spec.ts:4:7 › Pantallas públicas › muestra la página de inicio y sus accesos principales
+  [chromium-teacher] › public/pages.spec.ts:19:7 › Pantallas públicas › muestra el registro institucional y permite volver al login
+  [chromium-teacher] › roles/access.spec.ts:27:9 › admin: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-teacher] › roles/access.spec.ts:27:9 › lab_staff: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-teacher] › unit/email-policy.spec.ts:9:7 › Política de correo institucional › acepta correos válidos del dominio institucional
+  [chromium-teacher] › unit/email-policy.spec.ts:15:7 › Política de correo institucional › rechaza dominios externos o formatos incompletos
+  [chromium-teacher] › unit/email-policy.spec.ts:28:7 › Política de correo institucional › normaliza correo para comparaciones y persistencia
+  [chromium-teacher] › unit/roles.spec.ts:17:7 › Matriz de permisos por rol › admin y lab_staff pueden usar los módulos operativos
+  [chromium-teacher] › unit/roles.spec.ts:33:7 › Matriz de permisos por rol › teacher puede usar solicitudes grupales, pero no módulos operativos
+  [chromium-teacher] › unit/roles.spec.ts:43:7 › Matriz de permisos por rol › student puede usar solicitudes individuales, pero no crear grupos
+  [chromium-teacher] › unit/roles.spec.ts:53:7 › Matriz de permisos por rol › roles ausentes o inválidos no reciben permisos
+  [chromium-student] › auth/login.spec.ts:18:7 › Autenticación y protección de rutas › muestra el formulario de inicio de sesión
+  [chromium-student] › auth/login.spec.ts:30:7 › Autenticación y protección de rutas › redirige todas las rutas protegidas al login cuando no hay sesión
+  [chromium-student] › auth/login.spec.ts:37:7 › Autenticación y protección de rutas › muestra los mensajes de seguridad del acceso institucional
+  [chromium-student] › auth/login.spec.ts:49:7 › Autenticación y protección de rutas › muestra un error controlado con credenciales vacías
+  [chromium-student] › public/pages.spec.ts:4:7 › Pantallas públicas › muestra la página de inicio y sus accesos principales
+  [chromium-student] › public/pages.spec.ts:19:7 › Pantallas públicas › muestra el registro institucional y permite volver al login
+  [chromium-student] › roles/access.spec.ts:27:9 › admin: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-student] › roles/access.spec.ts:27:9 › lab_staff: acceso a módulos administrativos › puede iniciar sesión y abrir sus rutas principales
+  [chromium-student] › unit/email-policy.spec.ts:9:7 › Política de correo institucional › acepta correos válidos del dominio institucional
+  [chromium-student] › unit/email-policy.spec.ts:15:7 › Política de correo institucional › rechaza dominios externos o formatos incompletos
+  [chromium-student] › unit/email-policy.spec.ts:28:7 › Política de correo institucional › normaliza correo para comparaciones y persistencia
+  [chromium-student] › unit/roles.spec.ts:17:7 › Matriz de permisos por rol › admin y lab_staff pueden usar los módulos operativos
+  [chromium-student] › unit/roles.spec.ts:33:7 › Matriz de permisos por rol › teacher puede usar solicitudes grupales, pero no módulos operativos
+  [chromium-student] › unit/roles.spec.ts:43:7 › Matriz de permisos por rol › student puede usar solicitudes individuales, pero no crear grupos
+  [chromium-student] › unit/roles.spec.ts:53:7 › Matriz de permisos por rol › roles ausentes o inválidos no reciben permisos
+Total: 64 tests in 6 files

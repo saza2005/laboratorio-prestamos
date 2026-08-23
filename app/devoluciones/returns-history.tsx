@@ -196,7 +196,7 @@ export function ReturnsHistory({ entries, limit }: ReturnsHistoryProps) {
   const hasFilters = Boolean(search || resultFilter)
 
   return (
-    <section className="mt-8 rounded-2xl bg-white p-4 shadow sm:p-6">
+    <section className="surface-card mt-8 p-4 sm:p-6">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h2 className="text-xl font-semibold">Historial de devoluciones</h2>

@@ -4,6 +4,22 @@ export type AppRole =
   | 'teacher'
   | 'student'
 
+export const ASSIGNABLE_USER_ROLES = [
+  'student',
+  'teacher',
+  'lab_staff',
+] as const
+
+export type AssignableUserRole = (typeof ASSIGNABLE_USER_ROLES)[number]
+
+export function isAssignableUserRole(role: string): role is AssignableUserRole {
+  return ASSIGNABLE_USER_ROLES.some((allowedRole) => allowedRole === role)
+}
+
+export function canManageUsers(role?: string | null) {
+  return role === 'admin'
+}
+
 export function canManageInventory(role?: string | null) {
   return role === 'admin' || role === 'lab_staff'
 }

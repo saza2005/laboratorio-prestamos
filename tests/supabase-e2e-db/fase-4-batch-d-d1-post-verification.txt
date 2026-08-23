@@ -1,0 +1,6 @@
+maintenance_before: 1
+inventory_movements_before: 6
+unit_001_before: maintenance/unavailable
+unit_002_before: good/available
+E2E_MAINTENANCE_ACTIVE_01: ALREADY_EXISTS_MATCHING
+mode: dry-run; writes: 0; test_data_state: unchanged

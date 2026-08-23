@@ -8,6 +8,7 @@ import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { ADMIN_HISTORY_LIMIT, PROFILE_SELECT_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
+import { PageHeader } from '@/components/page-header'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 const RETURN_HISTORY_ITEM_FETCH_LIMIT = ADMIN_HISTORY_LIMIT * 5
@@ -200,12 +201,13 @@ export default async function DevolucionesPage() {
       }
     }) ?? []
   return (
-    <main className="min-h-screen bg-slate-50 p-4 sm:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Gestión de Devoluciones</h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+    <main className="app-page">
+      <div className="app-container">
+        <PageHeader
+          eyebrow="Operación"
+          title="Gestión de devoluciones"
+          description="Procesa devoluciones parciales o completas y revisa materiales pendientes."
+          meta={<>
               <span className="text-slate-600">Usuario: {profile?.full_name}</span>
               <span
                 className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
@@ -214,25 +216,23 @@ export default async function DevolucionesPage() {
               >
                 {formatUserRole(profile?.role)}
               </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
+            </>}
+          actions={<>
             <Link
               href="/dashboard"
-              className="inline-block rounded-lg bg-slate-800 px-4 py-2 text-center text-white transition hover:bg-slate-900"
+              className="button-secondary"
             >
               Volver al dashboard
             </Link>
 
             <Link
               href="/prestamos"
-              className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-center text-white transition hover:bg-blue-700"
+              className="button-primary"
             >
               Ir a préstamos
             </Link>
-          </div>
-        </div>
+          </>}
+        />
 
         <ModuleTabs
           tabs={[
@@ -253,7 +253,7 @@ export default async function DevolucionesPage() {
             },
           ]}
         >
-          <div className="rounded-2xl bg-white shadow p-6">
+          <div className="surface-card p-5 sm:p-6">
             <h2 className="text-xl font-semibold mb-4">Registrar devolución</h2>
 
             <ReturnForm loanItems={normalizedActiveLoanItems} />

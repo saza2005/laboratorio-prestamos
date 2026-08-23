@@ -1,0 +1,361 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",full_signature,"public.approve_request_transaction(p_request_id uuid, p_items jsonb)","public.approve_request_transaction(p_request_id uuid, p_items jsonb)",MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",return_type,void,void,MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",owner,postgres,postgres,MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|approve_request_transaction|p_request_id uuid, p_items jsonb",function_definition_hash,b76794c879d766474e693781be3f8553,b76794c879d766474e693781be3f8553,MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,full_signature,public.cancel_own_request_transaction(p_request_id uuid),public.cancel_own_request_transaction(p_request_id uuid),MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,return_type,uuid,uuid,MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,language,plpgsql,plpgsql,MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,owner,postgres,postgres,MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,volatility,volatile,volatile,MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+public|cancel_own_request_transaction|p_request_id uuid,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|cancel_own_request_transaction|p_request_id uuid,function_definition_hash,e70875c9b0685714f6a8858039a23e34,e70875c9b0685714f6a8858039a23e34,MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",full_signature,"public.create_inventory_item_transaction(p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text)","public.create_inventory_item_transaction(p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text)",MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",owner,postgres,postgres,MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_inventory_item_transaction|p_code text, p_name text, p_description text, p_category text, p_item_type text, p_track_individual boolean, p_stock_total integer, p_stock_available integer, p_status text, p_location text",function_definition_hash,eacbed52de46a6e3e26fdbedbfd433d0,eacbed52de46a6e3e26fdbedbfd433d0,MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",full_signature,"public.create_loan_transaction(p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid)","public.create_loan_transaction(p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid)",MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",return_type,void,void,MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",owner,postgres,postgres,MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",security_definer,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",proconfig,(none),(none),MATCH,MATCH,none,
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",authenticated_execute,f,true,DIFFERENCE,SECURITY_DIFFERENCE,high,Diferencia de permisos o propiedad de seguridad.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_transaction|p_user_id uuid, p_item_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",function_definition_hash,fefcea5581572a2892c2185a30e0d7c7,fefcea5581572a2892c2185a30e0d7c7,MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",full_signature,"public.create_loan_with_unit_transaction(p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid)","public.create_loan_with_unit_transaction(p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid)",MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",owner,postgres,postgres,MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",authenticated_execute,f,true,DIFFERENCE,SECURITY_DIFFERENCE,high,Diferencia de permisos o propiedad de seguridad.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_loan_with_unit_transaction|p_user_id uuid, p_item_id uuid, p_item_unit_id uuid, p_quantity integer, p_expected_return_date date, p_notes text, p_delivered_by uuid",function_definition_hash,768e4a0f2b5bbc204cdfb75ebcc3bdfa,768e4a0f2b5bbc204cdfb75ebcc3bdfa,MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",full_signature,"public.create_multi_item_loan_transaction(p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid)","public.create_multi_item_loan_transaction(p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid)",MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",owner,postgres,postgres,MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_multi_item_loan_transaction|p_user_id uuid, p_items jsonb, p_expected_return_date date, p_notes text, p_delivered_by uuid",function_definition_hash,d0049c15c80434de38426920fa88a3b0,d0049c15c80434de38426920fa88a3b0,MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",full_signature,"public.create_request_transaction(p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb)","public.create_request_transaction(p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb)",MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",owner,postgres,postgres,MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|create_request_transaction|p_purpose text, p_comments text, p_scheduled_return_date date, p_items jsonb, p_groups jsonb",function_definition_hash,1b0d7826844ee25d4d8dba36a940a8a4,1b0d7826844ee25d4d8dba36a940a8a4,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",full_signature,"public.deliver_approved_request(p_request_id uuid, p_delivered_by uuid, p_notes text)","public.deliver_approved_request(p_request_id uuid, p_delivered_by uuid, p_notes text)",MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",return_type,void,void,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",owner,postgres,postgres,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",proconfig,search_path=public,search_path=public,MATCH,MATCH,none,
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",authenticated_execute,f,true,DIFFERENCE,SECURITY_DIFFERENCE,high,Diferencia de permisos o propiedad de seguridad.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request|p_request_id uuid, p_delivered_by uuid, p_notes text",function_definition_hash,65507790216c5df11dcc86bb6da06300,65507790216c5df11dcc86bb6da06300,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",full_signature,"public.deliver_approved_request_with_units(p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text)","public.deliver_approved_request_with_units(p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text)",MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",owner,postgres,postgres,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",authenticated_execute,f,true,DIFFERENCE,SECURITY_DIFFERENCE,high,Diferencia de permisos o propiedad de seguridad.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_delivered_by uuid, p_notes text",function_definition_hash,8c7e3d74713f5c045c178262fe967dfd,8c7e3d74713f5c045c178262fe967dfd,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",full_signature,"public.deliver_approved_request_with_units(p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text)","public.deliver_approved_request_with_units(p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text)",MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",owner,postgres,postgres,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|deliver_approved_request_with_units|p_request_id uuid, p_units jsonb, p_items jsonb, p_delivered_by uuid, p_notes text",function_definition_hash,78e488eaefdfa3dbdb9a70a49ac33dd7,78e488eaefdfa3dbdb9a70a49ac33dd7,MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,full_signature,public.ensure_google_institutional_profile(),public.ensure_google_institutional_profile(),MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,return_type,TABLE(profile_role text),TABLE(profile_role text),MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,language,plpgsql,plpgsql,MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,owner,postgres,postgres,MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,volatility,volatile,volatile,MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,proconfig,search_path=public,search_path=public,MATCH,MATCH,none,
+public|ensure_google_institutional_profile|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|ensure_google_institutional_profile|,function_definition_hash,85da56c40288eb1724c241363f236de1,85da56c40288eb1724c241363f236de1,MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,full_signature,public.get_dashboard_inventory_summary(),public.get_dashboard_inventory_summary(),MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,return_type,"TABLE(total_items bigint, total_stock bigint, total_available bigint)","TABLE(total_items bigint, total_stock bigint, total_available bigint)",MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,language,sql,sql,MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,owner,postgres,postgres,MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,security_definer,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,volatility,stable,stable,MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+public|get_dashboard_inventory_summary|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_dashboard_inventory_summary|,function_definition_hash,1f69f4fab7707f4ddefe86a3ece3ae13,1f69f4fab7707f4ddefe86a3ece3ae13,MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",full_signature,"public.get_dashboard_operational_summary(p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date)","public.get_dashboard_operational_summary(p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date)",MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",return_type,"TABLE(total_items bigint, total_stock bigint, total_available bigint, active_loans bigint, partial_loans bigint, overdue_loans bigint, returned_loans bigint, pending_requests bigint, approved_requests bigint, out_of_stock_items bigint, critical_stock_items bigint, maintenance_data jsonb)","TABLE(total_items bigint, total_stock bigint, total_available bigint, active_loans bigint, partial_loans bigint, overdue_loans bigint, returned_loans bigint, pending_requests bigint, approved_requests bigint, out_of_stock_items bigint, critical_stock_items bigint, maintenance_data jsonb)",MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",owner,postgres,postgres,MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",volatility,stable,stable,MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|get_dashboard_operational_summary|p_start_date date, p_end_date date, p_current_date date, p_upcoming_limit_date date",function_definition_hash,1c3118b3a5a6d5f48a117372f78c60cb,1c3118b3a5a6d5f48a117372f78c60cb,MATCH,MATCH,none,
+public|get_my_role|,full_signature,public.get_my_role(),public.get_my_role(),MATCH,MATCH,none,
+public|get_my_role|,return_type,user_role,user_role,MATCH,MATCH,none,
+public|get_my_role|,language,sql,sql,MATCH,MATCH,none,
+public|get_my_role|,owner,postgres,postgres,MATCH,MATCH,none,
+public|get_my_role|,security_definer,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,volatility,stable,stable,MATCH,MATCH,none,
+public|get_my_role|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|get_my_role|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,proconfig,(none),(none),MATCH,MATCH,none,
+public|get_my_role|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|get_my_role|,function_definition_hash,fdabf50bd48e2111c8f4ba4106a4c706,fdabf50bd48e2111c8f4ba4106a4c706,MATCH,MATCH,none,
+public|handle_new_user|,full_signature,public.handle_new_user(),public.handle_new_user(),MATCH,MATCH,none,
+public|handle_new_user|,return_type,trigger,trigger,MATCH,MATCH,none,
+public|handle_new_user|,language,plpgsql,plpgsql,MATCH,MATCH,none,
+public|handle_new_user|,owner,postgres,postgres,MATCH,MATCH,none,
+public|handle_new_user|,security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,volatility,volatile,volatile,MATCH,MATCH,none,
+public|handle_new_user|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|handle_new_user|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,proconfig,search_path=public,search_path=public,MATCH,MATCH,none,
+public|handle_new_user|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|handle_new_user|,function_definition_hash,f45b7922824eaf5cd0b0ccd2ffca2b5f,f45b7922824eaf5cd0b0ccd2ffca2b5f,MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",full_signature,"public.increment_stock(item_id_input uuid, quantity_input integer)","public.increment_stock(item_id_input uuid, quantity_input integer)",MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",return_type,void,void,MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",owner,postgres,postgres,MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",security_definer,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|increment_stock|item_id_input uuid, quantity_input integer",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|increment_stock|item_id_input uuid, quantity_input integer",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|increment_stock|item_id_input uuid, quantity_input integer",proconfig,(none),(none),MATCH,MATCH,none,
+"public|increment_stock|item_id_input uuid, quantity_input integer",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|increment_stock|item_id_input uuid, quantity_input integer",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|increment_stock|item_id_input uuid, quantity_input integer",authenticated_execute,f,true,DIFFERENCE,SECURITY_DIFFERENCE,high,Diferencia de permisos o propiedad de seguridad.
+"public|increment_stock|item_id_input uuid, quantity_input integer",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|increment_stock|item_id_input uuid, quantity_input integer",function_definition_hash,55a5fef369aed5a8998c1c2ad6513174,55a5fef369aed5a8998c1c2ad6513174,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,full_signature,public.is_admin_or_lab_staff(),public.is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,return_type,boolean,boolean,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,language,sql,sql,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,owner,postgres,postgres,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,volatility,stable,stable,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,proconfig,search_path=public,search_path=public,MATCH,MATCH,none,
+public|is_admin_or_lab_staff|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_admin_or_lab_staff|,function_definition_hash,b13e9cff979639ea512d694e6540eba6,b13e9cff979639ea512d694e6540eba6,MATCH,MATCH,none,
+public|is_teacher|,full_signature,public.is_teacher(),public.is_teacher(),MATCH,MATCH,none,
+public|is_teacher|,return_type,boolean,boolean,MATCH,MATCH,none,
+public|is_teacher|,language,sql,sql,MATCH,MATCH,none,
+public|is_teacher|,owner,postgres,postgres,MATCH,MATCH,none,
+public|is_teacher|,security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,volatility,volatile,volatile,MATCH,MATCH,none,
+public|is_teacher|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|is_teacher|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,proconfig,search_path=public,search_path=public,MATCH,MATCH,none,
+public|is_teacher|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|is_teacher|,function_definition_hash,1c409144bc6dc9448f67cf0f78d37a41,1c409144bc6dc9448f67cf0f78d37a41,MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",full_signature,"public.register_full_return_transaction(p_loan_id uuid, p_notes text, p_received_by uuid)","public.register_full_return_transaction(p_loan_id uuid, p_notes text, p_received_by uuid)",MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",owner,postgres,postgres,MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_full_return_transaction|p_loan_id uuid, p_notes text, p_received_by uuid",function_definition_hash,c305ad91e98d6d600d3fc475e537e127,c305ad91e98d6d600d3fc475e537e127,MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",full_signature,"public.register_maintenance_record_transaction(p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean)","public.register_maintenance_record_transaction(p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean)",MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",owner,postgres,postgres,MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_maintenance_record_transaction|p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",function_definition_hash,d4c5f78381475c429bb9c0eac7babb80,d4c5f78381475c429bb9c0eac7babb80,MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",full_signature,"public.register_return_transaction(p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid)","public.register_return_transaction(p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid)",MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",return_type,uuid,uuid,MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",owner,postgres,postgres,MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|register_return_transaction|p_loan_item_id uuid, p_quantity_ok integer, p_quantity_damaged integer, p_quantity_missing integer, p_notes text, p_received_by uuid",function_definition_hash,9f9026470a76473126c0690371815152,9f9026470a76473126c0690371815152,MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",full_signature,"public.reject_request_transaction(p_request_id uuid, p_rejection_reason text)","public.reject_request_transaction(p_request_id uuid, p_rejection_reason text)",MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",return_type,void,void,MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",owner,postgres,postgres,MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|reject_request_transaction|p_request_id uuid, p_rejection_reason text",function_definition_hash,e5ef24396b56cafe8f5d8630eb1a1a02,e5ef24396b56cafe8f5d8630eb1a1a02,MATCH,MATCH,none,
+public|set_updated_at|,full_signature,public.set_updated_at(),public.set_updated_at(),MATCH,MATCH,none,
+public|set_updated_at|,return_type,trigger,trigger,MATCH,MATCH,none,
+public|set_updated_at|,language,plpgsql,plpgsql,MATCH,MATCH,none,
+public|set_updated_at|,owner,postgres,postgres,MATCH,MATCH,none,
+public|set_updated_at|,security_definer,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,volatility,volatile,volatile,MATCH,MATCH,none,
+public|set_updated_at|,parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+public|set_updated_at|,strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,proconfig,(none),(none),MATCH,MATCH,none,
+public|set_updated_at|,public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|set_updated_at|,function_definition_hash,e0c972e313aae281103db27f7e8d74db,e0c972e313aae281103db27f7e8d74db,MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",full_signature,"public.update_item_unit_status_transaction(p_unit_id uuid, p_condition text, p_notes text)","public.update_item_unit_status_transaction(p_unit_id uuid, p_condition text, p_notes text)",MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",return_type,void,void,MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",language,plpgsql,plpgsql,MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",owner,postgres,postgres,MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",security_definer,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",volatility,volatile,volatile,MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",parallel_safety,unsafe,unsafe,MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",strict,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",leakproof,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",proconfig,"search_path=public, pg_temp","search_path=public, pg_temp",MATCH,MATCH,none,
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",public_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",anon_execute,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",authenticated_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",service_role_execute,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+"public|update_item_unit_status_transaction|p_unit_id uuid, p_condition text, p_notes text",function_definition_hash,e9a7091dcda86c78866f3637c2f67e6d,e9a7091dcda86c78866f3637c2f67e6d,MATCH,MATCH,none,

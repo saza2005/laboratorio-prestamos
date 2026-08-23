@@ -1,0 +1,11 @@
+loans_before: 0
+loan_items_before: 0
+returns_before: 0
+return_items_before: 0
+actor: e2e_lab_staff
+p_delivered_by_matches_actor: yes
+request_status: approved
+p_units: []
+return_type: uuid
+E2E_LOAN_ACTIVE: WOULD_CREATE
+mode: dry-run; writes: 0; test_data_state: unchanged

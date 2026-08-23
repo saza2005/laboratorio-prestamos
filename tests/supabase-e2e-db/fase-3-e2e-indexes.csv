@@ -1,0 +1,49 @@
+table_schema,table_name,index_name,index_definition,is_unique,is_primary,is_valid,is_ready,predicate
+public,audit_logs,audit_logs_pkey,CREATE UNIQUE INDEX audit_logs_pkey ON public.audit_logs USING btree (id),true,true,true,true,null
+public,audit_logs,idx_audit_logs_entity,CREATE INDEX idx_audit_logs_entity ON public.audit_logs USING btree (entity),false,false,true,true,null
+public,audit_logs,idx_audit_logs_user_id,CREATE INDEX idx_audit_logs_user_id ON public.audit_logs USING btree (user_id),false,false,true,true,null
+public,inventory_import_items_staging,inventory_import_items_staging_pkey,CREATE UNIQUE INDEX inventory_import_items_staging_pkey ON public.inventory_import_items_staging USING btree (code),true,true,true,true,null
+public,inventory_import_units_staging,inventory_import_units_staging_pkey,CREATE UNIQUE INDEX inventory_import_units_staging_pkey ON public.inventory_import_units_staging USING btree (asset_code),true,true,true,true,null
+public,inventory_import_units_staging,inventory_import_units_staging_serial_code_key,CREATE UNIQUE INDEX inventory_import_units_staging_serial_code_key ON public.inventory_import_units_staging USING btree (serial_code),true,false,true,true,null
+public,inventory_movements,idx_inventory_movements_created_at,CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements USING btree (created_at DESC),false,false,true,true,null
+public,inventory_movements,idx_inventory_movements_created_by,CREATE INDEX idx_inventory_movements_created_by ON public.inventory_movements USING btree (created_by),false,false,true,true,null
+public,inventory_movements,idx_inventory_movements_item_id,CREATE INDEX idx_inventory_movements_item_id ON public.inventory_movements USING btree (item_id),false,false,true,true,null
+public,inventory_movements,idx_inventory_movements_reference_id,CREATE INDEX idx_inventory_movements_reference_id ON public.inventory_movements USING btree (reference_id),false,false,true,true,null
+public,inventory_movements,inventory_movements_pkey,CREATE UNIQUE INDEX inventory_movements_pkey ON public.inventory_movements USING btree (id),true,true,true,true,null
+public,item_units,idx_item_units_availability,CREATE INDEX idx_item_units_availability ON public.item_units USING btree (availability_status),false,false,true,true,null
+public,item_units,idx_item_units_item_id,CREATE INDEX idx_item_units_item_id ON public.item_units USING btree (item_id),false,false,true,true,null
+public,item_units,idx_item_units_item_id_availability_status,"CREATE INDEX idx_item_units_item_id_availability_status ON public.item_units USING btree (item_id, availability_status)",false,false,true,true,null
+public,item_units,item_units_pkey,CREATE UNIQUE INDEX item_units_pkey ON public.item_units USING btree (id),true,true,true,true,null
+public,item_units,item_units_qr_code_key,CREATE UNIQUE INDEX item_units_qr_code_key ON public.item_units USING btree (qr_code),true,false,true,true,null
+public,item_units,item_units_serial_code_key,CREATE UNIQUE INDEX item_units_serial_code_key ON public.item_units USING btree (serial_code),true,false,true,true,null
+public,items,idx_items_category,CREATE INDEX idx_items_category ON public.items USING btree (category),false,false,true,true,null
+public,items,idx_items_status,CREATE INDEX idx_items_status ON public.items USING btree (status),false,false,true,true,null
+public,items,items_code_key,CREATE UNIQUE INDEX items_code_key ON public.items USING btree (code),true,false,true,true,null
+public,items,items_pkey,CREATE UNIQUE INDEX items_pkey ON public.items USING btree (id),true,true,true,true,null
+public,loan_group_items,loan_group_items_pkey,CREATE UNIQUE INDEX loan_group_items_pkey ON public.loan_group_items USING btree (id),true,true,true,true,null
+public,loan_groups,loan_groups_pkey,CREATE UNIQUE INDEX loan_groups_pkey ON public.loan_groups USING btree (id),true,true,true,true,null
+public,loan_items,idx_loan_items_loan_id,CREATE INDEX idx_loan_items_loan_id ON public.loan_items USING btree (loan_id),false,false,true,true,null
+public,loan_items,loan_items_pkey,CREATE UNIQUE INDEX loan_items_pkey ON public.loan_items USING btree (id),true,true,true,true,null
+public,loans,idx_loans_expected_return_date,CREATE INDEX idx_loans_expected_return_date ON public.loans USING btree (expected_return_date),false,false,true,true,null
+public,loans,idx_loans_status,CREATE INDEX idx_loans_status ON public.loans USING btree (status),false,false,true,true,null
+public,loans,idx_loans_user_id,CREATE INDEX idx_loans_user_id ON public.loans USING btree (user_id),false,false,true,true,null
+public,loans,loans_pkey,CREATE UNIQUE INDEX loans_pkey ON public.loans USING btree (id),true,true,true,true,null
+public,loans,loans_request_id_key,CREATE UNIQUE INDEX loans_request_id_key ON public.loans USING btree (request_id),true,false,true,true,null
+public,maintenance_records,idx_maintenance_records_item_unit_id,CREATE INDEX idx_maintenance_records_item_unit_id ON public.maintenance_records USING btree (item_unit_id),false,false,true,true,null
+public,maintenance_records,idx_maintenance_records_maintenance_date,CREATE INDEX idx_maintenance_records_maintenance_date ON public.maintenance_records USING btree (maintenance_date),false,false,true,true,null
+public,maintenance_records,maintenance_records_pkey,CREATE UNIQUE INDEX maintenance_records_pkey ON public.maintenance_records USING btree (id),true,true,true,true,null
+public,profiles,idx_profiles_role,CREATE INDEX idx_profiles_role ON public.profiles USING btree (role),false,false,true,true,null
+public,profiles,profiles_email_key,CREATE UNIQUE INDEX profiles_email_key ON public.profiles USING btree (email),true,false,true,true,null
+public,profiles,profiles_pkey,CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id),true,true,true,true,null
+public,request_group_items,request_group_items_pkey,CREATE UNIQUE INDEX request_group_items_pkey ON public.request_group_items USING btree (id),true,true,true,true,null
+public,request_groups,request_groups_pkey,CREATE UNIQUE INDEX request_groups_pkey ON public.request_groups USING btree (id),true,true,true,true,null
+public,request_items,idx_request_items_request_id,CREATE INDEX idx_request_items_request_id ON public.request_items USING btree (request_id),false,false,true,true,null
+public,request_items,request_items_pkey,CREATE UNIQUE INDEX request_items_pkey ON public.request_items USING btree (id),true,true,true,true,null
+public,requests,idx_requests_requested_at,CREATE INDEX idx_requests_requested_at ON public.requests USING btree (requested_at),false,false,true,true,null
+public,requests,idx_requests_status,CREATE INDEX idx_requests_status ON public.requests USING btree (status),false,false,true,true,null
+public,requests,idx_requests_user_id,CREATE INDEX idx_requests_user_id ON public.requests USING btree (user_id),false,false,true,true,null
+public,requests,requests_pkey,CREATE UNIQUE INDEX requests_pkey ON public.requests USING btree (id),true,true,true,true,null
+public,return_items,idx_return_items_created_at,CREATE INDEX idx_return_items_created_at ON public.return_items USING btree (created_at),false,false,true,true,null
+public,return_items,return_items_pkey,CREATE UNIQUE INDEX return_items_pkey ON public.return_items USING btree (id),true,true,true,true,null
+public,returns,idx_returns_loan_id,CREATE INDEX idx_returns_loan_id ON public.returns USING btree (loan_id),false,false,true,true,null
+public,returns,returns_pkey,CREATE UNIQUE INDEX returns_pkey ON public.returns USING btree (id),true,true,true,true,null

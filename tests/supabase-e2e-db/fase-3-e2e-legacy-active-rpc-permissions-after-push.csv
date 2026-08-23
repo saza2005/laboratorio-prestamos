@@ -1,0 +1,8 @@
+function_signature,category,public_execute,anon_execute,authenticated_execute,service_role_execute
+"public.create_multi_item_loan_transaction(uuid, jsonb, date, text, uuid)",active,false,false,true,true
+"public.deliver_approved_request_with_units(uuid, jsonb, jsonb, uuid, text)",active,false,false,true,true
+"public.create_loan_transaction(uuid, uuid, integer, date, text, uuid)",legacy,false,false,false,true
+"public.create_loan_with_unit_transaction(uuid, uuid, uuid, integer, date, text, uuid)",legacy,false,false,false,true
+"public.deliver_approved_request_with_units(uuid, jsonb, uuid, text)",legacy,false,false,false,true
+"public.deliver_approved_request(uuid, uuid, text)",legacy,false,false,false,true
+"public.increment_stock(uuid, integer)",legacy,false,false,false,true

@@ -1,0 +1,9 @@
+requests_before: 0
+request_items_before: 0
+request_groups_before: 0
+request_group_items_before: 0
+E2E_REQUEST_STUDENT_PENDING: WOULD_CREATE
+E2E_REQUEST_STUDENT_REJECTED: WOULD_CREATE_AND_TRANSITION
+E2E_REQUEST_STUDENT_APPROVED: WOULD_CREATE_AND_TRANSITION
+E2E_REQUEST_TEACHER_GROUP: WOULD_CREATE
+mode: dry-run; writes: 0; test_data_state: unchanged

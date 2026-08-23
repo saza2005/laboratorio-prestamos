@@ -122,13 +122,14 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
         <input type="hidden" name="loan_item_id" value={selectedId} />
       </div>
 
-      {selectedLoanItem && (
-        <div className="md:col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <h3 className="font-semibold text-slate-800 mb-2">
-            Resumen del ítem seleccionado
-          </h3>
+      <div className="md:col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        {selectedLoanItem ? (
+          <>
+            <h3 className="font-semibold text-slate-800 mb-2">
+              Resumen del ítem seleccionado
+            </h3>
 
-          <div className="grid md:grid-cols-2 gap-3 text-sm text-slate-700">
+            <div className="grid md:grid-cols-2 gap-3 text-sm text-slate-700">
             <p>
               <span className="font-medium">Ítem:</span>{' '}
               {selectedLoanItem.items?.name ?? '-'} [{selectedLoanItem.items?.code ?? '-'}]
@@ -162,9 +163,9 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
             <p className="md:col-span-2 text-blue-700 font-semibold">
               Pendiente actual: {pendienteActual}
             </p>
-          </div>
+            </div>
 
-          <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => {
@@ -188,116 +189,137 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
             >
               Limpiar cantidades
             </button>
+            </div>
+          </>
+        ) : (
+          <div className="py-2 text-sm text-slate-600">
+            <h3 className="font-semibold text-slate-800">
+              Resumen del ítem
+            </h3>
+            <p className="mt-1">
+              Selecciona un ítem prestado para consultar su detalle y registrar
+              las cantidades de la devolución.
+            </p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {isIndividualUnit ? (
-        <fieldset className="md:col-span-2">
-          <legend className="mb-2 block text-sm font-medium">
-            Estado de la unidad recibida
-          </legend>
-          <div className="grid gap-2 sm:grid-cols-3">
-            {[
-              { value: 'ok', label: 'Buen estado' },
-              { value: 'damaged', label: 'Dañada' },
-              { value: 'missing', label: 'Faltante' },
-            ].map((option) => {
-              const checked =
-                (option.value === 'ok' && quantityOk === 1) ||
-                (option.value === 'damaged' && quantityDamaged === 1) ||
-                (option.value === 'missing' && quantityMissing === 1)
+      <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="mb-3 font-semibold text-slate-800">
+          Cantidades de la devolución
+        </h3>
 
-              return (
-                <label
-                  key={option.value}
-                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm hover:bg-slate-50"
-                >
-                  <input
-                    type="radio"
-                    name="individual_result"
-                    value={option.value}
-                    checked={checked}
-                    onChange={() =>
-                      setIndividualResult(
-                        option.value as 'ok' | 'damaged' | 'missing'
-                      )
-                    }
-                  />
-                  {option.label}
-                </label>
-              )
-            })}
-          </div>
-          <input type="hidden" name="quantity_ok" value={quantityOk} />
-          <input
-            type="hidden"
-            name="quantity_damaged"
-            value={quantityDamaged}
-          />
-          <input
-            type="hidden"
-            name="quantity_missing"
-            value={quantityMissing}
-          />
-        </fieldset>
-      ) : (
-        <>
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Cantidad en buen estado
-            </label>
+        {!selectedLoanItem ? (
+          <p className="text-sm text-slate-600">
+            Las opciones se habilitarán después de seleccionar un ítem.
+          </p>
+        ) : isIndividualUnit ? (
+          <fieldset>
+            <legend className="mb-2 block text-sm font-medium">
+              Estado de la unidad recibida
+            </legend>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[
+                { value: 'ok', label: 'Buen estado' },
+                { value: 'damaged', label: 'Dañada' },
+                { value: 'missing', label: 'Faltante' },
+              ].map((option) => {
+                const checked =
+                  (option.value === 'ok' && quantityOk === 1) ||
+                  (option.value === 'damaged' && quantityDamaged === 1) ||
+                  (option.value === 'missing' && quantityMissing === 1)
+
+                return (
+                  <label
+                    key={option.value}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm transition hover:bg-slate-50"
+                  >
+                    <input
+                      type="radio"
+                      name="individual_result"
+                      value={option.value}
+                      checked={checked}
+                      onChange={() =>
+                        setIndividualResult(
+                          option.value as 'ok' | 'damaged' | 'missing'
+                        )
+                      }
+                    />
+                    {option.label}
+                  </label>
+                )
+              })}
+            </div>
+            <input type="hidden" name="quantity_ok" value={quantityOk} />
             <input
-              name="quantity_ok"
-              type="number"
-              min="0"
-              max={pendienteActual}
-              step="1"
-              value={quantityOk}
-              onChange={(e) =>
-                setQuantityOk(Math.max(0, Number(e.target.value) || 0))
-              }
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Cantidad dañada
-            </label>
-            <input
+              type="hidden"
               name="quantity_damaged"
-              type="number"
-              min="0"
-              max={pendienteActual}
-              step="1"
               value={quantityDamaged}
-              onChange={(e) =>
-                setQuantityDamaged(Math.max(0, Number(e.target.value) || 0))
-              }
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Cantidad faltante
-            </label>
             <input
+              type="hidden"
               name="quantity_missing"
-              type="number"
-              min="0"
-              max={pendienteActual}
-              step="1"
               value={quantityMissing}
-              onChange={(e) =>
-                setQuantityMissing(Math.max(0, Number(e.target.value) || 0))
-              }
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
+          </fieldset>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Cantidad en buen estado
+              </label>
+              <input
+                name="quantity_ok"
+                type="number"
+                min="0"
+                max={pendienteActual}
+                step="1"
+                value={quantityOk}
+                onChange={(e) =>
+                  setQuantityOk(Math.max(0, Number(e.target.value) || 0))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Cantidad dañada
+              </label>
+              <input
+                name="quantity_damaged"
+                type="number"
+                min="0"
+                max={pendienteActual}
+                step="1"
+                value={quantityDamaged}
+                onChange={(e) =>
+                  setQuantityDamaged(Math.max(0, Number(e.target.value) || 0))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Cantidad faltante
+              </label>
+              <input
+                name="quantity_missing"
+                type="number"
+                min="0"
+                max={pendienteActual}
+                step="1"
+                value={quantityMissing}
+                onChange={(e) =>
+                  setQuantityMissing(Math.max(0, Number(e.target.value) || 0))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              />
+            </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
 
       <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-4 text-sm">
         <h3 className="font-semibold text-slate-800 mb-2">

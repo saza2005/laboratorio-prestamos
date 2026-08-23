@@ -1,0 +1,282 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|audit_logs|audit_logs_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|audit_logs|audit_logs_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|audit_logs|audit_logs_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|audit_logs|audit_logs_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs|audit_logs_insert_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|audit_logs|audit_logs_select_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|audit_logs|audit_logs_select_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|audit_logs|audit_logs_select_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|audit_logs|audit_logs_select_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|audit_logs|audit_logs_select_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements|inventory_movements_insert_staff,with_check_expression,(is_admin_or_lab_staff() AND (auth.uid() = created_by)),(is_admin_or_lab_staff() AND (auth.uid() = created_by)),MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_select_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_select_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_select_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_select_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|inventory_movements|inventory_movements_select_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|Allow admin insert units,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|item_units|Allow admin insert units,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|item_units|Allow admin insert units,command,INSERT,INSERT,MATCH,MATCH,none,
+public|item_units|Allow admin insert units,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|Allow admin insert units,with_check_expression,"(EXISTS ( SELECT 1
+   FROM profiles
+  WHERE ((profiles.id = auth.uid()) AND (profiles.role = ANY (ARRAY['admin'::user_role, 'lab_staff'::user_role])))))","(EXISTS ( SELECT 1
+   FROM profiles
+  WHERE ((profiles.id = auth.uid()) AND (profiles.role = ANY (ARRAY['admin'::user_role, 'lab_staff'::user_role])))))",MATCH,MATCH,none,
+public|item_units|item_units_manage_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|item_units|item_units_manage_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|item_units|item_units_manage_staff,command,ALL,ALL,MATCH,MATCH,none,
+public|item_units|item_units_manage_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|item_units|item_units_manage_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|item_units|item_units_select_authenticated,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|item_units|item_units_select_authenticated,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|item_units|item_units_select_authenticated,command,SELECT,SELECT,MATCH,MATCH,none,
+public|item_units|item_units_select_authenticated,using_expression,true,true,MATCH,MATCH,none,
+public|item_units|item_units_select_authenticated,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_manage_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|items|items_manage_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|items|items_manage_staff,command,ALL,ALL,MATCH,MATCH,none,
+public|items|items_manage_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|items|items_manage_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|items|items_select_authenticated,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|items|items_select_authenticated,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|items|items_select_authenticated,command,SELECT,SELECT,MATCH,MATCH,none,
+public|items|items_select_authenticated,using_expression,true,true,MATCH,MATCH,none,
+public|items|items_select_authenticated,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|items_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|items|items_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|items|items_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|items|items_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|items|items_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_manage_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_manage_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_manage_staff,command,ALL,ALL,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_manage_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_manage_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_select_own_or_staff,using_expression,"(is_admin_or_lab_staff() OR (EXISTS ( SELECT 1
+   FROM (loan_groups lg
+     JOIN loans l ON ((l.id = lg.loan_id)))
+  WHERE ((lg.id = loan_group_items.loan_group_id) AND (l.user_id = auth.uid())))))","(is_admin_or_lab_staff() OR (EXISTS ( SELECT 1
+   FROM (loan_groups lg
+     JOIN loans l ON ((l.id = lg.loan_id)))
+  WHERE ((lg.id = loan_group_items.loan_group_id) AND (l.user_id = auth.uid())))))",MATCH,MATCH,none,
+public|loan_group_items|loan_group_items_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups|loan_groups_manage_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_groups|loan_groups_manage_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_groups|loan_groups_manage_staff,command,ALL,ALL,MATCH,MATCH,none,
+public|loan_groups|loan_groups_manage_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_groups|loan_groups_manage_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_groups|loan_groups_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_groups|loan_groups_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_groups|loan_groups_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|loan_groups|loan_groups_select_own_or_staff,using_expression,"(is_admin_or_lab_staff() OR (EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = loan_groups.loan_id) AND (l.user_id = auth.uid())))))","(is_admin_or_lab_staff() OR (EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = loan_groups.loan_id) AND (l.user_id = auth.uid())))))",MATCH,MATCH,none,
+public|loan_groups|loan_groups_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_items|loan_items_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_items|loan_items_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|loan_items|loan_items_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_insert_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_items|loan_items_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_items|loan_items_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_items|loan_items_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|loan_items|loan_items_select_own_or_staff,using_expression,"(EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = loan_items.loan_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = loan_items.loan_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|loan_items|loan_items_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items|loan_items_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loan_items|loan_items_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loan_items|loan_items_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|loan_items|loan_items_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loan_items|loan_items_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loans|loans_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loans|loans_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loans|loans_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|loans|loans_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_insert_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loans|loans_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loans|loans_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loans|loans_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|loans|loans_select_own_or_staff,using_expression,((user_id = auth.uid()) OR is_admin_or_lab_staff()),((user_id = auth.uid()) OR is_admin_or_lab_staff()),MATCH,MATCH,none,
+public|loans|loans_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|loans_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|loans|loans_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|loans|loans_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|loans|loans_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|loans|loans_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_delete_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_delete_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_delete_staff,command,DELETE,DELETE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_delete_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_delete_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_insert_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_select_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_select_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_select_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_select_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_select_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records|maintenance_records_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|maintenance_records|maintenance_records_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|profiles|profiles_insert_own,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|profiles|profiles_insert_own,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|profiles|profiles_insert_own,command,INSERT,INSERT,MATCH,MATCH,none,
+public|profiles|profiles_insert_own,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_insert_own,with_check_expression,(id = auth.uid()),(id = auth.uid()),MATCH,MATCH,none,
+public|profiles|profiles_select_own,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|profiles|profiles_select_own,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|profiles|profiles_select_own,command,SELECT,SELECT,MATCH,MATCH,none,
+public|profiles|profiles_select_own,using_expression,(id = auth.uid()),(id = auth.uid()),MATCH,MATCH,none,
+public|profiles|profiles_select_own,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_select_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|profiles|profiles_select_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|profiles|profiles_select_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|profiles|profiles_select_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|profiles|profiles_select_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_select_students_for_teachers,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|profiles|profiles_select_students_for_teachers,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|profiles|profiles_select_students_for_teachers,command,SELECT,SELECT,MATCH,MATCH,none,
+public|profiles|profiles_select_students_for_teachers,using_expression,((role = 'student'::user_role) AND is_teacher()),((role = 'student'::user_role) AND is_teacher()),MATCH,MATCH,none,
+public|profiles|profiles_select_students_for_teachers,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|profiles_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|profiles|profiles_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|profiles|profiles_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|profiles|profiles_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|profiles|profiles_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|request_group_items|request_group_items_insert_teacher_own_request_group,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_group_items|request_group_items_insert_teacher_own_request_group,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_group_items|request_group_items_insert_teacher_own_request_group,command,INSERT,INSERT,MATCH,MATCH,none,
+public|request_group_items|request_group_items_insert_teacher_own_request_group,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items|request_group_items_insert_teacher_own_request_group,with_check_expression,"(is_teacher() AND (EXISTS ( SELECT 1
+   FROM (request_groups rg
+     JOIN requests r ON ((r.id = rg.request_id)))
+  WHERE ((rg.id = request_group_items.request_group_id) AND (r.user_id = auth.uid())))))","(is_teacher() AND (EXISTS ( SELECT 1
+   FROM (request_groups rg
+     JOIN requests r ON ((r.id = rg.request_id)))
+  WHERE ((rg.id = request_group_items.request_group_id) AND (r.user_id = auth.uid())))))",MATCH,MATCH,none,
+public|request_group_items|request_group_items_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_group_items|request_group_items_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_group_items|request_group_items_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|request_group_items|request_group_items_select_own_or_staff,using_expression,"(EXISTS ( SELECT 1
+   FROM (request_groups rg
+     JOIN requests r ON ((r.id = rg.request_id)))
+  WHERE ((rg.id = request_group_items.request_group_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM (request_groups rg
+     JOIN requests r ON ((r.id = rg.request_id)))
+  WHERE ((rg.id = request_group_items.request_group_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|request_group_items|request_group_items_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_insert_teacher_own_request,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_groups|request_groups_insert_teacher_own_request,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_groups|request_groups_insert_teacher_own_request,command,INSERT,INSERT,MATCH,MATCH,none,
+public|request_groups|request_groups_insert_teacher_own_request,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups|request_groups_insert_teacher_own_request,with_check_expression,"(is_teacher() AND (EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_groups.request_id) AND (r.user_id = auth.uid())))))","(is_teacher() AND (EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_groups.request_id) AND (r.user_id = auth.uid())))))",MATCH,MATCH,none,
+public|request_groups|request_groups_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_groups|request_groups_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_groups|request_groups_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|request_groups|request_groups_select_own_or_staff,using_expression,"(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_groups.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_groups.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|request_groups|request_groups_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_insert_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_items|request_items_insert_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_items|request_items_insert_own_or_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|request_items|request_items_insert_own_or_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_insert_own_or_staff,with_check_expression,"(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_items.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_items.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|request_items|request_items_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_items|request_items_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_items|request_items_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|request_items|request_items_select_own_or_staff,using_expression,"(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_items.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_items.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|request_items|request_items_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items|request_items_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|request_items|request_items_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|request_items|request_items_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|request_items|request_items_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|request_items|request_items_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|requests|requests_insert_own,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|requests|requests_insert_own,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|requests|requests_insert_own,command,INSERT,INSERT,MATCH,MATCH,none,
+public|requests|requests_insert_own,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_insert_own,with_check_expression,(user_id = auth.uid()),(user_id = auth.uid()),MATCH,MATCH,none,
+public|requests|requests_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|requests|requests_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|requests|requests_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|requests|requests_select_own_or_staff,using_expression,((user_id = auth.uid()) OR is_admin_or_lab_staff()),((user_id = auth.uid()) OR is_admin_or_lab_staff()),MATCH,MATCH,none,
+public|requests|requests_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|requests_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|requests|requests_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|requests|requests_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|requests|requests_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|requests|requests_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|return_items|return_items_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|return_items|return_items_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|return_items|return_items_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|return_items|return_items_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_insert_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|return_items|return_items_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|return_items|return_items_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|return_items|return_items_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|return_items|return_items_select_own_or_staff,using_expression,"(EXISTS ( SELECT 1
+   FROM (returns rt
+     JOIN loans l ON ((l.id = rt.loan_id)))
+  WHERE ((rt.id = return_items.return_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM (returns rt
+     JOIN loans l ON ((l.id = rt.loan_id)))
+  WHERE ((rt.id = return_items.return_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|return_items|return_items_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items|return_items_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|return_items|return_items_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|return_items|return_items_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|return_items|return_items_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|return_items|return_items_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|returns|returns_insert_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|returns|returns_insert_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|returns|returns_insert_staff,command,INSERT,INSERT,MATCH,MATCH,none,
+public|returns|returns_insert_staff,using_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_insert_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|returns|returns_select_own_or_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|returns|returns_select_own_or_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|returns|returns_select_own_or_staff,command,SELECT,SELECT,MATCH,MATCH,none,
+public|returns|returns_select_own_or_staff,using_expression,"(EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = returns.loan_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))","(EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = returns.loan_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",MATCH,MATCH,none,
+public|returns|returns_select_own_or_staff,with_check_expression,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns|returns_update_staff,permissive,PERMISSIVE,PERMISSIVE,MATCH,MATCH,none,
+public|returns|returns_update_staff,roles,authenticated,authenticated,MATCH,MATCH,none,
+public|returns|returns_update_staff,command,UPDATE,UPDATE,MATCH,MATCH,none,
+public|returns|returns_update_staff,using_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,
+public|returns|returns_update_staff,with_check_expression,is_admin_or_lab_staff(),is_admin_or_lab_staff(),MATCH,MATCH,none,

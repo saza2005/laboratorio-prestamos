@@ -73,7 +73,7 @@ export function DetailDrawer({
 
   return (
     <div
-      className="fixed inset-0 z-40 bg-slate-900/40"
+      className="fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[2px]"
       onClick={onClose}
       role="presentation"
     >
@@ -81,7 +81,7 @@ export function DetailDrawer({
         ref={panelRef}
         aria-label="Detalle"
         aria-modal="true"
-        className={`ml-auto flex h-full w-full flex-col overflow-y-auto bg-white p-4 shadow-2xl outline-none sm:p-6 ${maxWidthClassName}`}
+        className={`ml-auto flex h-full w-full flex-col overflow-y-auto border-l border-slate-200 bg-white p-4 shadow-2xl outline-none sm:p-6 ${maxWidthClassName}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         tabIndex={-1}

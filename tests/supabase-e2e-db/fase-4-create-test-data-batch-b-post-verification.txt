@@ -1,0 +1,26 @@
+requests_before: 4
+request_items_before: 4
+request_groups_before: 1
+request_group_items_before: 1
+E2E_REQUEST_STUDENT_PENDING: ALREADY_EXISTS_MATCHING
+E2E_REQUEST_STUDENT_REJECTED: ALREADY_EXISTS_MATCHING
+E2E_REQUEST_STUDENT_APPROVED: ALREADY_EXISTS_MATCHING
+E2E_REQUEST_TEACHER_GROUP: ALREADY_EXISTS_MATCHING
+mode: dry-run; writes: 0; test_data_state: unchanged
+
+read_only_counts:
+requests=4
+request_items=4
+request_groups=1
+request_group_items=1
+loans=0
+returns=0
+maintenance_records=0
+inventory_movements=0
+staging=0
+items=2
+item_units=2
+bulk_stock=10/10
+tracked_stock=2/2
+units=good/available
+statuses=pending,rejected,approved,pending

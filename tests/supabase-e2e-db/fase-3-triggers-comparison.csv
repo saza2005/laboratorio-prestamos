@@ -1,0 +1,36 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|item_units|trg_item_units_updated_at,enabled,enabled,enabled,MATCH,MATCH,none,
+public|item_units|trg_item_units_updated_at,timing,BEFORE,BEFORE,MATCH,MATCH,none,
+public|item_units|trg_item_units_updated_at,events,UPDATE,UPDATE,MATCH,MATCH,none,
+public|item_units|trg_item_units_updated_at,orientation,ROW,ROW,MATCH,MATCH,none,
+public|item_units|trg_item_units_updated_at,condition,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units|trg_item_units_updated_at,function_signature,public.set_updated_at(),public.set_updated_at(),MATCH,MATCH,none,
+public|item_units|trg_item_units_updated_at,trigger_definition,CREATE TRIGGER trg_item_units_updated_at BEFORE UPDATE ON public.item_units FOR EACH ROW EXECUTE FUNCTION set_updated_at(),CREATE TRIGGER trg_item_units_updated_at BEFORE UPDATE ON public.item_units FOR EACH ROW EXECUTE FUNCTION set_updated_at(),MATCH,MATCH,none,
+public|items|trg_items_updated_at,enabled,enabled,enabled,MATCH,MATCH,none,
+public|items|trg_items_updated_at,timing,BEFORE,BEFORE,MATCH,MATCH,none,
+public|items|trg_items_updated_at,events,UPDATE,UPDATE,MATCH,MATCH,none,
+public|items|trg_items_updated_at,orientation,ROW,ROW,MATCH,MATCH,none,
+public|items|trg_items_updated_at,condition,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items|trg_items_updated_at,function_signature,public.set_updated_at(),public.set_updated_at(),MATCH,MATCH,none,
+public|items|trg_items_updated_at,trigger_definition,CREATE TRIGGER trg_items_updated_at BEFORE UPDATE ON public.items FOR EACH ROW EXECUTE FUNCTION set_updated_at(),CREATE TRIGGER trg_items_updated_at BEFORE UPDATE ON public.items FOR EACH ROW EXECUTE FUNCTION set_updated_at(),MATCH,MATCH,none,
+public|loans|trg_loans_updated_at,enabled,enabled,enabled,MATCH,MATCH,none,
+public|loans|trg_loans_updated_at,timing,BEFORE,BEFORE,MATCH,MATCH,none,
+public|loans|trg_loans_updated_at,events,UPDATE,UPDATE,MATCH,MATCH,none,
+public|loans|trg_loans_updated_at,orientation,ROW,ROW,MATCH,MATCH,none,
+public|loans|trg_loans_updated_at,condition,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans|trg_loans_updated_at,function_signature,public.set_updated_at(),public.set_updated_at(),MATCH,MATCH,none,
+public|loans|trg_loans_updated_at,trigger_definition,CREATE TRIGGER trg_loans_updated_at BEFORE UPDATE ON public.loans FOR EACH ROW EXECUTE FUNCTION set_updated_at(),CREATE TRIGGER trg_loans_updated_at BEFORE UPDATE ON public.loans FOR EACH ROW EXECUTE FUNCTION set_updated_at(),MATCH,MATCH,none,
+public|profiles|trg_profiles_updated_at,enabled,enabled,enabled,MATCH,MATCH,none,
+public|profiles|trg_profiles_updated_at,timing,BEFORE,BEFORE,MATCH,MATCH,none,
+public|profiles|trg_profiles_updated_at,events,UPDATE,UPDATE,MATCH,MATCH,none,
+public|profiles|trg_profiles_updated_at,orientation,ROW,ROW,MATCH,MATCH,none,
+public|profiles|trg_profiles_updated_at,condition,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles|trg_profiles_updated_at,function_signature,public.set_updated_at(),public.set_updated_at(),MATCH,MATCH,none,
+public|profiles|trg_profiles_updated_at,trigger_definition,CREATE TRIGGER trg_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at(),CREATE TRIGGER trg_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at(),MATCH,MATCH,none,
+public|requests|trg_requests_updated_at,enabled,enabled,enabled,MATCH,MATCH,none,
+public|requests|trg_requests_updated_at,timing,BEFORE,BEFORE,MATCH,MATCH,none,
+public|requests|trg_requests_updated_at,events,UPDATE,UPDATE,MATCH,MATCH,none,
+public|requests|trg_requests_updated_at,orientation,ROW,ROW,MATCH,MATCH,none,
+public|requests|trg_requests_updated_at,condition,,null,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests|trg_requests_updated_at,function_signature,public.set_updated_at(),public.set_updated_at(),MATCH,MATCH,none,
+public|requests|trg_requests_updated_at,trigger_definition,CREATE TRIGGER trg_requests_updated_at BEFORE UPDATE ON public.requests FOR EACH ROW EXECUTE FUNCTION set_updated_at(),CREATE TRIGGER trg_requests_updated_at BEFORE UPDATE ON public.requests FOR EACH ROW EXECUTE FUNCTION set_updated_at(),MATCH,MATCH,none,

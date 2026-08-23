@@ -1,0 +1,9 @@
+order,helper_step,required_ui_state,actual_ui_state,control_available,correct_order,reorder_required,reason
+1,navigate /solicitudes/nueva,initial,STATE-0,yes,yes,no,route rendered
+2,select E2E_ITEM_BULK,STATE-0,STATE-0,yes,yes,no,client React transition
+3,wait quantity,STATE-1,STATE-1,yes,yes,no,quantity conditional on selected row
+4,fill quantity,STATE-1,STATE-1,yes,yes,no,local input
+5,fill purpose,STATE-1,STATE-1,yes,yes,no,purpose present in STATE-0 and remains present
+6,fill comments,STATE-1,STATE-1,yes,yes,no,comments present in STATE-0 and remains present
+7,fill date,STATE-1,STATE-1,yes,yes,no,date present in STATE-0 and remains present
+8,check validity and locate submit,READY_TO_SUBMIT,READY_TO_SUBMIT,yes,yes,no,local validation only

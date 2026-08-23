@@ -1,0 +1,20 @@
+table_schema,table_name,constraint_name,definition,validated
+public,inventory_movements,inventory_movements_movement_type_check,"CHECK (movement_type = ANY (ARRAY['loan_out'::text, 'return_ok'::text, 'return_damaged'::text, 'return_missing'::text, 'adjustment_up'::text, 'adjustment_down'::text]))",t
+public,inventory_movements,inventory_movements_quantity_check,CHECK (quantity > 0),t
+public,items,items_stock_available_check,CHECK (stock_available >= 0),t
+public,items,items_stock_total_check,CHECK (stock_total >= 0),t
+public,items,stock_available_not_greater_than_total,CHECK (stock_available <= stock_total),t
+public,loan_group_items,loan_group_items_quantity_check,CHECK (quantity > 0),t
+public,loan_items,loan_items_damaged_quantity_check,CHECK (damaged_quantity >= 0),t
+public,loan_items,loan_items_quantity_check,CHECK (quantity > 0),t
+public,loan_items,loan_items_returned_quantity_check,CHECK (returned_quantity >= 0),t
+public,maintenance_records,maintenance_records_maintenance_type_check,"CHECK (maintenance_type = ANY (ARRAY['preventive'::text, 'corrective'::text, 'general'::text]))",t
+public,request_group_items,request_group_items_quantity_check,CHECK (quantity > 0),t
+public,request_items,request_items_quantity_approved_check,CHECK (quantity_approved >= 0),t
+public,request_items,request_items_quantity_damaged_check,CHECK (quantity_damaged >= 0),t
+public,request_items,request_items_quantity_delivered_check,CHECK (quantity_delivered >= 0),t
+public,request_items,request_items_quantity_requested_check,CHECK (quantity_requested > 0),t
+public,request_items,request_items_quantity_returned_check,CHECK (quantity_returned >= 0),t
+public,return_items,return_items_quantity_damaged_check,CHECK (quantity_damaged >= 0),t
+public,return_items,return_items_quantity_missing_check,CHECK (quantity_missing >= 0),t
+public,return_items,return_items_quantity_ok_check,CHECK (quantity_ok >= 0),t

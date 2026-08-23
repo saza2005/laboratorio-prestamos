@@ -1,0 +1,5 @@
+e2e_admin user_found=yes email_confirmed=yes login=PASS category=none code=none user_matches=yes logout=PASS
+e2e_lab_staff user_found=yes email_confirmed=yes login=PASS category=none code=none user_matches=yes logout=PASS
+e2e_teacher user_found=yes email_confirmed=yes login=PASS category=none code=none user_matches=yes logout=PASS
+e2e_student user_found=yes email_confirmed=yes login=PASS category=none code=none user_matches=yes logout=PASS
+AUTH_LOGIN_RESULT: PASS

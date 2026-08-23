@@ -1,0 +1,2 @@
+-- Read-only audit for Supabase E2E. Do not run against production.
+select ns.nspname as table_schema, cls.relname as table_name, con.conname as constraint_name, regexp_replace(pg_get_constraintdef(con.oid, true), '[[:space:]]+', ' ', 'g') as definition, con.convalidated as validated from pg_constraint con join pg_class cls on cls.oid=con.conrelid join pg_namespace ns on ns.oid=cls.relnamespace where ns.nspname='public' and con.contype='c' order by cls.relname, con.conname;

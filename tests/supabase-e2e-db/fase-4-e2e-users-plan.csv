@@ -1,0 +1,5 @@
+alias,role,email_placeholder,password_placeholder,auth_provider,email_confirmed,profile_creation,profile_fields,purpose,cleanup_order
+e2e_admin,admin,<E2E_ADMIN_EMAIL>,<E2E_ADMIN_PASSWORD>,email,true,separate,"id;full_name;email;role=admin;is_active=true",pruebas administrativas,4
+e2e_lab_staff,lab_staff,<E2E_LAB_STAFF_EMAIL>,<E2E_LAB_STAFF_PASSWORD>,email,true,separate,"id;full_name;email;role=lab_staff;is_active=true",pruebas operativas,3
+e2e_teacher,teacher,<E2E_TEACHER_EMAIL>,<E2E_TEACHER_PASSWORD>,email,true,separate,"id;full_name;email;role=teacher;is_active=true",solicitudes grupales,2
+e2e_student,student,<E2E_STUDENT_EMAIL>,<E2E_STUDENT_PASSWORD>,email,true,separate,"id;full_name;email;role=student;is_active=true",solicitudes y RLS,1

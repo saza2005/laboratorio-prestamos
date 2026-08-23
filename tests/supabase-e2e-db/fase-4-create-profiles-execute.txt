@@ -1,0 +1,10 @@
+profiles_before: 0
+e2e_admin: WOULD_CREATE (la***@gmail.com)
+e2e_lab_staff: WOULD_CREATE (la***@gmail.com)
+e2e_teacher: WOULD_CREATE (la***@gmail.com)
+e2e_student: WOULD_CREATE (la***@gmail.com)
+e2e_admin: CREATED (la***@gmail.com)
+e2e_lab_staff: CREATED (la***@gmail.com)
+e2e_teacher: CREATED (la***@gmail.com)
+e2e_student: CREATED (la***@gmail.com)
+mode: execute; profiles_state: written_without_secrets

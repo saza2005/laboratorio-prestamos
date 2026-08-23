@@ -1,0 +1,17 @@
+entity_alias,table,purpose,depends_on,owner_alias,required_fields,generated_fields,expected_status,cleanup_order,notes
+e2e_item_bulk,items,ítem sin unidades,,e2e_admin,code;name;stock_total;stock_available;status=active,id;timestamps,active,8,prefijo E2E_
+e2e_item_tracked,items,ítem con unidades,,e2e_admin,code;name;track_individual=true;stock_total;stock_available,id;timestamps,active,8,prefijo E2E_
+e2e_unit_1,item_units,unidad disponible,e2e_item_tracked,e2e_admin,item_id;unit_code;condition=good;availability_status=available,id;timestamps,available,7,código E2E_
+e2e_unit_2,item_units,segunda unidad,e2e_item_tracked,e2e_admin,item_id;unit_code;condition=good;availability_status=available,id;timestamps,available,7,código E2E_
+e2e_request_individual,requests,solicitud student,e2e_student;e2e_item_bulk,e2e_student,user_id;purpose;scheduled_return_date;status=pending,id;timestamps,pending,6,usar flujo activo
+ e2e_request_group,requests,solicitud grupal teacher,e2e_teacher;e2e_item_bulk,e2e_teacher,user_id;purpose;scheduled_return_date;status=pending,id;timestamps,pending,6,complementar grupos
+ e2e_group,request_groups,grupo,e2e_request_group;e2e_student,e2e_teacher,request_id;group_name;leader_student_id,id;timestamps,pending,5,solo teacher
+ e2e_group_item,request_group_items,ítem grupal,e2e_group;e2e_item_bulk,e2e_teacher,request_group_id;item_id;quantity,id;timestamps,pending,5,validar RLS
+ e2e_request_item,request_items,ítem individual,e2e_request_individual;e2e_item_bulk,e2e_student,request_id;item_id;quantity,id;timestamps,pending,5,approved/rejected
+ e2e_request_approved,requests,solicitud aprobada,e2e_request_individual;e2e_lab_staff,e2e_lab_staff,status=approved;approved_by,id;timestamps,approved,6,transición por RPC
+ e2e_request_rejected,requests,solicitud rechazada,e2e_request_individual;e2e_lab_staff,e2e_lab_staff,status=rejected;rejection_reason,id;timestamps,rejected,6,lectura solicitante
+ e2e_loan_active,loans,préstamo activo,e2e_request_approved;e2e_item_bulk;e2e_lab_staff,e2e_lab_staff,user_id;delivered_by;status=active,id;timestamps,active,4,flujo activo
+ e2e_return_partial,returns,devolución parcial,e2e_loan_active;e2e_lab_staff,e2e_lab_staff,loan_id;received_by,id;timestamps,partial,3,flujo activo
+ e2e_return_complete,returns,devolución completa,e2e_loan_active;e2e_lab_staff,e2e_lab_staff,loan_id;received_by,id;timestamps,complete,3,flujo activo
+ e2e_maintenance,maintenance_records,mantenimiento,e2e_unit_1;e2e_lab_staff,e2e_lab_staff,item_unit_id;maintenance_type;description;status,id;timestamps,completed,2,staff
+ e2e_movement,inventory_movements,trazabilidad,e2e_item_bulk;e2e_lab_staff,e2e_lab_staff,item_id;created_by;movement_type;quantity,id;timestamps,recorded,1,preferir RPC

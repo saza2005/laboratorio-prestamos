@@ -1,0 +1,6 @@
+Checked public application functions: 24
+SQL migrations scanned: 20260805220647_baseline_public_schema.sql, 20260805223410_harden_anon_rpc_execute.sql, 20260806001035_harden_all_anon_function_execute.sql, 20260806154909_revoke_authenticated_legacy_rpcs.sql
+Required PUBLIC revocations found: 24/24
+Required anon revocations found: 24/24
+Result: PASS
+Note: functions are created in the baseline dump and revocations are aggregated across the migration set.

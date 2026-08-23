@@ -1,0 +1,7 @@
+items_before: 0
+item_units_before: 0
+E2E_ITEM_BULK: WOULD_CREATE
+E2E_ITEM_TRACKED: WOULD_CREATE
+E2E_ITEM_TRACKED-001: WOULD_CREATE
+E2E_ITEM_TRACKED-002: WOULD_CREATE
+mode: execute; test_data_state: written_without_secrets

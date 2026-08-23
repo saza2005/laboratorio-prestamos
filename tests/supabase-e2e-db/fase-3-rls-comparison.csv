@@ -1,0 +1,58 @@
+object_key,attribute,local_value,e2e_value,status,classification,risk,notes
+public|audit_logs,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|audit_logs,owner,postgres,postgres,MATCH,MATCH,none,
+public|inventory_import_items_staging,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_items_staging,owner,postgres,postgres,MATCH,MATCH,none,
+public|inventory_import_units_staging,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_import_units_staging,owner,postgres,postgres,MATCH,MATCH,none,
+public|inventory_movements,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|inventory_movements,owner,postgres,postgres,MATCH,MATCH,none,
+public|item_units,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units,owner,postgres,postgres,MATCH,MATCH,none,
+public|item_units_import_staging,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|item_units_import_staging,owner,postgres,postgres,MATCH,MATCH,none,
+public|items,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|items,owner,postgres,postgres,MATCH,MATCH,none,
+public|loan_group_items,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_group_items,owner,postgres,postgres,MATCH,MATCH,none,
+public|loan_groups,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_groups,owner,postgres,postgres,MATCH,MATCH,none,
+public|loan_items,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loan_items,owner,postgres,postgres,MATCH,MATCH,none,
+public|loans,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|loans,owner,postgres,postgres,MATCH,MATCH,none,
+public|maintenance_records,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|maintenance_records,owner,postgres,postgres,MATCH,MATCH,none,
+public|profiles,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|profiles,owner,postgres,postgres,MATCH,MATCH,none,
+public|request_group_items,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_group_items,owner,postgres,postgres,MATCH,MATCH,none,
+public|request_groups,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_groups,owner,postgres,postgres,MATCH,MATCH,none,
+public|request_items,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|request_items,owner,postgres,postgres,MATCH,MATCH,none,
+public|requests,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|requests,owner,postgres,postgres,MATCH,MATCH,none,
+public|return_items,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|return_items,owner,postgres,postgres,MATCH,MATCH,none,
+public|returns,rls_enabled,t,true,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns,rls_forced,f,false,MATCH,FORMAT_ONLY,none,Diferencia de formato normalizada.
+public|returns,owner,postgres,postgres,MATCH,MATCH,none,

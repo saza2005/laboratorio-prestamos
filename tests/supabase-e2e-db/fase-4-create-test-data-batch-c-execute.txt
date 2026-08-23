@@ -1,0 +1,11 @@
+loans_before: 0
+loan_items_before: 0
+returns_before: 0
+return_items_before: 0
+E2E_LOAN_ACTIVE: WOULD_CREATE
+E2E_LOAN_PARTIAL_RETURN: WOULD_CREATE_AND_RETURN_PARTIAL
+E2E_LOAN_FULL_RETURN: WOULD_CREATE_AND_RETURN_FULL
+ERROR: loan_delivery_failed_E2E_LOAN_ACTIVE
+execution_stopped: true
+C2_executed: false
+C3_executed: false

@@ -1,0 +1,22 @@
+# Auditoría estática AUTH_ONLY
+
+- AUTH_ONLY definitions: 3.
+- LOGIN_SUCCESS: 2 (ROLE-01/ROLE-02).
+- LOGIN_FAILURE: 0.
+- LOGOUT: 0.
+- SESSION_PERSISTENCE: 1 (SETUP-01).
+- ROLE_REDIRECT: 0 independiente.
+- AUTH_CALLBACK: 0.
+- Public write reachability: 0 demostrable.
+- Business RPC reachability: 0.
+- Hardcoded credentials: 0; se leen variables de proceso.
+- Secret exposure risk: medio; los tests de roles llenan credenciales en el navegador. Requieren runner separado.
+- Rate-limit risk: medio para login duplicado.
+- Canonical session risk: alto para SETUP-01; medio para ROLE-01/02 con estado canónico.
+- Logout real: app/dashboard/actions.ts; signOut scope local; limpieza de cookies y redirect.
+- Supabase JS/Auth JS: 2.101.1.
+- Scopes: global, local, others.
+- Default instalado: global.
+- La aplicación usa local explícitamente.
+- AUTH_ONLY ejecutados: 0.
+- Logins/logout ejecutados: 0/0.

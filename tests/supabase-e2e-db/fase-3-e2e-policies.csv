@@ -1,0 +1,74 @@
+table_schema,table_name,policy_name,permissive,roles,command,using_expression,with_check_expression
+public,audit_logs,audit_logs_insert_staff,PERMISSIVE,authenticated,INSERT,null,is_admin_or_lab_staff()
+public,audit_logs,audit_logs_select_staff,PERMISSIVE,authenticated,SELECT,is_admin_or_lab_staff(),null
+public,inventory_movements,inventory_movements_insert_staff,PERMISSIVE,authenticated,INSERT,null,(is_admin_or_lab_staff() AND (auth.uid() = created_by))
+public,inventory_movements,inventory_movements_select_staff,PERMISSIVE,authenticated,SELECT,is_admin_or_lab_staff(),null
+public,item_units,Allow admin insert units,PERMISSIVE,authenticated,INSERT,null,"(EXISTS ( SELECT 1
+   FROM profiles
+  WHERE ((profiles.id = auth.uid()) AND (profiles.role = ANY (ARRAY['admin'::user_role, 'lab_staff'::user_role])))))"
+public,item_units,item_units_manage_staff,PERMISSIVE,authenticated,ALL,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,item_units,item_units_select_authenticated,PERMISSIVE,authenticated,SELECT,true,null
+public,items,items_manage_staff,PERMISSIVE,authenticated,ALL,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,items,items_select_authenticated,PERMISSIVE,authenticated,SELECT,true,null
+public,items,items_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,loan_group_items,loan_group_items_manage_staff,PERMISSIVE,authenticated,ALL,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,loan_group_items,loan_group_items_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(is_admin_or_lab_staff() OR (EXISTS ( SELECT 1
+   FROM (loan_groups lg
+     JOIN loans l ON ((l.id = lg.loan_id)))
+  WHERE ((lg.id = loan_group_items.loan_group_id) AND (l.user_id = auth.uid())))))",null
+public,loan_groups,loan_groups_manage_staff,PERMISSIVE,authenticated,ALL,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,loan_groups,loan_groups_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(is_admin_or_lab_staff() OR (EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = loan_groups.loan_id) AND (l.user_id = auth.uid())))))",null
+public,loan_items,loan_items_insert_staff,PERMISSIVE,authenticated,INSERT,null,is_admin_or_lab_staff()
+public,loan_items,loan_items_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = loan_items.loan_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",null
+public,loan_items,loan_items_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,loans,loans_insert_staff,PERMISSIVE,authenticated,INSERT,null,is_admin_or_lab_staff()
+public,loans,loans_select_own_or_staff,PERMISSIVE,authenticated,SELECT,((user_id = auth.uid()) OR is_admin_or_lab_staff()),null
+public,loans,loans_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,maintenance_records,maintenance_records_delete_staff,PERMISSIVE,authenticated,DELETE,is_admin_or_lab_staff(),null
+public,maintenance_records,maintenance_records_insert_staff,PERMISSIVE,authenticated,INSERT,null,is_admin_or_lab_staff()
+public,maintenance_records,maintenance_records_select_staff,PERMISSIVE,authenticated,SELECT,is_admin_or_lab_staff(),null
+public,maintenance_records,maintenance_records_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,profiles,profiles_insert_own,PERMISSIVE,authenticated,INSERT,null,(id = auth.uid())
+public,profiles,profiles_select_own,PERMISSIVE,authenticated,SELECT,(id = auth.uid()),null
+public,profiles,profiles_select_staff,PERMISSIVE,authenticated,SELECT,is_admin_or_lab_staff(),null
+public,profiles,profiles_select_students_for_teachers,PERMISSIVE,authenticated,SELECT,((role = 'student'::user_role) AND is_teacher()),null
+public,profiles,profiles_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,request_group_items,request_group_items_insert_teacher_own_request_group,PERMISSIVE,authenticated,INSERT,null,"(is_teacher() AND (EXISTS ( SELECT 1
+   FROM (request_groups rg
+     JOIN requests r ON ((r.id = rg.request_id)))
+  WHERE ((rg.id = request_group_items.request_group_id) AND (r.user_id = auth.uid())))))"
+public,request_group_items,request_group_items_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(EXISTS ( SELECT 1
+   FROM (request_groups rg
+     JOIN requests r ON ((r.id = rg.request_id)))
+  WHERE ((rg.id = request_group_items.request_group_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",null
+public,request_groups,request_groups_insert_teacher_own_request,PERMISSIVE,authenticated,INSERT,null,"(is_teacher() AND (EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_groups.request_id) AND (r.user_id = auth.uid())))))"
+public,request_groups,request_groups_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_groups.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",null
+public,request_items,request_items_insert_own_or_staff,PERMISSIVE,authenticated,INSERT,null,"(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_items.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))"
+public,request_items,request_items_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(EXISTS ( SELECT 1
+   FROM requests r
+  WHERE ((r.id = request_items.request_id) AND ((r.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",null
+public,request_items,request_items_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,requests,requests_insert_own,PERMISSIVE,authenticated,INSERT,null,(user_id = auth.uid())
+public,requests,requests_select_own_or_staff,PERMISSIVE,authenticated,SELECT,((user_id = auth.uid()) OR is_admin_or_lab_staff()),null
+public,requests,requests_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,return_items,return_items_insert_staff,PERMISSIVE,authenticated,INSERT,null,is_admin_or_lab_staff()
+public,return_items,return_items_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(EXISTS ( SELECT 1
+   FROM (returns rt
+     JOIN loans l ON ((l.id = rt.loan_id)))
+  WHERE ((rt.id = return_items.return_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",null
+public,return_items,return_items_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()
+public,returns,returns_insert_staff,PERMISSIVE,authenticated,INSERT,null,is_admin_or_lab_staff()
+public,returns,returns_select_own_or_staff,PERMISSIVE,authenticated,SELECT,"(EXISTS ( SELECT 1
+   FROM loans l
+  WHERE ((l.id = returns.loan_id) AND ((l.user_id = auth.uid()) OR is_admin_or_lab_staff()))))",null
+public,returns,returns_update_staff,PERMISSIVE,authenticated,UPDATE,is_admin_or_lab_staff(),is_admin_or_lab_staff()

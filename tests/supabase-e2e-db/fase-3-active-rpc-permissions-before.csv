@@ -1,0 +1,10 @@
+function_signature,public_execute,anon_execute,authenticated_execute,service_role_execute,active_reference
+"public.create_multi_item_loan_transaction(uuid, jsonb, date, text, uuid)",false,false,true,true,"app/prestamos/actions.ts"
+"public.deliver_approved_request_with_units(uuid, jsonb, jsonb, uuid, text)",false,false,true,true,"app/dashboard/solicitudes/actions.ts:146"
+"public.approve_request_transaction(uuid, jsonb)",false,false,true,true,"app/dashboard/solicitudes/actions.ts:48"
+"public.reject_request_transaction(uuid, text)",false,false,true,true,"app/dashboard/solicitudes/actions.ts:77"
+"public.create_inventory_item_transaction(text, text, text, text, text, boolean, integer, integer, text, text)",false,false,true,true,"app/inventario/actions.ts:68"
+"public.update_item_unit_status_transaction(uuid, text, text)",false,false,true,true,"app/inventario/actions.ts:140"
+"public.register_maintenance_record_transaction(uuid, uuid, text, text, date, text, text, boolean)",false,false,true,true,"app/mantenimiento/actions.ts:91"
+"public.register_return_transaction(uuid, integer, integer, integer, text, uuid)",false,false,true,true,"app/devoluciones/actions.ts:36"
+"public.create_request_transaction(text, text, date, jsonb, jsonb)",false,false,true,true,"app/solicitudes/actions.ts:154"

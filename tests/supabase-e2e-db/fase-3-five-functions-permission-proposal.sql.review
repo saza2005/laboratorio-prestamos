@@ -1,0 +1,24 @@
+-- Review only. This file is not a Supabase migration and must not be executed.
+-- The repository has no active RPC call for these five signatures.
+-- Revoke only the stale authenticated grants in the E2E project so its
+-- effective permissions match the locally reconstructed schema.
+
+revoke execute on function
+  public.create_loan_transaction(uuid, uuid, integer, date, text, uuid)
+from authenticated;
+
+revoke execute on function
+  public.create_loan_with_unit_transaction(uuid, uuid, uuid, integer, date, text, uuid)
+from authenticated;
+
+revoke execute on function
+  public.deliver_approved_request(uuid, uuid, text)
+from authenticated;
+
+revoke execute on function
+  public.deliver_approved_request_with_units(uuid, jsonb, uuid, text)
+from authenticated;
+
+revoke execute on function
+  public.increment_stock(uuid, integer)
+from authenticated;

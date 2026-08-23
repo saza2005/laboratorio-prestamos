@@ -1,0 +1,6 @@
+DRY RUN: migrations will *not* be pushed to the database.
+Initialising login role...
+Connecting to remote database...
+Would push these migrations:
+ • [1m20260806154909_revoke_authenticated_legacy_rpcs.sql[22m
+{"upToDate":false,"dryRun":true,"migrations":["20260806154909_revoke_authenticated_legacy_rpcs.sql"],"seeds":[],"roles":[],"message":"Finished supabase db push."}

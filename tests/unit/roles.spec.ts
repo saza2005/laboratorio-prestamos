@@ -1,9 +1,11 @@
 import { expect, test } from "@playwright/test"
 import {
+  ASSIGNABLE_USER_ROLES,
   canCreateGroupRequests,
   canManageInventory,
   canManageLoans,
   canManageReturns,
+  canManageUsers,
   canSeeInventoryModule,
   canSeeLoansModule,
   canSeeReportsModule,
@@ -11,6 +13,7 @@ import {
   canUseRequestPortal,
   canViewOperationalDashboard,
   getHomeRouteByRole,
+  isAssignableUserRole,
 } from "../../lib/supabase/auth/roles"
 
 test.describe("Matriz de permisos por rol", () => {
@@ -19,6 +22,7 @@ test.describe("Matriz de permisos por rol", () => {
       expect(canManageInventory(role)).toBe(true)
       expect(canManageLoans(role)).toBe(true)
       expect(canManageReturns(role)).toBe(true)
+      expect(canManageUsers(role)).toBe(role === "admin")
       expect(canViewOperationalDashboard(role)).toBe(true)
       expect(canSeeInventoryModule(role)).toBe(true)
       expect(canSeeLoansModule(role)).toBe(true)
@@ -55,7 +59,23 @@ test.describe("Matriz de permisos por rol", () => {
       expect(canManageInventory(role)).toBe(false)
       expect(canUseRequestPortal(role)).toBe(false)
       expect(canCreateGroupRequests(role)).toBe(false)
+      expect(canManageUsers(role)).toBe(false)
       expect(getHomeRouteByRole(role)).toBe("/auth/login")
     }
+  })
+
+  test("solo roles operativos no administrativos pueden asignarse", () => {
+    expect(ASSIGNABLE_USER_ROLES).toEqual([
+      "student",
+      "teacher",
+      "lab_staff",
+    ])
+
+    for (const role of ASSIGNABLE_USER_ROLES) {
+      expect(isAssignableUserRole(role)).toBe(true)
+    }
+
+    expect(isAssignableUserRole("admin")).toBe(false)
+    expect(isAssignableUserRole("unknown")).toBe(false)
   })
 })

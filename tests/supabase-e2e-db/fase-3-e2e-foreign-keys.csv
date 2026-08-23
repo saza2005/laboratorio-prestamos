@@ -1,0 +1,33 @@
+table_schema,table_name,constraint_name,column_name,referenced_schema,referenced_table,referenced_column,update_rule,delete_rule,match_option,deferrable,initially_deferred,column_position
+public,audit_logs,audit_logs_user_id_fkey,user_id,public,profiles,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,inventory_movements,inventory_movements_created_by_fkey,created_by,public,profiles,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,inventory_movements,inventory_movements_item_id_fkey,item_id,public,items,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,item_units,item_units_item_id_fkey,item_id,public,items,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,items,items_created_by_fkey,created_by,public,profiles,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,loan_group_items,loan_group_items_item_id_fkey,item_id,public,items,id,NO ACTION,NO ACTION,SIMPLE,false,false,1
+public,loan_group_items,loan_group_items_loan_group_id_fkey,loan_group_id,public,loan_groups,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,loan_groups,loan_groups_leader_student_id_fkey,leader_student_id,public,profiles,id,NO ACTION,NO ACTION,SIMPLE,false,false,1
+public,loan_groups,loan_groups_loan_id_fkey,loan_id,public,loans,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,loan_groups,loan_groups_request_group_id_fkey,request_group_id,public,request_groups,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,loan_items,loan_items_item_id_fkey,item_id,public,items,id,NO ACTION,RESTRICT,SIMPLE,false,false,1
+public,loan_items,loan_items_item_unit_id_fkey,item_unit_id,public,item_units,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,loan_items,loan_items_loan_id_fkey,loan_id,public,loans,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,loans,loans_delivered_by_fkey,delivered_by,public,profiles,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,loans,loans_request_id_fkey,request_id,public,requests,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,loans,loans_user_id_fkey,user_id,public,profiles,id,NO ACTION,RESTRICT,SIMPLE,false,false,1
+public,maintenance_records,maintenance_records_created_by_fkey,created_by,public,profiles,id,NO ACTION,NO ACTION,SIMPLE,false,false,1
+public,maintenance_records,maintenance_records_item_id_fkey,item_id,public,items,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,maintenance_records,maintenance_records_item_unit_id_fkey,item_unit_id,public,item_units,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,profiles,profiles_id_fkey,id,auth,users,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,request_group_items,request_group_items_item_id_fkey,item_id,public,items,id,NO ACTION,NO ACTION,SIMPLE,false,false,1
+public,request_group_items,request_group_items_request_group_id_fkey,request_group_id,public,request_groups,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,request_groups,request_groups_leader_student_id_fkey,leader_student_id,public,profiles,id,NO ACTION,NO ACTION,SIMPLE,false,false,1
+public,request_groups,request_groups_request_id_fkey,request_id,public,requests,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,request_items,request_items_item_id_fkey,item_id,public,items,id,NO ACTION,RESTRICT,SIMPLE,false,false,1
+public,request_items,request_items_request_id_fkey,request_id,public,requests,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,requests,requests_approved_by_fkey,approved_by,public,profiles,id,NO ACTION,SET NULL,SIMPLE,false,false,1
+public,requests,requests_user_id_fkey,user_id,public,profiles,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,return_items,return_items_loan_item_id_fkey,loan_item_id,public,loan_items,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,return_items,return_items_return_id_fkey,return_id,public,returns,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,returns,returns_loan_id_fkey,loan_id,public,loans,id,NO ACTION,CASCADE,SIMPLE,false,false,1
+public,returns,returns_received_by_fkey,received_by,public,profiles,id,NO ACTION,SET NULL,SIMPLE,false,false,1

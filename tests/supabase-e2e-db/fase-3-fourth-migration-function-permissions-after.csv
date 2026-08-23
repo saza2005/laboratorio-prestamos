@@ -1,0 +1,8 @@
+function_signature,public_execute,anon_execute,authenticated_execute,service_role_execute,classification
+"public.create_loan_transaction(uuid, uuid, integer, date, text, uuid)",false,false,false,true,LEGACY_UNUSED
+"public.create_loan_with_unit_transaction(uuid, uuid, uuid, integer, date, text, uuid)",false,false,false,true,REPLACED_RPC
+"public.deliver_approved_request(uuid, uuid, text)",false,false,false,true,REPLACED_RPC
+"public.deliver_approved_request_with_units(uuid, jsonb, uuid, text)",false,false,false,true,REPLACED_RPC
+"public.increment_stock(uuid, integer)",false,false,false,true,LEGACY_UNUSED
+"public.create_multi_item_loan_transaction(uuid, jsonb, date, text, uuid)",false,false,true,true,ACTIVE_REQUIRED_RPC
+"public.deliver_approved_request_with_units(uuid, jsonb, jsonb, uuid, text)",false,false,true,true,ACTIVE_REQUIRED_RPC

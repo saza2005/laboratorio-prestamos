@@ -1,0 +1,4 @@
+proname,args,security,owner,acl,public_effective,anon_effective,authenticated_effective,service_role_effective
+register_full_return_transaction,"p_loan_id uuid, p_notes text, p_received_by uuid",SECURITY DEFINER,postgres,postgres=X/postgres; authenticated=X/postgres; service_role=X/postgres,f,f,t,t
+register_maintenance_record_transaction,"p_item_id uuid, p_item_unit_id uuid, p_activity text, p_responsible text, p_maintenance_date date, p_observations text, p_maintenance_type text, p_mark_unit_unavailable boolean",SECURITY DEFINER,postgres,postgres=X/postgres; authenticated=X/postgres; service_role=X/postgres,f,f,t,t
+update_item_unit_status_transaction,"p_unit_id uuid, p_condition text, p_notes text",SECURITY DEFINER,postgres,postgres=X/postgres; authenticated=X/postgres; service_role=X/postgres,f,f,t,t

@@ -1,0 +1,17 @@
+AUTH_ENVIRONMENT: PASS
+PROJECT_REF_MATCH: PASS
+CHROMIUM_AVAILABLE: yes
+PORT_3000_PRECHECK: free
+SETUP_PROJECT: auth-admin
+ATTEMPTS: 1
+RESULT: FAIL
+FAILURE_STAGE: FORM_SUBMISSION
+ERROR_CATEGORY: selector_ambiguity
+ERROR_CODE: playwright_strict_mode_violation
+STORAGE_STATES_GENERATED: 0
+SUBSEQUENT_SETUP_PROJECTS: not_run
+FUNCTIONAL_TESTS: 0
+BUSINESS_ACTIONS: 0
+BUSINESS_RPCS: 0
+REMOTE_PUBLIC_WRITES: 0
+NOTE: The login button selector matched the Google button and the password-login button. No role was retried.

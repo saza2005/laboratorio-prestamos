@@ -1,0 +1,7 @@
+DRY RUN: migrations will *not* be pushed to the database.
+Initialising login role...
+Connecting to remote database...
+Would push these migrations:
+ • [1m20260805220647_baseline_public_schema.sql[22m
+ • [1m20260805223410_harden_anon_rpc_execute.sql[22m
+{"upToDate":false,"dryRun":true,"migrations":["20260805220647_baseline_public_schema.sql","20260805223410_harden_anon_rpc_execute.sql"],"seeds":[],"roles":[],"message":"Finished supabase db push."}
