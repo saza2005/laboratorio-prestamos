@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/app/logout-button'
 import { LinkGoogleButton } from '@/app/auth/link-google-button'
+import { ChangePasswordForm } from '@/app/auth/change-password-form'
 import { DashboardCharts } from './dashboard-charts'
 import { ModuleTabs } from '@/components/module-tabs'
 import {
@@ -35,6 +36,7 @@ import {
   userRoleBadgeClass,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
+import { hasPasswordIdentity } from '@/lib/supabase/auth/password-change'
 import { compareRequestsByOperationalPriority } from '@/lib/request-delivery-status'
 
 type DashboardReturnItem = {
@@ -116,6 +118,7 @@ export default async function DashboardPage({
   const canSeeReturns = canSeeReturnsModule(profile.role)
   const canSeeReports = canSeeReportsModule(profile.role)
   const canSeeUsers = canManageUsers(profile.role)
+  const canChangePassword = hasPasswordIdentity(user.identities)
 
   const [dashboardSummaryResult, lowStockItemsResult] = await Promise.all([
     supabase.rpc('get_dashboard_operational_summary', {
@@ -515,6 +518,7 @@ export default async function DashboardPage({
 
             <div className="grid gap-2 sm:grid-cols-2 lg:flex lg:items-center">
               <LinkGoogleButton className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700" />
+              {canChangePassword && <ChangePasswordForm />}
               <LogoutButton className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700" />
             </div>
           </div>
