@@ -1,15 +1,12 @@
 import Link from 'next/link'
 import { LogoutButton } from '@/app/logout-button'
-import { ChangePasswordForm } from '@/app/auth/change-password-form'
 import { canCreateGroupRequests } from '@/lib/supabase/auth/roles'
-import { hasPasswordIdentity } from '@/lib/supabase/auth/password-change'
 import { getRequestPortalAuth, getOwnLoans, getOwnRequests } from './shared'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function SolicitudesPage() {
   const { supabase, user, profile } = await getRequestPortalAuth()
   const canCreateGroups = canCreateGroupRequests(profile.role)
-  const canChangePassword = hasPasswordIdentity(user.identities)
   const [requests, loans] = await Promise.all([
     getOwnRequests(supabase, user.id),
     getOwnLoans(supabase, user.id),
@@ -48,10 +45,7 @@ export default async function SolicitudesPage() {
               </p>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-2 md:flex md:items-start">
-              {canChangePassword && <ChangePasswordForm />}
-              <LogoutButton className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 sm:w-auto" />
-            </div>
+            <LogoutButton className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 sm:w-auto" />
           </div>
         </section>
 
