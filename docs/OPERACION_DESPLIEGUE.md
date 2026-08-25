@@ -15,7 +15,35 @@ Variables esperadas:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- Variables adicionales de Supabase si el entorno las requiere.
+- `SUPABASE_SERVICE_ROLE_KEY` (solo servidor; nunca exponer al navegador).
+- `DATABASE_URL` (solo tareas administrativas controladas).
+- `NEXT_PUBLIC_APP_URL` (URL pública exacta, sin barra final).
+- `RESEND_API_KEY` y `EMAIL_FROM` si se habilitan notificaciones por correo.
+
+En producción, `NEXT_PUBLIC_APP_URL` no puede conservar `localhost`. Debe coincidir
+con el dominio canónico desplegado.
+
+## OAuth de Google
+
+La aplicación restringe el acceso nuevo a cuentas institucionales
+`@ucuenca.edu.ec` tanto en la solicitud a Google como al procesar el callback.
+
+Configuración que debe verificarse manualmente antes de publicar:
+
+1. En **Supabase > Authentication > URL Configuration**:
+   - `Site URL`: `https://<dominio-produccion>`.
+   - `Redirect URLs`: `https://<dominio-produccion>/auth/callback`.
+   - Mantener `http://localhost:3000/auth/callback` únicamente para desarrollo.
+2. En **Supabase > Authentication > Providers > Google**:
+   - proveedor habilitado;
+   - Client ID y Client Secret vigentes.
+3. En **Google Cloud > OAuth client**:
+   - origen JavaScript autorizado: `https://<dominio-produccion>`;
+   - URI de redirección autorizada: la URL de callback de Supabase mostrada por
+     el panel del proveedor Google, con forma
+     `https://<proyecto>.supabase.co/auth/v1/callback`.
+
+No se deben colocar secretos OAuth en variables `NEXT_PUBLIC_*` ni en Git.
 
 ## Comandos locales
 
@@ -32,32 +60,32 @@ Para levantar el servidor local de forma controlada:
 NODE_OPTIONS="--max-old-space-size=1024" npm run dev
 ```
 
-## Migraciones SQL importantes
+## Migraciones SQL canónicas
 
 Antes de usar el sistema en producción, confirmar que Supabase tenga aplicadas las migraciones de `supabase/migrations`.
 
-Especialmente revisar:
+El linaje activo consta de:
 
-- RPC de creación de solicitudes.
-- RPC de aprobación/rechazo de solicitudes.
-- RPC de entrega de solicitudes con unidades patrimoniales.
-- RPC de entrega parcial de solicitudes aprobadas.
-- RPC de préstamos múltiples.
-- RPC de devoluciones.
-- Políticas RLS de `profiles`, solicitudes, préstamos, devoluciones, inventario y mantenimiento.
+- `20260805220647_baseline_public_schema.sql`
+- `20260805223410_harden_anon_rpc_execute.sql`
+- `20260806001035_harden_all_anon_function_execute.sql`
+- `20260806154909_revoke_authenticated_legacy_rpcs.sql`
+- `20260823_admin_update_profile_role.sql`
 
-Migración crítica reciente:
+El baseline contiene el modelo y las funciones de negocio acumuladas, incluida la
+entrega parcial. Los archivos de `supabase/legacy-migrations` son evidencia
+histórica y no deben volver a aplicarse sobre el baseline.
 
-- `supabase/migrations/20260628_allow_partial_request_delivery.sql`
-
-Esta permite confirmar entregas parciales y crear el préstamo solo con lo realmente entregado.
+Antes de un `supabase db push`, consultar `supabase migration list`. Si el
+baseline aparece pendiente sobre una base que ya contiene tablas del sistema,
+detenerse y reconciliar el historial; no intentar aplicarlo encima.
 
 ## Checklist antes de producción
 
 1. Ejecutar `npm run lint`.
 2. Ejecutar `npx tsc --noEmit`.
 3. Ejecutar `npm run build`.
-4. Confirmar OAuth de Google en Supabase.
+4. Confirmar dominio, variables y OAuth de Google con la lista anterior.
 5. Confirmar dominio permitido `@ucuenca.edu.ec`.
 6. Confirmar policies RLS activas.
 7. Confirmar funciones RPC disponibles en schema cache.
@@ -67,6 +95,8 @@ Esta permite confirmar entregas parciales y crear el préstamo solo con lo realm
 11. Probar paneles laterales en solicitudes, préstamos, inventario, devoluciones y mantenimiento.
 12. Probar confirmaciones de acciones críticas y mensajes de error controlados.
 13. Hacer respaldo de base de datos antes de importar o reemplazar inventario.
+14. Confirmar acceso de `admin` y `lab_staff` a Analítica y exportación Excel.
+15. Confirmar que `teacher` y `student` no acceden a rutas administrativas.
 
 ## Flujo de validación funcional
 

@@ -7,6 +7,7 @@ Sistema web para gestionar inventario, solicitudes, préstamos, devoluciones y m
 - Los usuarios nuevos deben ingresar con Google institucional `@ucuenca.edu.ec`.
 - Usuarios existentes pueden iniciar sesión con contraseña si aún no han vinculado Google.
 - Si una cuenta institucional ya tiene perfil previo y no puede entrar con Google, debe ser revisada por administración.
+- La contraseña de Google no se administra ni se cambia desde esta aplicación.
 
 ## Estudiante
 
@@ -71,6 +72,7 @@ El laboratorista puede:
 - Registrar mantenimiento.
 - Consultar inventario, unidades patrimoniales y movimientos.
 - Revisar detalles en panel lateral sin perder el listado principal.
+- Consultar la analítica de uso de bienes y exportar el reporte Excel.
 
 Flujo de solicitud a préstamo:
 
@@ -93,10 +95,29 @@ Flujo de devolución:
 
 El administrador puede realizar las mismas acciones que el laboratorista y además debe encargarse de:
 
-- Revisar perfiles y roles en Supabase cuando sea necesario.
+- Administrar usuarios y cambiar roles `student`, `teacher` y `lab_staff` desde
+  `Dashboard > Usuarios`; las cuentas administradoras están protegidas frente a
+  cambios desde esa interfaz.
 - Confirmar políticas RLS.
 - Ejecutar migraciones SQL.
 - Supervisar despliegues y respaldos.
+
+## Analítica de uso
+
+Administradores y laboratoristas pueden abrir `Dashboard > Reportes > Analítica
+de uso de bienes` para:
+
+- consultar cantidad prestada, préstamos únicos, último uso y ventanas de 30,
+  90 y 365 días;
+- filtrar por período, texto, categoría, estado y bienes sin uso;
+- ordenar por mayor o menor uso;
+- revisar gráficos de bienes más usados, evolución mensual y distribución de
+  señales administrativas;
+- exportar un archivo Excel con la tabla y la metodología de cálculo.
+
+Las señales como `Alta demanda`, `Baja rotación` o `Sin uso registrado` sirven
+para apoyar la revisión administrativa. No constituyen por sí solas una orden de
+compra, renovación o reemplazo.
 
 ## Recomendaciones de uso
 
