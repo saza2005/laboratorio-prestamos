@@ -230,6 +230,29 @@ Actualmente los respaldos residen en el mismo disco del equipo. Para cubrir la
 pérdida física del equipo falta elegir un destino externo y cifrar los archivos
 antes de transferirlos. No debe sincronizarse `auth-data.sql` sin cifrado.
 
+### Copia cifrada en memoria USB
+
+La tarea diaria puede copiar el respaldo más reciente a una memoria externa.
+La copia se empaqueta y cifra con GPG/AES-256, se valida mediante descifrado y
+se acompaña de un checksum SHA-256. Si la memoria no está conectada, el respaldo
+local sigue completándose y la exportación externa queda registrada como omitida
+o fallida sin borrar el respaldo local.
+
+La contraseña se almacena fuera del repositorio en:
+
+```text
+~/.config/laboratorio-prestamos/backup-passphrase
+```
+
+Ese archivo debe contener una contraseña larga, tener permisos `600` y nunca
+copiarse junto al respaldo cifrado. Es indispensable conservar la contraseña en
+un gestor de contraseñas independiente: sin ella no se puede restaurar la copia.
+La configuración inicial abre dos diálogos protegidos para crearla y confirmarla:
+
+```bash
+npm run backup:setup-encryption
+```
+
 
 ## Validación de interfaz
 

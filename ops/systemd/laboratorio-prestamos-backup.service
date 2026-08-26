@@ -1,14 +1,18 @@
 [Unit]
 Description=Respaldo privado de laboratorio-prestamos
-Documentation=%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
 
 [Service]
 Type=oneshot
 WorkingDirectory=%h/Proyectos/laboratorio-prestamos
 Environment=PATH=%h/.nvm/versions/node/v24.14.1/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=DATABASE_BACKUP_DIR=%h/Respaldos/laboratorio-prestamos
+Environment="EXTERNAL_BACKUP_MOUNT=/media/saza/HP v165w"
+Environment="EXTERNAL_BACKUP_DIR=/media/saza/HP v165w/laboratorio-prestamos"
+Environment=BACKUP_PASSPHRASE_FILE=%h/.config/laboratorio-prestamos/backup-passphrase
 UMask=0077
 ExecStart=/usr/bin/env node --env-file=%h/Proyectos/laboratorio-prestamos/.env.local %h/Proyectos/laboratorio-prestamos/scripts/backup-database.mjs
+ExecStartPost=-/usr/bin/env node %h/Proyectos/laboratorio-prestamos/scripts/export-backup-encrypted.mjs
 NoNewPrivileges=true
 PrivateTmp=true
 
