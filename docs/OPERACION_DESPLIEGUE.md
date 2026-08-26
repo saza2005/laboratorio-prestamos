@@ -27,6 +27,10 @@ Las redirecciones OAuth utilizan esta URL canónica en lugar de confiar en el
 encabezado `Origin`. El callback solo acepta destinos internos previstos por la
 aplicación (`/dashboard` y `/solicitudes`).
 
+En el acceso de cuentas existentes, el correo se normaliza para comparación,
+pero la contraseña se envía exactamente como fue escrita. No se deben recortar
+ni transformar contraseñas antes de entregarlas a Supabase Auth.
+
 ## OAuth de Google
 
 La aplicación restringe el acceso nuevo a cuentas institucionales

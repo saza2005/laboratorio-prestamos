@@ -3,13 +3,13 @@
 import { redirect } from 'next/navigation'
 import { clearSupabaseAuthCookies, createClient } from '@/lib/supabase/server'
 import { getHomeRouteByRole } from '@/lib/supabase/auth/roles'
+import { parseLoginCredentials } from '@/lib/supabase/auth/login-credentials'
 
 export async function loginUser(formData: FormData) {
   await clearSupabaseAuthCookies()
   const supabase = await createClient()
 
-  const email = String(formData.get('email') || '').trim()
-  const password = String(formData.get('password') || '').trim()
+  const { email, password } = parseLoginCredentials(formData)
 
   if (!email || !password) {
     redirect('/auth/login?error=missing_credentials')
