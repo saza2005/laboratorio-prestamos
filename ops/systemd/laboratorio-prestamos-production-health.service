@@ -1,0 +1,14 @@
+[Unit]
+Description=Comprobación pública de producción de laboratorio-prestamos
+Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+OnFailure=laboratorio-prestamos-operational-alert.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Proyectos/laboratorio-prestamos
+Environment=PATH=%h/.nvm/versions/node/v24.14.1/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PRODUCTION_URL=https://laboratorio-prestamos.vercel.app
+UMask=0077
+ExecStart=/usr/bin/env npm run check:production
+NoNewPrivileges=true
+PrivateTmp=true

@@ -1,0 +1,11 @@
+[Unit]
+Description=Monitoreo público periódico de laboratorio-prestamos
+
+[Timer]
+OnCalendar=*-*-* 00/6:15:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=laboratorio-prestamos-production-health.service
+
+[Install]
+WantedBy=timers.target

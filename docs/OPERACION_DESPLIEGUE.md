@@ -211,6 +211,20 @@ PRODUCTION_URL="https://laboratorio-prestamos.vercel.app" npm run check:producti
 
 Este smoke no inicia sesión, no llama RPC de negocio y no modifica Supabase.
 
+La estación operativa también puede ejecutar este smoke cada seis horas y
+reutilizar las alertas locales ante fallos. Las unidades correspondientes son
+`laboratorio-prestamos-production-health.service` y
+`laboratorio-prestamos-production-health.timer`:
+
+```bash
+cp ops/systemd/laboratorio-prestamos-production-health.* ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now laboratorio-prestamos-production-health.timer
+```
+
+La comprobación solo consulta la portada, el inicio de sesión y el callback
+OAuth público. No crea sesiones ni modifica datos.
+
 ## Respaldos
 
 El repositorio incluye un respaldo complementario del esquema y los datos
