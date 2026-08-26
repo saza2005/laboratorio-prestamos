@@ -8,6 +8,9 @@ updates:
     groups:
       development-tooling:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
       production-minor-and-patch:
         dependency-type: production
         update-types:
