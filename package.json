@@ -13,7 +13,7 @@
     "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit",
     "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit",
     "check:production": "node scripts/check-production-health.mjs",
-    "backup:public": "node scripts/backup-public-database.mjs",
+    "backup:database": "node scripts/backup-database.mjs",
     "test:e2e:mutations": "playwright test tests/workflows/mutations.spec.ts"
   },
   "dependencies": {

@@ -1,0 +1,11 @@
+[Unit]
+Description=Respaldo diario de laboratorio-prestamos
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=laboratorio-prestamos-backup.service
+
+[Install]
+WantedBy=timers.target

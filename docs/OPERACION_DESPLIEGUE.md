@@ -185,11 +185,11 @@ Este smoke no inicia sesión, no llama RPC de negocio y no modifica Supabase.
 ## Respaldos
 
 El repositorio incluye un respaldo complementario del esquema y los datos
-`public`. El comando genera archivos SQL con permisos privados y un manifiesto
-SHA-256:
+`public`, además de los datos de `auth`. El comando genera archivos SQL con
+permisos privados y un manifiesto SHA-256:
 
 ```bash
-node --env-file=.env.local --env-file=.env.backup npm run backup:public
+node --env-file=.env.local --env-file=.env.backup npm run backup:database
 ```
 
 El archivo local `.env.backup` debe contener únicamente una ruta absoluta fuera
@@ -199,12 +199,24 @@ del repositorio:
 DATABASE_BACKUP_DIR=/ruta/privada/de/respaldos
 ```
 
-Este respaldo contiene información operativa y perfiles, por lo que no debe
-subirse a Git ni almacenarse en una carpeta pública.
+Este respaldo contiene información operativa, perfiles e información sensible
+de autenticación, por lo que no debe subirse a Git, sincronizarse a una carpeta
+pública ni compartirse sin cifrado.
 
-Limitación: el dump de `public` no contiene las identidades administradas por
-Supabase Auth. Debe mantenerse habilitado el mecanismo de backups del proyecto
-Supabase y comprobar periódicamente su retención desde el Dashboard.
+Los datos de `auth` deben restaurarse mediante un procedimiento controlado y no
+deben importarse directamente sobre un proyecto activo sin una revisión previa.
+Si el plan de Supabase ofrece backups administrados, estos siguen siendo la
+opción preferida porque cubren la recuperación coordinada de la plataforma.
+
+En la estación operativa se puede habilitar el timer de usuario incluido en
+`ops/systemd`. Ejecuta un respaldo diario alrededor de las 02:30 y, gracias a
+`Persistent=true`, recupera una ejecución pendiente cuando el equipo vuelve a
+encenderse. Su estado se consulta con:
+
+```bash
+systemctl --user status laboratorio-prestamos-backup.timer
+systemctl --user list-timers laboratorio-prestamos-backup.timer
+```
 
 
 ## Validación de interfaz

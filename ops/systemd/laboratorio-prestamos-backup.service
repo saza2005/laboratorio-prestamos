@@ -1,0 +1,16 @@
+[Unit]
+Description=Respaldo privado de laboratorio-prestamos
+Documentation=%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Proyectos/laboratorio-prestamos
+Environment=PATH=%h/.nvm/versions/node/v24.14.1/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=DATABASE_BACKUP_DIR=%h/Respaldos/laboratorio-prestamos
+UMask=0077
+ExecStart=/usr/bin/env node --env-file=%h/Proyectos/laboratorio-prestamos/.env.local %h/Proyectos/laboratorio-prestamos/scripts/backup-database.mjs
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

@@ -24,20 +24,32 @@ await mkdir(partialDirectory, { mode: 0o700 })
 try {
   const schemaFile = path.join(partialDirectory, 'public-schema.sql')
   const dataFile = path.join(partialDirectory, 'public-data.sql')
+  const authDataFile = path.join(partialDirectory, 'auth-data.sql')
 
   dump(['--schema', 'public', '--file', schemaFile])
   dump(['--schema', 'public', '--data-only', '--use-copy', '--file', dataFile])
+  dump(['--schema', 'auth', '--data-only', '--use-copy', '--file', authDataFile])
 
-  await Promise.all([chmod(schemaFile, 0o600), chmod(dataFile, 0o600)])
+  await Promise.all([
+    chmod(schemaFile, 0o600),
+    chmod(dataFile, 0o600),
+    chmod(authDataFile, 0o600),
+  ])
 
-  const [schemaHash, dataHash] = await Promise.all([sha256(schemaFile), sha256(dataFile)])
+  const [schemaHash, dataHash, authDataHash] = await Promise.all([
+    sha256(schemaFile),
+    sha256(dataFile),
+    sha256(authDataFile),
+  ])
   const manifest = {
     createdAt: new Date().toISOString(),
-    scope: 'public schema and public data',
-    includesSupabaseAuthUsers: false,
+    scope: 'public schema, public data and auth data',
+    includesSupabaseAuthUsers: true,
+    restoreWarning: 'Auth data requires a controlled restore procedure and must not be imported blindly.',
     files: {
       'public-schema.sql': { sha256: schemaHash },
       'public-data.sql': { sha256: dataHash },
+      'auth-data.sql': { sha256: authDataHash },
     },
   }
 
@@ -46,8 +58,8 @@ try {
   await rename(partialDirectory, finalDirectory)
   console.log(`BACKUP_STATUS=PASS`)
   console.log(`BACKUP_DIRECTORY=${finalDirectory}`)
-  console.log('BACKUP_SCOPE=PUBLIC_SCHEMA_AND_DATA')
-  console.log('AUTH_USERS_INCLUDED=no')
+  console.log('BACKUP_SCOPE=PUBLIC_SCHEMA_DATA_AND_AUTH_DATA')
+  console.log('AUTH_USERS_INCLUDED=yes')
 } catch (error) {
   await rm(partialDirectory, { recursive: true, force: true })
   const category = error instanceof Error ? error.message : 'unknown_error'
