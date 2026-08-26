@@ -279,7 +279,9 @@ La tarea diaria puede copiar el respaldo más reciente a una memoria externa.
 La copia se empaqueta y cifra con GPG/AES-256, se valida mediante descifrado y
 se acompaña de un checksum SHA-256. Si la memoria no está conectada, el respaldo
 local sigue completándose y la exportación externa queda registrada como omitida
-o fallida sin borrar el respaldo local.
+sin borrar el respaldo local. Si la memoria está disponible pero falla el
+cifrado, la escritura o la verificación, el servicio termina con error y activa
+la alerta operativa.
 
 La contraseña se almacena fuera del repositorio en:
 

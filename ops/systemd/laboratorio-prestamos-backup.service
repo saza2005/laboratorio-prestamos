@@ -13,7 +13,7 @@ Environment="EXTERNAL_BACKUP_DIR=/media/saza/HP v165w/laboratorio-prestamos"
 Environment=BACKUP_PASSPHRASE_FILE=%h/.config/laboratorio-prestamos/backup-passphrase
 UMask=0077
 ExecStart=/usr/bin/env node --env-file=%h/Proyectos/laboratorio-prestamos/.env.local %h/Proyectos/laboratorio-prestamos/scripts/backup-database.mjs
-ExecStartPost=-/usr/bin/env node %h/Proyectos/laboratorio-prestamos/scripts/export-backup-encrypted.mjs
+ExecStartPost=/usr/bin/env node %h/Proyectos/laboratorio-prestamos/scripts/export-backup-encrypted.mjs
 NoNewPrivileges=true
 PrivateTmp=true
 
