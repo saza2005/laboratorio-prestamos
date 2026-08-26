@@ -182,6 +182,30 @@ PRODUCTION_URL="https://laboratorio-prestamos.vercel.app" npm run check:producti
 
 Este smoke no inicia sesión, no llama RPC de negocio y no modifica Supabase.
 
+## Respaldos
+
+El repositorio incluye un respaldo complementario del esquema y los datos
+`public`. El comando genera archivos SQL con permisos privados y un manifiesto
+SHA-256:
+
+```bash
+node --env-file=.env.local --env-file=.env.backup npm run backup:public
+```
+
+El archivo local `.env.backup` debe contener únicamente una ruta absoluta fuera
+del repositorio:
+
+```text
+DATABASE_BACKUP_DIR=/ruta/privada/de/respaldos
+```
+
+Este respaldo contiene información operativa y perfiles, por lo que no debe
+subirse a Git ni almacenarse en una carpeta pública.
+
+Limitación: el dump de `public` no contiene las identidades administradas por
+Supabase Auth. Debe mantenerse habilitado el mecanismo de backups del proyecto
+Supabase y comprobar periódicamente su retención desde el Dashboard.
+
 
 ## Validación de interfaz
 
