@@ -165,6 +165,23 @@ Después del push, revisar el despliegue de Vercel y probar las rutas principale
 - Si se elimina un usuario con historial, revisar relaciones antes de borrar datos.
 - Si una entrega parcial queda mal registrada, revisar `requests`, `request_items`, `loans`, `loan_items` e `inventory_movements`.
 
+## Monitoreo de producción
+
+GitHub Actions ejecuta cada seis horas el workflow `Production health`. La
+comprobación es pública y de solo lectura:
+
+- portada disponible;
+- pantalla de inicio de sesión disponible;
+- callback OAuth sin código redirige al error controlado esperado.
+
+También puede ejecutarse manualmente desde GitHub Actions o localmente:
+
+```bash
+PRODUCTION_URL="https://laboratorio-prestamos.vercel.app" npm run check:production
+```
+
+Este smoke no inicia sesión, no llama RPC de negocio y no modifica Supabase.
+
 
 ## Validación de interfaz
 
