@@ -253,6 +253,17 @@ La configuración inicial abre dos diálogos protegidos para crearla y confirmar
 npm run backup:setup-encryption
 ```
 
+Para comprobar una copia cifrada sin restaurarla en ninguna base de datos:
+
+```bash
+BACKUP_PASSPHRASE_FILE="$HOME/.config/laboratorio-prestamos/backup-passphrase" \
+  npm run backup:verify-encrypted -- "/ruta/al/respaldo.tar.gpg"
+```
+
+La prueba descifra en un directorio temporal privado, rechaza rutas inseguras,
+verifica el manifiesto y elimina inmediatamente los archivos temporales. No
+ejecuta SQL ni se conecta a Supabase.
+
 
 ## Validación de interfaz
 
