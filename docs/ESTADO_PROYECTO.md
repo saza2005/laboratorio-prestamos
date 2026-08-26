@@ -60,6 +60,9 @@ Estas actividades no representan defectos abiertos del producto:
 6. Mantener actualizados el dominio de Vercel, OAuth de Google y las URLs de
    redirección de Supabase si cambia el dominio público.
 
+La atención de alertas y fallos está documentada en
+`RESPUESTA_INCIDENTES.md`.
+
 ## Límites conocidos
 
 - El plan actual no incluye Point-in-Time Recovery ni restauración administrada
