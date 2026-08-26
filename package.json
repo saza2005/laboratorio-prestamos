@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test tests/public tests/auth",
+    "test:e2e:accessibility": "playwright test tests/public/accessibility.spec.ts",
     "test:e2e:roles": "playwright test tests/roles",
     "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit",
     "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit",
@@ -32,6 +33,7 @@
     "resend": "^6.18.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

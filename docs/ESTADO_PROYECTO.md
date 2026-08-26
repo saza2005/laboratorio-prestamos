@@ -24,6 +24,8 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   build de producción.
 - El smoke público programado valida portada, login y callback OAuth cada seis
   horas.
+- Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,
+  login y registro institucional.
 - La aplicación está desplegada en Vercel y el smoke público actual responde
   correctamente.
 - El linaje canónico de migraciones está documentado en

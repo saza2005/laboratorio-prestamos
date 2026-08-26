@@ -78,7 +78,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="space-y-5">
           <GoogleLoginButton />
 
-          <div className="flex items-center gap-3 text-xs uppercase text-slate-400">
+          <div className="flex items-center gap-3 text-xs uppercase text-slate-600">
             <span className="h-px flex-1 bg-slate-200" />
             Cuentas existentes
             <span className="h-px flex-1 bg-slate-200" />
