@@ -165,6 +165,21 @@ Después del push, revisar el despliegue de Vercel y probar las rutas principale
 - Si se elimina un usuario con historial, revisar relaciones antes de borrar datos.
 - Si una entrega parcial queda mal registrada, revisar `requests`, `request_items`, `loans`, `loan_items` e `inventory_movements`.
 
+## Cabeceras de seguridad
+
+Next aplica en todas las rutas las siguientes defensas compatibles con la
+arquitectura actual:
+
+- `X-Content-Type-Options: nosniff`;
+- `X-Frame-Options: DENY`;
+- `Referrer-Policy: strict-origin-when-cross-origin`;
+- `Permissions-Policy` sin cámara, micrófono, geolocalización ni Topics API;
+- ocultamiento de `X-Powered-By`.
+
+Vercel añade HSTS en producción. Una Content Security Policy estricta queda para
+una fase específica porque debe probarse conjuntamente con Next, Supabase y
+Google OAuth; no debe improvisarse directamente en producción.
+
 ## Monitoreo de producción
 
 GitHub Actions ejecuta cada seis horas el workflow `Production health`. La
