@@ -55,6 +55,7 @@ try {
 
   const manifestFile = path.join(partialDirectory, 'manifest.json')
   await writeFile(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o600 })
+  verify(partialDirectory)
   await rename(partialDirectory, finalDirectory)
   console.log(`BACKUP_STATUS=PASS`)
   console.log(`BACKUP_DIRECTORY=${finalDirectory}`)
@@ -75,6 +76,18 @@ function dump(extraArguments) {
 
   if (result.status !== 0) {
     throw new Error('supabase_db_dump_failed')
+  }
+}
+
+function verify(directory) {
+  const result = spawnSync(
+    process.execPath,
+    [path.join(import.meta.dirname, 'verify-database-backup.mjs'), directory],
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
+  )
+
+  if (result.status !== 0) {
+    throw new Error('backup_integrity_verification_failed')
   }
 }
 

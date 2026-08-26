@@ -218,6 +218,18 @@ systemctl --user status laboratorio-prestamos-backup.timer
 systemctl --user list-timers laboratorio-prestamos-backup.timer
 ```
 
+Cada ejecución verifica automáticamente que los archivos existan, no estén
+vacíos y coincidan con los hashes SHA-256 del manifiesto. Un respaldo existente
+también puede comprobarse sin conectarse a Supabase:
+
+```bash
+npm run backup:verify -- /ruta/privada/de/respaldos/<respaldo>
+```
+
+Actualmente los respaldos residen en el mismo disco del equipo. Para cubrir la
+pérdida física del equipo falta elegir un destino externo y cifrar los archivos
+antes de transferirlos. No debe sincronizarse `auth-data.sql` sin cifrado.
+
 
 ## Validación de interfaz
 
