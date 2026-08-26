@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-Actualizado: 2026-08-25 (America/Guayaquil)
+Actualizado: 2026-08-26 (America/Guayaquil)
 
 ## Estado funcional
 
@@ -28,6 +28,9 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   correctamente.
 - El linaje canónico de migraciones está documentado en
   `OPERACION_DESPLIEGUE.md`.
+- Los privilegios por defecto de nuevos objetos del esquema `public` están
+  endurecidos tanto en producción como en el entorno E2E: no se conceden
+  implícitamente a `anon` ni a `authenticated`.
 - Los secretos permanecen fuera del repositorio.
 
 ## Respaldo y recuperación
