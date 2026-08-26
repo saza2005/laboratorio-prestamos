@@ -39,6 +39,7 @@ Sistema web de gestión de préstamos de laboratorio.
 
 - [Guía de usuario](docs/GUIA_USUARIO.md)
 - [Operación y despliegue](docs/OPERACION_DESPLIEGUE.md)
+- [Estado actual del proyecto](docs/ESTADO_PROYECTO.md)
 - [Manual de Administrador](docs/manuales/Manual_Administrador.docx)
 - [Manual de Laboratorista](docs/manuales/Manual_Laboratorista.docx)
 - [Manual de Docente](docs/manuales/Manual_Docente.docx)
