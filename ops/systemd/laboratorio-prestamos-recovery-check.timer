@@ -1,0 +1,11 @@
+[Unit]
+Description=Prueba mensual de recuperación de laboratorio-prestamos
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+RandomizedDelaySec=2h
+Unit=laboratorio-prestamos-recovery-check.service
+
+[Install]
+WantedBy=timers.target

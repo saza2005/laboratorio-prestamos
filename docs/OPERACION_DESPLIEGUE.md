@@ -293,6 +293,31 @@ La prueba descifra en un directorio temporal privado, rechaza rutas inseguras,
 verifica el manifiesto y elimina inmediatamente los archivos temporales. No
 ejecuta SQL ni se conecta a Supabase.
 
+### Verificación mensual automática de recuperación
+
+Los units `laboratorio-prestamos-recovery-check.service` y
+`laboratorio-prestamos-recovery-check.timer` ejecutan mensualmente la misma
+prueba segura sobre la copia cifrada más reciente. Además de validar cifrado,
+archivo y manifiesto, rechazan una copia con más de 35 días. La tarea nunca
+importa SQL ni modifica Supabase.
+
+Para habilitarla en la estación operativa:
+
+```bash
+cp ops/systemd/laboratorio-prestamos-recovery-check.* ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now laboratorio-prestamos-recovery-check.timer
+```
+
+El chequeo también puede ejecutarse manualmente cuando la memoria esté
+conectada:
+
+```bash
+EXTERNAL_BACKUP_DIR="/ruta/externa/laboratorio-prestamos" \
+BACKUP_PASSPHRASE_FILE="$HOME/.config/laboratorio-prestamos/backup-passphrase" \
+  npm run backup:verify-latest-encrypted
+```
+
 
 ## Validación de interfaz
 

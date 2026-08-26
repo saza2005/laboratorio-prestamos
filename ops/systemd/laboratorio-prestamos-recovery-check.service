@@ -1,0 +1,18 @@
+[Unit]
+Description=Verificación mensual de recuperación del respaldo cifrado
+Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Proyectos/laboratorio-prestamos
+Environment=PATH=%h/.nvm/versions/node/v24.14.1/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment="EXTERNAL_BACKUP_DIR=/media/saza/HP v165w/laboratorio-prestamos"
+Environment=BACKUP_PASSPHRASE_FILE=%h/.config/laboratorio-prestamos/backup-passphrase
+Environment=BACKUP_MAX_AGE_DAYS=35
+UMask=0077
+ExecStart=/usr/bin/env node %h/Proyectos/laboratorio-prestamos/scripts/verify-latest-encrypted-backup.mjs
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

@@ -18,6 +18,7 @@
     "backup:setup-encryption": "node scripts/setup-backup-encryption.mjs",
     "backup:verify": "node scripts/verify-database-backup.mjs",
     "backup:verify-encrypted": "node scripts/verify-encrypted-backup.mjs",
+    "backup:verify-latest-encrypted": "node scripts/verify-latest-encrypted-backup.mjs",
     "test:e2e:mutations": "playwright test tests/workflows/mutations.spec.ts"
   },
   "dependencies": {
