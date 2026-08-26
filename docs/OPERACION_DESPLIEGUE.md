@@ -23,6 +23,10 @@ Variables esperadas:
 En producción, `NEXT_PUBLIC_APP_URL` no puede conservar `localhost`. Debe coincidir
 con el dominio canónico desplegado.
 
+Las redirecciones OAuth utilizan esta URL canónica en lugar de confiar en el
+encabezado `Origin`. El callback solo acepta destinos internos previstos por la
+aplicación (`/dashboard` y `/solicitudes`).
+
 ## OAuth de Google
 
 La aplicación restringe el acceso nuevo a cuentas institucionales

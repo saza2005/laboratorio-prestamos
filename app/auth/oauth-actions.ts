@@ -1,12 +1,12 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { resolveAppOrigin } from '@/lib/supabase/auth/redirect-policy'
 
 export async function signInWithGoogle() {
   const supabase = await createClient()
-  const origin = (await headers()).get('origin')
+  const origin = resolveAppOrigin(process.env.NEXT_PUBLIC_APP_URL)
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',

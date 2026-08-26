@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { isInstitutionalEmail } from '@/lib/supabase/auth/email-policy'
+import {
+  getSafeAuthNextPath,
+  resolveAppOrigin,
+} from '@/lib/supabase/auth/redirect-policy'
 
 function getFullName(userMetadata: Record<string, unknown>, email: string) {
   const name = userMetadata.full_name ?? userMetadata.name
@@ -17,7 +21,7 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
   const next = requestUrl.searchParams.get('next') ?? null
-  const origin = requestUrl.origin
+  const origin = resolveAppOrigin(process.env.NEXT_PUBLIC_APP_URL, requestUrl.origin)
 
   if (!code) {
     return NextResponse.redirect(`${origin}/auth/login?error=google_auth_failed`)
@@ -54,7 +58,8 @@ export async function GET(request: Request) {
   }
 
   if (profile) {
-    return NextResponse.redirect(`${origin}${next ?? getHomeRouteByRole(profile.role)}`)
+    const destination = getSafeAuthNextPath(next, getHomeRouteByRole(profile.role))
+    return NextResponse.redirect(`${origin}${destination}`)
   }
 
   const { data: insertedProfile, error: insertError } = await supabase
@@ -73,7 +78,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/auth/login?error=google_link_required`)
   }
 
-  return NextResponse.redirect(
-    `${origin}${next ?? getHomeRouteByRole(insertedProfile.role)}`
-  )
+  const destination = getSafeAuthNextPath(next, getHomeRouteByRole(insertedProfile.role))
+  return NextResponse.redirect(`${origin}${destination}`)
 }

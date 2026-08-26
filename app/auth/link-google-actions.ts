@@ -1,9 +1,9 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { isInstitutionalEmail } from '@/lib/supabase/auth/email-policy'
+import { resolveAppOrigin } from '@/lib/supabase/auth/redirect-policy'
 
 export async function linkGoogleIdentity() {
   const supabase = await createClient()
@@ -16,7 +16,7 @@ export async function linkGoogleIdentity() {
     redirect('/dashboard?auth_error=invalid_domain')
   }
 
-  const origin = (await headers()).get('origin')
+  const origin = resolveAppOrigin(process.env.NEXT_PUBLIC_APP_URL)
   const { data, error } = await supabase.auth.linkIdentity({
     provider: 'google',
     options: {
