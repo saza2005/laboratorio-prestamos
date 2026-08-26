@@ -1,0 +1,13 @@
+[Unit]
+Description=Alerta local de fallo operativo de laboratorio-prestamos
+Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Proyectos/laboratorio-prestamos
+Environment=PATH=%h/.nvm/versions/node/v24.14.1/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=OPERATIONAL_ALERT_LOG=%h/.local/state/laboratorio-prestamos/operational-alerts.log
+UMask=0077
+ExecStart=/usr/bin/env node %h/Proyectos/laboratorio-prestamos/scripts/record-operational-alert.mjs
+NoNewPrivileges=true
+PrivateTmp=true

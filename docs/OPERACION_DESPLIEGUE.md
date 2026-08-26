@@ -318,6 +318,28 @@ BACKUP_PASSPHRASE_FILE="$HOME/.config/laboratorio-prestamos/backup-passphrase" \
   npm run backup:verify-latest-encrypted
 ```
 
+### Alertas locales de operación
+
+Los servicios de respaldo diario y verificación mensual activan
+`laboratorio-prestamos-operational-alert.service` cuando terminan con error. La
+alerta queda registrada de forma persistente y privada en:
+
+```text
+~/.local/state/laboratorio-prestamos/operational-alerts.log
+```
+
+Si la sesión gráfica admite `notify-send`, también aparece una notificación de
+escritorio. El registro no contiene credenciales ni datos respaldados. Para
+instalar o actualizar las unidades:
+
+```bash
+cp ops/systemd/laboratorio-prestamos-*.service ~/.config/systemd/user/
+cp ops/systemd/laboratorio-prestamos-*.timer ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now laboratorio-prestamos-backup.timer
+systemctl --user enable --now laboratorio-prestamos-recovery-check.timer
+```
+
 
 ## Validación de interfaz
 

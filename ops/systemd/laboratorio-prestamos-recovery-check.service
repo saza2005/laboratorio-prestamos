@@ -1,6 +1,7 @@
 [Unit]
 Description=Verificación mensual de recuperación del respaldo cifrado
 Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+OnFailure=laboratorio-prestamos-operational-alert.service
 
 [Service]
 Type=oneshot

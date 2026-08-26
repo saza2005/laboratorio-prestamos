@@ -1,6 +1,7 @@
 [Unit]
 Description=Respaldo privado de laboratorio-prestamos
 Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+OnFailure=laboratorio-prestamos-operational-alert.service
 
 [Service]
 Type=oneshot
