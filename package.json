@@ -10,6 +10,7 @@
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test tests/public tests/auth",
     "test:e2e:accessibility": "playwright test tests/public/accessibility.spec.ts",
+    "test:e2e:csp": "playwright test tests/public/csp.spec.ts",
     "test:e2e:roles": "playwright test tests/roles",
     "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit",
     "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit",
