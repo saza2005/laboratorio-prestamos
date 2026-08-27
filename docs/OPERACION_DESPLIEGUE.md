@@ -17,10 +17,13 @@ Variables esperadas:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (solo servidor; nunca exponer al navegador).
 - `DATABASE_URL` (solo tareas administrativas controladas).
 - `NEXT_PUBLIC_APP_URL` (URL pública exacta, sin barra final).
 - `RESEND_API_KEY` y `EMAIL_FROM` si se habilitan notificaciones por correo.
+
+El runtime actual no requiere `SUPABASE_SERVICE_ROLE_KEY`. No debe añadirse a
+Vercel ni al entorno local salvo que una futura herramienta administrativa,
+aislada y revisada demuestre esa necesidad.
 
 En producción, `NEXT_PUBLIC_APP_URL` no puede conservar `localhost`. Debe coincidir
 con el dominio canónico desplegado.

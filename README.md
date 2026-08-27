@@ -56,15 +56,20 @@ Variables esperadas, sin incluir valores reales:
 ```text
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY
 DATABASE_URL
 NEXT_PUBLIC_APP_URL
 RESEND_API_KEY
 EMAIL_FROM
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` y `DATABASE_URL` son exclusivamente de servidor u
-operación controlada. Nunca deben exponerse con el prefijo `NEXT_PUBLIC_`.
+Puede partir de `.env.example`. Las variables operativas de respaldo están
+documentadas en `.env.backup.example` y las pruebas opt-in en
+`tests/.env.e2e.example`. Los archivos derivados `.env.local`, `.env.backup` y
+`tests/.env.e2e.local` permanecen ignorados por Git.
+
+`DATABASE_URL` es exclusivamente de operación controlada y no la consume el
+runtime web. Nunca debe exponerse con el prefijo `NEXT_PUBLIC_`. La aplicación
+actual tampoco requiere una service role key de Supabase.
 
 ## Validación
 
