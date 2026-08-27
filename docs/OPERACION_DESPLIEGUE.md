@@ -149,16 +149,25 @@ Checklist detallada:
 
 ## Git y despliegue
 
-Flujo recomendado:
+La rama `main` está protegida. El flujo normal es:
 
 ```bash
 git status
 git add .
 git commit -m "Mensaje descriptivo"
-git push
+git push -u origin <rama>
 ```
 
-Después del push, revisar el despliegue de Vercel y probar las rutas principales.
+Después se debe abrir una pull request. GitHub exige que la rama esté actualizada,
+que CI y CodeQL finalicen correctamente y que todas las conversaciones estén
+resueltas. La integración mantiene historial lineal y no permite force-push ni
+eliminación de `main`.
+
+El administrador conserva bypass para una emergencia operativa, no para el flujo
+cotidiano. Si se utiliza, debe documentar el motivo y validar inmediatamente el
+commit resultante.
+
+Después del merge, revisar el despliegue de Vercel y probar las rutas principales.
 
 GitHub Actions también ejecuta CodeQL sobre JavaScript y TypeScript en pushes a
 `main`, pull requests y una programación semanal. Sus alertas deben revisarse en
