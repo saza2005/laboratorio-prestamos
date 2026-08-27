@@ -15,15 +15,18 @@ const protectedRoutes = [
 ]
 
 test.describe("Autenticación y protección de rutas", () => {
-  test("muestra el formulario de inicio de sesión", async ({ page }) => {
+  test("muestra Google y oculta credenciales cuando no están habilitadas", async ({ page }) => {
     await page.goto("/auth/login")
 
     await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible()
-    await expect(page.locator("#login-email")).toBeVisible()
-    await expect(page.locator("#login-password")).toBeVisible()
-    await expect(page.getByRole("button", { name: "Entrar", exact: true })).toBeVisible()
+    await expect(page.locator("#login-email")).toHaveCount(0)
+    await expect(page.locator("#login-password")).toHaveCount(0)
+    await expect(page.getByRole("button", { name: "Entrar", exact: true })).toHaveCount(0)
     await expect(
       page.getByRole("button", { name: "Entrar con Google institucional" })
+    ).toBeVisible()
+    await expect(
+      page.getByText("El acceso se realiza exclusivamente con Google institucional.")
     ).toBeVisible()
   })
 
@@ -42,7 +45,7 @@ test.describe("Autenticación y protección de rutas", () => {
 
     await page.goto("/auth/login?error=password_login_disabled")
     await expect(
-      page.getByText("El acceso con contraseña está reservado para administradores y laboratoristas.")
+      page.getByText("El acceso con contraseña está deshabilitado. Use Google institucional.")
     ).toBeVisible()
   })
 

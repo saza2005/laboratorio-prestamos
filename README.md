@@ -58,6 +58,7 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 DATABASE_URL
 NEXT_PUBLIC_APP_URL
+PASSWORD_LOGIN_ENABLED
 RESEND_API_KEY
 EMAIL_FROM
 ```
@@ -70,6 +71,11 @@ documentadas en `.env.backup.example` y las pruebas opt-in en
 `DATABASE_URL` es exclusivamente de operación controlada y no la consume el
 runtime web. Nunca debe exponerse con el prefijo `NEXT_PUBLIC_`. La aplicación
 actual tampoco requiere una service role key de Supabase.
+
+`PASSWORD_LOGIN_ENABLED` es un interruptor privado del servidor. Su valor seguro
+por defecto es `false`: oculta el formulario y rechaza intentos de acceso con
+contraseña desde la aplicación. Solo el valor exacto `true` lo habilita; Google
+OAuth permanece disponible en ambos casos.
 
 ## Validación
 
