@@ -33,7 +33,7 @@ export function AnalyticsCharts({
         <h2 className="font-semibold">Top 10 por cantidad prestada</h2>
         <div className="mt-4 h-80">
           {topItems.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 520, height: 320 }}>
               <BarChart data={topItems} layout="vertical" margin={{ left: 24 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" allowDecimals={false} />
@@ -52,7 +52,7 @@ export function AnalyticsCharts({
         <h2 className="font-semibold">Evolución mensual</h2>
         <div className="mt-4 h-80">
           {monthlyUsage.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 520, height: 320 }}>
               <BarChart data={monthlyUsage}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
@@ -71,7 +71,7 @@ export function AnalyticsCharts({
         <h2 className="font-semibold">Distribución de señales administrativas</h2>
         <div className="mt-4 h-80">
           {distribution.some((entry) => entry.value > 0) ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 520, height: 320 }}>
               <PieChart>
                 <Pie data={distribution} dataKey="value" nameKey="name" outerRadius={105} label>
                   {distribution.map((entry, index) => (

@@ -214,22 +214,16 @@ arquitectura actual:
 - `Permissions-Policy` sin cámara, micrófono, geolocalización ni Topics API;
 - ocultamiento de `X-Powered-By`.
 
-Vercel añade HSTS en producción. Una Content Security Policy estricta queda para
-una activación posterior. Actualmente se emite como
-`Content-Security-Policy-Report-Only` para observar compatibilidad con Next,
-Supabase y Google OAuth sin bloquear usuarios. `connect-src` se deriva de
+Vercel añade HSTS en producción. La Content Security Policy se aplica globalmente
+en modo de bloqueo y conserva también `Content-Security-Policy-Report-Only` como
+señal complementaria de observación. `connect-src` se deriva de
 `NEXT_PUBLIC_SUPABASE_URL`; una URL ausente o inválida no amplía permisos y deja
 únicamente el mismo origen.
 
-La portada y `/auth/login` también reciben `Content-Security-Policy` en modo de
-bloqueo porque su smoke de navegador no presenta violaciones. El resto de las
-rutas permanece únicamente en `Report-Only` hasta contar con sesiones E2E
-vigentes para validar superficies autenticadas.
-
-Antes de cambiarla a modo de bloqueo se deben revisar violaciones reales en
-producción y probar al menos login Google, dashboard, formularios, gráficos y
-exportación. No se debe eliminar una directiva para silenciar un error sin
-identificar primero el recurso y su necesidad.
+La política global fue activada después de validar con navegador 14 combinaciones
+autenticadas de ruta y rol, incluidos formularios, gráficos y exportación, sin
+violaciones ni escrituras de negocio. No se debe relajar una directiva para
+silenciar un error sin identificar primero el recurso y justificar su necesidad.
 
 ## Monitoreo de producción
 
@@ -239,6 +233,9 @@ comprobación es pública y de solo lectura:
 - portada disponible;
 - pantalla de inicio de sesión disponible;
 - callback OAuth sin código redirige al error controlado esperado.
+- tiempos de respuesta de portada e inicio de sesión registrados;
+- CSP de bloqueo y observación, `X-Content-Type-Options`, `X-Frame-Options` y
+  `Referrer-Policy` presentes.
 
 También puede ejecutarse manualmente desde GitHub Actions o localmente:
 
