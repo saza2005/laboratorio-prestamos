@@ -1,0 +1,49 @@
+name: Proponer una mejora
+description: Sugiere una mejora funcional, visual u operativa.
+title: "[Mejora]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Necesidad
+      description: Describe el problema o necesidad, no solo la solución propuesta.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Resultado esperado
+      description: Explica cómo debería comportarse el sistema.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: users
+    attributes:
+      label: Usuarios beneficiados
+      multiple: true
+      options:
+        - Estudiantes
+        - Docentes
+        - Laboratoristas
+        - Administradores
+        - Operación técnica
+    validations:
+      required: true
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Restricciones o criterios de aceptación
+      description: Incluye permisos, privacidad, accesibilidad o reglas de negocio relevantes.
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Privacidad
+      options:
+        - label: La propuesta no contiene secretos ni datos personales reales.
+          required: true

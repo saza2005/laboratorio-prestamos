@@ -1,0 +1,73 @@
+name: Reportar un defecto
+description: Informa un comportamiento reproducible sin publicar datos sensibles.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        No incluyas contraseñas, tokens, cookies, correos, UUID ni datos reales.
+        Para vulnerabilidades utiliza el canal privado indicado en la política de seguridad.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Descripción
+      description: Explica qué ocurrió y cuál era el comportamiento esperado.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+      description: Usa datos ficticios o anonimizados.
+      placeholder: |
+        1. Iniciar con el rol...
+        2. Abrir la ruta...
+        3. Realizar la acción...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Rol afectado
+      options:
+        - No autenticado
+        - Estudiante
+        - Docente
+        - Laboratorista
+        - Administrador
+        - Varios o no determinado
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Entorno
+      options:
+        - Producción
+        - Desarrollo local
+        - E2E
+        - No determinado
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidencia no sensible
+      description: Incluye mensajes o capturas anonimizadas. No adjuntes datos personales.
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Confirmaciones
+      options:
+        - label: Verifiqué que el reporte no contiene secretos ni datos personales.
+          required: true
+        - label: El reporte no describe públicamente una vulnerabilidad explotable.
+          required: true
