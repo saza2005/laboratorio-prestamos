@@ -31,6 +31,8 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   revisión antes de integrarse.
 - El repositorio acepta reportes privados de vulnerabilidades mediante GitHub
   Security Advisories y publica las reglas de reporte en `.github/SECURITY.md`.
+- Las acciones externas de los workflows están fijadas a commits específicos
+  para reducir el riesgo de cambios inesperados en la cadena de suministro.
 - El smoke público programado valida portada, login y callback OAuth cada seis
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,
