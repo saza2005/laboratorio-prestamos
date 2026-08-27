@@ -85,15 +85,21 @@ El linaje activo consta de:
 - `20260806154909_revoke_authenticated_legacy_rpcs.sql`
 - `20260823_admin_update_profile_role.sql`
 - `20260826174000_harden_default_privileges.sql`
+- `20260827173000_add_asset_codes_to_inventory_creation.sql`
 
 El baseline contiene el modelo y las funciones de negocio acumuladas, incluida la
 entrega parcial. Los archivos de `supabase/legacy-migrations` son evidencia
 histórica y no deben volver a aplicarse sobre el baseline.
 
-La última migración revoca privilegios automáticos de `anon` y `authenticated`
+La migración de privilegios revoca concesiones automáticas de `anon` y `authenticated`
 para tablas, secuencias y funciones que se creen en el futuro. No cambia grants
 ni policies actuales: obliga a que cada nuevo objeto declare explícitamente el
 acceso que necesita.
+
+La migración de códigos patrimoniales permite registrar un código único por cada
+unidad física al crear equipos con seguimiento individual. Antes de crear el
+índice único, falla de forma segura si detecta códigos patrimoniales duplicados
+en datos existentes.
 
 Antes de un `supabase db push`, consultar `supabase migration list`. Si el
 baseline aparece pendiente sobre una base que ya contiene tablas del sistema,
