@@ -20,7 +20,8 @@ await assertPortFree(port)
 const safeGuardEnv=filteredEnv({...process.env,E2E_EXPECTED_PROJECT_REF:expected},true)
 const guard=spawnSync(process.execPath,['--env-file=.env.app-e2e',path.join('scripts','e2e','verify-app-environment.mjs'),'--confirm-e2e'],{stdio:'inherit',env:safeGuardEnv})
 if (guard.status !== 0) process.exit(guard.status ?? 1)
-const nextEnv=filteredEnv(process.env,false)
+// Las cuentas técnicas E2E usan Email/Password; producción permanece Google-only.
+const nextEnv=filteredEnv({...process.env,PASSWORD_LOGIN_ENABLED:'true'},false)
 const nextArgs=production
   ? [path.join('node_modules','next','dist','bin','next'),'start','-p',String(port)]
   : [path.join('node_modules','next','dist','bin','next'),'dev','--webpack','-p',String(port)]

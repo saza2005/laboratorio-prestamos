@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { clearSupabaseAuthCookies, createClient } from '@/lib/supabase/server'
 import { getHomeRouteByRole } from '@/lib/supabase/auth/roles'
+import { isPasswordLoginEnabled } from '@/lib/supabase/auth/password-login-policy'
 
 type LoginCategory =
   | 'INVALID_CREDENTIALS'
@@ -31,6 +32,10 @@ function logLoginStage(stage: string, category: LoginCategory, code?: string, st
 }
 
 export async function loginUser(formData: FormData) {
+  if (!isPasswordLoginEnabled()) {
+    redirect('/auth/login?error=password_login_disabled')
+  }
+
   const email = String(formData.get('email') || '').trim()
   const password = String(formData.get('password') || '')
 

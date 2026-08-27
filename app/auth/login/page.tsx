@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { LoginForm } from './login-form'
 import { GoogleLoginButton } from '../google-login-button'
+import { isPasswordLoginEnabled } from '@/lib/supabase/auth/password-login-policy'
 
 type LoginPageProps = {
   searchParams?: Promise<{
@@ -34,7 +35,7 @@ function getErrorMessage(error?: string) {
     case 'google_auth_failed':
       return 'No se pudo iniciar sesión con Google. Intente nuevamente.'
     case 'password_login_disabled':
-      return 'El acceso con contraseña está reservado para administradores y laboratoristas. Use Google institucional.'
+      return 'El acceso con contraseña está deshabilitado. Use Google institucional.'
     case 'profile_link_failed':
       return 'No se pudo enlazar el perfil institucional. Si ya tenía solicitudes o préstamos de prueba, contacte al administrador.'
     case 'google_link_required':
@@ -48,6 +49,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams
   const errorMessage = getErrorMessage(params?.error)
   const registrationMessage = getRegistrationMessage(params?.registered)
+  const passwordLoginEnabled = isPasswordLoginEnabled()
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 text-slate-900 sm:px-6">
@@ -78,18 +80,24 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="space-y-5">
           <GoogleLoginButton />
 
-          <div className="flex items-center gap-3 text-xs uppercase text-slate-400">
-            <span className="h-px flex-1 bg-slate-200" />
-            Cuentas existentes
-            <span className="h-px flex-1 bg-slate-200" />
-          </div>
+          {passwordLoginEnabled && (
+            <>
+              <div className="flex items-center gap-3 text-xs uppercase text-slate-600">
+                <span className="h-px flex-1 bg-slate-200" />
+                Cuentas existentes
+                <span className="h-px flex-1 bg-slate-200" />
+              </div>
 
-          <LoginForm />
+              <LoginForm />
+            </>
+          )}
         </div>
 
         <div className="mt-6 space-y-2 text-center text-sm">
           <p className="text-slate-600">
-            Usuarios nuevos entran con Google institucional. Usuarios existentes pueden iniciar con contraseña y vincular Google desde el dashboard.
+            {passwordLoginEnabled
+              ? 'Usuarios nuevos entran con Google institucional. Las cuentas existentes habilitadas pueden usar credenciales.'
+              : 'El acceso se realiza exclusivamente con Google institucional.'}
           </p>
           <Link
             href="/"

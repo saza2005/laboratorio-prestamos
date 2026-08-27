@@ -21,7 +21,7 @@ test.describe("Autenticación y protección de rutas", () => {
     await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible()
     await expect(page.locator("#login-email")).toBeVisible()
     await expect(page.locator("#login-password")).toBeVisible()
-    await expect(page.getByRole("button", { name: "Entrar" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Entrar", exact: true })).toBeVisible()
     await expect(
       page.getByRole("button", { name: "Entrar con Google institucional" })
     ).toBeVisible()
