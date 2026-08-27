@@ -88,6 +88,7 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
         </label>
 
         <select
+          aria-label="Ítem prestado"
           value={selectedId}
           onChange={(e) => {
             setSelectedId(e.target.value)
@@ -348,6 +349,7 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
       <div className="md:col-span-2">
         <label className="block text-sm font-medium mb-1">Notas</label>
         <textarea
+          aria-label="Notas de la devolución"
           name="notes"
           rows={3}
           className="w-full rounded-lg border border-slate-300 px-3 py-2"

@@ -103,7 +103,7 @@ export default async function UsersAdminPage({
         </section>
 
         <section className="surface-card overflow-hidden">
-          <div className="hidden grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_150px_120px_minmax(280px,1fr)] gap-4 border-b border-slate-200 bg-slate-100 px-5 py-3 text-xs font-semibold uppercase text-slate-500 lg:grid">
+          <div className="hidden grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_150px_120px_minmax(280px,1fr)] gap-4 border-b border-slate-200 bg-slate-100 px-5 py-3 text-xs font-semibold uppercase text-slate-600 lg:grid">
             <span>Nombre</span>
             <span>Correo</span>
             <span>Rol actual</span>

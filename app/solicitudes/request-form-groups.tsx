@@ -265,6 +265,7 @@ export function RequestFormGroups({
             Fecha estimada de devolución
           </label>
           <input
+            aria-label="Fecha estimada de devolución"
             name="scheduled_return_date"
             type="date"
             min={minScheduledReturnDate}
@@ -396,6 +397,7 @@ export function RequestFormGroups({
                 />
 
                 <select
+                  aria-label={`Filtrar ítems del grupo ${groupIndex + 1} por categoría`}
                   value={group.category}
                   onChange={(event) =>
                     updateGroup(groupIndex, 'category', event.target.value)
