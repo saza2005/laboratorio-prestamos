@@ -4,8 +4,13 @@ import { redirect } from 'next/navigation'
 import { clearSupabaseAuthCookies, createClient } from '@/lib/supabase/server'
 import { getHomeRouteByRole } from '@/lib/supabase/auth/roles'
 import { parseLoginCredentials } from '@/lib/supabase/auth/login-credentials'
+import { isPasswordLoginEnabled } from '@/lib/supabase/auth/password-login-policy'
 
 export async function loginUser(formData: FormData) {
+  if (!isPasswordLoginEnabled()) {
+    redirect('/auth/login?error=password_login_disabled')
+  }
+
   await clearSupabaseAuthCookies()
   const supabase = await createClient()
 

@@ -19,6 +19,7 @@ Variables esperadas:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `DATABASE_URL` (solo tareas administrativas controladas).
 - `NEXT_PUBLIC_APP_URL` (URL pública exacta, sin barra final).
+- `PASSWORD_LOGIN_ENABLED` (`false` en producción; `true` solo en entornos técnicos controlados).
 - `RESEND_API_KEY` y `EMAIL_FROM` si se habilitan notificaciones por correo.
 
 El runtime actual no requiere `SUPABASE_SERVICE_ROLE_KEY`. No debe añadirse a
@@ -27,6 +28,12 @@ aislada y revisada demuestre esa necesidad.
 
 En producción, `NEXT_PUBLIC_APP_URL` no puede conservar `localhost`. Debe coincidir
 con el dominio canónico desplegado.
+
+El acceso por contraseña se conserva detrás de `PASSWORD_LOGIN_ENABLED`. Cuando
+la variable falta o vale algo distinto del texto exacto `true`, el formulario no
+se renderiza y la Server Action rechaza el intento. Este interruptor no sustituye
+la desactivación del proveedor Email/Password en Supabase si se requiere impedir
+también el acceso directo a su API.
 
 Las redirecciones OAuth utilizan esta URL canónica en lugar de confiar en el
 encabezado `Origin`. El callback solo acepta destinos internos previstos por la
