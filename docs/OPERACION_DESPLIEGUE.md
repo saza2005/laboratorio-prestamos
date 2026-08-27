@@ -221,6 +221,11 @@ Supabase y Google OAuth sin bloquear usuarios. `connect-src` se deriva de
 `NEXT_PUBLIC_SUPABASE_URL`; una URL ausente o inválida no amplía permisos y deja
 únicamente el mismo origen.
 
+La portada y `/auth/login` también reciben `Content-Security-Policy` en modo de
+bloqueo porque su smoke de navegador no presenta violaciones. El resto de las
+rutas permanece únicamente en `Report-Only` hasta contar con sesiones E2E
+vigentes para validar superficies autenticadas.
+
 Antes de cambiarla a modo de bloqueo se deben revisar violaciones reales en
 producción y probar al menos login Google, dashboard, formularios, gráficos y
 exportación. No se debe eliminar una directiva para silenciar un error sin
