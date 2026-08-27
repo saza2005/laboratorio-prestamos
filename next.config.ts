@@ -52,6 +52,11 @@ const securityHeaders = [
   },
 ];
 
+const enforcedContentSecurityPolicyHeader = {
+  key: "Content-Security-Policy",
+  value: contentSecurityPolicy,
+};
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
@@ -59,6 +64,14 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        source: "/",
+        headers: [enforcedContentSecurityPolicyHeader],
+      },
+      {
+        source: "/auth/login",
+        headers: [enforcedContentSecurityPolicyHeader],
       },
     ];
   },

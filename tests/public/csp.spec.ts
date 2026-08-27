@@ -28,6 +28,8 @@ for (const route of ["/", "/auth/login"] as const) {
     const response = await page.goto(route)
 
     expect(response?.ok()).toBeTruthy()
+    expect(response?.headers()["content-security-policy"]).toBeTruthy()
+    expect(response?.headers()["content-security-policy-report-only"]).toBeTruthy()
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
     expect(observations.cspViolations).toEqual([])
     expect(observations.pageErrors).toEqual([])

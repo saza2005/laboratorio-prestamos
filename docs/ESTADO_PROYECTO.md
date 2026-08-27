@@ -43,6 +43,8 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   definición scripts, estilos, imágenes, formularios, frames y conexiones, pero
   aún no bloquea recursos hasta completar la observación en producción y las
   rutas autenticadas.
+- Portada y login ya aplican esa CSP en modo de bloqueo después de validar sus
+  recursos con Playwright; las demás rutas continúan en observación.
 - La rama `main` está protegida: exige pull request, CI y CodeQL en PASS, rama
   actualizada, conversaciones resueltas e historial lineal; impide force-push y
   eliminación. El bypass administrativo se reserva para emergencias.
