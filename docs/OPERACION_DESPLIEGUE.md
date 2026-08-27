@@ -9,6 +9,8 @@
 
 ## Variables de entorno
 
+La rotación segura de credenciales se encuentra en `ROTACION_SECRETOS.md`.
+
 No guardar valores reales en Git.
 
 Variables esperadas:

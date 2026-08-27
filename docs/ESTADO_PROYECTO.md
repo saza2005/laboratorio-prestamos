@@ -64,6 +64,8 @@ Estas actividades no representan defectos abiertos del producto:
 
 La atención de alertas y fallos está documentada en
 `RESPUESTA_INCIDENTES.md`.
+La revisión y sustitución controlada de credenciales está documentada en
+`ROTACION_SECRETOS.md`.
 
 ## Límites conocidos
 
