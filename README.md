@@ -98,6 +98,7 @@ El procedimiento detallado y el linaje vigente están en
 
 ## Documentación
 
+- [Guía para contribuir](CONTRIBUTING.md)
 - [Estado actual](docs/ESTADO_PROYECTO.md)
 - [Operación y despliegue](docs/OPERACION_DESPLIEGUE.md)
 - [Pruebas funcionales](docs/PRUEBAS_FUNCIONALES.md)
