@@ -27,6 +27,14 @@ Pruebas de rutas administrativas con las cuentas E2E configuradas:
 
     timeout 90s npm run test:e2e:roles
 
+Smoke público y read-only de CSP:
+
+    PLAYWRIGHT_BASE_URL=https://<dominio> PLAYWRIGHT_NO_SERVER=1 timeout 90s npm run test:e2e:csp
+
+Este smoke comprueba portada y login, y falla ante violaciones CSP o errores de
+página. No crea sesiones ni envía formularios. La activación en modo de bloqueo
+requiere además una validación autenticada con una sesión E2E vigente.
+
 Suite completa:
 
     timeout 90s npm run test:e2e
