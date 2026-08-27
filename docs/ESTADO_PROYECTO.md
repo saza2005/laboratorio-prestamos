@@ -35,6 +35,8 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   para reducir el riesgo de cambios inesperados en la cadena de suministro.
   Dependabot revisa mensualmente esos commits y propone sus actualizaciones en
   una pull request agrupada.
+- Las versiones mayores de herramientas de desarrollo quedan fuera de las
+  actualizaciones automáticas y requieren una fase explícita de compatibilidad.
 - Pull requests e incidencias utilizan plantillas con controles explícitos de
   validación, migraciones, privacidad y pruebas mutantes.
 - El smoke público programado valida portada, login y callback OAuth cada seis
