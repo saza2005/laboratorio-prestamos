@@ -1,0 +1,11 @@
+[Unit]
+Description=Revisión semanal del almacenamiento de respaldos
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+RandomizedDelaySec=2h
+Unit=laboratorio-prestamos-backup-storage-audit.service
+
+[Install]
+WantedBy=timers.target

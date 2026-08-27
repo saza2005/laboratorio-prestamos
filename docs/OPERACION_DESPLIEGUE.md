@@ -356,6 +356,28 @@ systemctl --user enable --now laboratorio-prestamos-backup.timer
 systemctl --user enable --now laboratorio-prestamos-recovery-check.timer
 ```
 
+### Revisión de conservación y espacio
+
+La política inicial conserva todas las copias y evita borrados automáticos. El
+timer `laboratorio-prestamos-backup-storage-audit.timer` revisa semanalmente la
+cantidad y el tamaño de respaldos locales y externos. Al superar 90 copias en un
+destino, genera una alerta para revisar la conservación de forma manual; nunca
+elimina archivos.
+
+```bash
+cp ops/systemd/laboratorio-prestamos-backup-storage-audit.* ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now laboratorio-prestamos-backup-storage-audit.timer
+```
+
+También puede consultarse sin cambiar nada:
+
+```bash
+DATABASE_BACKUP_DIR="$HOME/Respaldos/laboratorio-prestamos" \
+EXTERNAL_BACKUP_DIR="/ruta/externa/laboratorio-prestamos" \
+  npm run backup:audit-storage
+```
+
 
 ## Validación de interfaz
 

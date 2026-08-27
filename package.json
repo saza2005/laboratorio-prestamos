@@ -20,6 +20,7 @@
     "backup:verify": "node scripts/verify-database-backup.mjs",
     "backup:verify-encrypted": "node scripts/verify-encrypted-backup.mjs",
     "backup:verify-latest-encrypted": "node scripts/verify-latest-encrypted-backup.mjs",
+    "backup:audit-storage": "node scripts/audit-backup-storage.mjs",
     "test:e2e:mutations": "playwright test tests/workflows/mutations.spec.ts"
   },
   "dependencies": {

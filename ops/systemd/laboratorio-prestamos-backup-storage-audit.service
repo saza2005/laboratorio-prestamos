@@ -1,0 +1,17 @@
+[Unit]
+Description=Auditoría de almacenamiento de respaldos de laboratorio-prestamos
+Documentation=file://%h/Proyectos/laboratorio-prestamos/docs/OPERACION_DESPLIEGUE.md
+OnFailure=laboratorio-prestamos-operational-alert.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Proyectos/laboratorio-prestamos
+Environment=PATH=%h/.nvm/versions/node/v24.14.1/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=DATABASE_BACKUP_DIR=%h/Respaldos/laboratorio-prestamos
+Environment="EXTERNAL_BACKUP_DIR=/media/saza/HP v165w/laboratorio-prestamos"
+Environment=BACKUP_REVIEW_LOCAL_COUNT=90
+Environment=BACKUP_REVIEW_EXTERNAL_COUNT=90
+UMask=0077
+ExecStart=/usr/bin/env node %h/Proyectos/laboratorio-prestamos/scripts/audit-backup-storage.mjs
+NoNewPrivileges=true
+PrivateTmp=true
