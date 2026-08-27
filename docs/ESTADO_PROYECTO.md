@@ -25,6 +25,10 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
 - CodeQL analiza JavaScript y TypeScript en cada cambio a `main`, en pull
   requests y semanalmente mediante el conjunto ampliado de consultas de
   seguridad.
+- GitHub mantiene activas las alertas y actualizaciones de seguridad de
+  Dependabot, además de Secret Scanning con protección de pushes. Las
+  correcciones automáticas se proponen mediante pull requests y requieren
+  revisión antes de integrarse.
 - El smoke público programado valida portada, login y callback OAuth cada seis
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,

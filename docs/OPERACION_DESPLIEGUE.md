@@ -162,6 +162,11 @@ GitHub Actions también ejecuta CodeQL sobre JavaScript y TypeScript en pushes a
 **Security > Code scanning**; no deben silenciarse sin documentar por qué el
 hallazgo no es explotable o cómo quedó mitigado.
 
+En **Security** también permanecen habilitados Dependabot Alerts, Dependabot
+Security Updates y Secret Scanning con Push Protection. Las pull requests de
+seguridad deben pasar CI y revisión funcional antes de integrarse; no se usa
+merge automático.
+
 ## Rutas principales para prueba
 
 - `/`
