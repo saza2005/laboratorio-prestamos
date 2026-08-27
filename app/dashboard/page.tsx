@@ -548,7 +548,7 @@ export default async function DashboardPage({
         <section className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">Resumen general</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-600">
               Inventario, disponibilidad y estado operativo actual.
             </p>
           </div>
@@ -605,7 +605,7 @@ export default async function DashboardPage({
         <section className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">Módulos operativos</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-600">
               Accesos directos para la gestión diaria del laboratorio.
             </p>
           </div>
@@ -689,7 +689,7 @@ export default async function DashboardPage({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold">Solicitudes por atender</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-600">
                 Solicitudes pendientes de revisión o aprobadas listas para entrega.
               </p>
             </div>
@@ -714,7 +714,7 @@ export default async function DashboardPage({
 
           {actionableRequests.length > 0 ? (
             <div className="overflow-hidden rounded-lg border border-slate-200">
-              <div className="hidden grid-cols-[minmax(0,1.2fr)_140px_140px_minmax(0,1fr)] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <div className="hidden grid-cols-[minmax(0,1.2fr)_140px_140px_minmax(0,1fr)] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-600 md:grid">
                 <span>Solicitante</span>
                 <span>Fecha</span>
                 <span>Estado</span>
@@ -763,7 +763,7 @@ export default async function DashboardPage({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold">Vencimientos de préstamos</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-600">
                 Préstamos vencidos o con devolución esperada dentro de los próximos 7 días.
               </p>
             </div>
@@ -777,7 +777,7 @@ export default async function DashboardPage({
 
           {dueSoonLoans.length > 0 ? (
             <div className="overflow-hidden rounded-lg border border-slate-200">
-              <div className="hidden grid-cols-[minmax(0,1.2fr)_150px_140px_120px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+              <div className="hidden grid-cols-[minmax(0,1.2fr)_150px_140px_120px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-600 md:grid">
                 <span>Usuario</span>
                 <span>Entrega</span>
                 <span>Devolución</span>
@@ -796,7 +796,7 @@ export default async function DashboardPage({
                       <span className="block truncate font-medium text-slate-800">
                         {loan.borrower_name}
                       </span>
-                      <span className="block truncate text-xs text-slate-500">
+                      <span className="block truncate text-xs text-slate-600">
                         {loan.borrower_email}
                       </span>
                     </span>

@@ -162,6 +162,7 @@ export function RequestsList({ requests }: RequestsListProps) {
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
           <select
+            aria-label="Filtrar solicitudes por estado"
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
@@ -192,7 +193,7 @@ export function RequestsList({ requests }: RequestsListProps) {
 
       {filteredRequests.length > 0 ? (
         <div className="overflow-hidden rounded-lg border border-slate-200">
-        <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_112px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-500 md:grid">
+        <div className="hidden grid-cols-[112px_116px_minmax(0,1fr)_120px_112px] gap-3 bg-slate-100 px-4 py-3 text-xs font-medium uppercase text-slate-600 md:grid">
           <span>Fecha</span>
           <span>Tipo</span>
           <span>Resumen</span>

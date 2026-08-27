@@ -258,6 +258,7 @@ export function LoanForm({
             Fecha esperada de devolución
           </label>
           <input
+            aria-label="Fecha esperada de devolución"
             name="expected_return_date"
             type="date"
             min={minExpectedReturnDate}
@@ -276,6 +277,7 @@ export function LoanForm({
             className="rounded-lg border bg-white px-3 py-2 text-sm"
           />
           <select
+            aria-label="Filtrar materiales por categoría"
             value={categoryFilter}
             onChange={(event) => setCategoryFilter(event.target.value)}
             className="rounded-lg border bg-white px-3 py-2 text-sm"
@@ -432,6 +434,7 @@ export function LoanForm({
                         Unidad patrimonial
                       </label>
                       <select
+                        aria-label={`Unidad patrimonial para ${item.name}`}
                         value={row.itemUnitId}
                         onChange={(event) =>
                           updateRow(index, { itemUnitId: event.target.value })
@@ -491,7 +494,7 @@ export function LoanForm({
 
       <div>
         <label className="mb-1 block text-sm font-medium">Notas</label>
-        <textarea name="notes" rows={3} className="w-full rounded-lg border px-3 py-2" />
+        <textarea aria-label="Notas del préstamo" name="notes" rows={3} className="w-full rounded-lg border px-3 py-2" />
       </div>
 
       <div>

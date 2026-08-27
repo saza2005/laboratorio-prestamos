@@ -84,7 +84,7 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
           title="Analítica de uso de bienes"
           description="Señales basadas en préstamos efectivamente entregados. Orientan la revisión administrativa, pero no determinan por sí solas compras, renovación u obsolescencia."
           actions={<>
-            <Link href={`/dashboard/analitica/export?${exportParams}`} className="rounded-lg bg-emerald-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-700">
+            <Link href={`/dashboard/analitica/export?${exportParams}`} className="rounded-lg bg-emerald-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-800">
               Exportar Excel
             </Link>
             <Link href="/dashboard" className="rounded-lg bg-slate-800 px-4 py-2 text-center text-sm font-medium text-white hover:bg-slate-900">
@@ -141,7 +141,7 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
             <h2 className="font-semibold">Detalle por bien</h2>
             <p className="text-sm text-slate-500">Usuarios distintos se presenta solo como conteo; no se exponen identidades.</p>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" role="region" aria-label="Tabla de uso de bienes" tabIndex={0}>
             <table className="min-w-[1250px] w-full text-sm">
               <thead className="bg-slate-100 text-left text-slate-600"><tr>
                 {['Código / bien', 'Categoría', 'Stock', 'Préstamos', 'Cantidad', 'Usuarios', 'Último uso', 'Días', '30d', '90d', '365d', 'Tendencia', 'Señal'].map((label) => <th key={label} className="px-4 py-3">{label}</th>)}
