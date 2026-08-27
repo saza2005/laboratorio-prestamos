@@ -39,6 +39,9 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   actualizaciones automáticas y requieren una fase explícita de compatibilidad.
 - Pull requests e incidencias utilizan plantillas con controles explícitos de
   validación, migraciones, privacidad y pruebas mutantes.
+- La rama `main` está protegida: exige pull request, CI y CodeQL en PASS, rama
+  actualizada, conversaciones resueltas e historial lineal; impide force-push y
+  eliminación. El bypass administrativo se reserva para emergencias.
 - El smoke público programado valida portada, login y callback OAuth cada seis
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,
