@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-Actualizado: 2026-08-26 (America/Guayaquil)
+Actualizado: 2026-08-27 (America/Guayaquil)
 
 ## Estado funcional
 
@@ -48,10 +48,13 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
 - La rama `main` está protegida: exige pull request, CI y CodeQL en PASS, rama
   actualizada, conversaciones resueltas e historial lineal; impide force-push y
   eliminación. El bypass administrativo se reserva para emergencias.
-- El smoke público programado valida portada, login y callback OAuth cada seis
+- El smoke público programado valida portada, login, callback OAuth, tiempos de
+  respuesta y presencia de las cabeceras de seguridad requeridas cada seis
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,
-  login y registro institucional.
+  login y registro institucional usando Chromium, Firefox y WebKit. La matriz
+  local quedó validada en Chromium y Firefox; WebKit se ejecuta en CI con sus
+  dependencias Linux administradas por GitHub Actions.
 - La auditoría autenticada con Axe validó reglas WCAG A/AA en 14 combinaciones
   representativas de ruta y rol (`admin`, `lab_staff`, `teacher` y `student`),
   sin ejecutar Server Actions ni escrituras de negocio.

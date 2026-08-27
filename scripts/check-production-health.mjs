@@ -22,6 +22,7 @@ const checks = [
 ]
 
 for (const check of checks) {
+  const startedAt = performance.now()
   const response = await request(check.path)
   const body = await response.text()
 
@@ -34,6 +35,9 @@ for (const check of checks) {
   }
 
   console.log(`${check.name.toUpperCase()}=PASS`)
+  console.log(`${check.name.toUpperCase()}_RESPONSE_MS=${Math.round(performance.now() - startedAt)}`)
+
+  if (check.name === 'home') assertSecurityHeaders(response)
 }
 
 const callback = await request('/auth/callback', { redirect: 'manual' })
@@ -58,6 +62,22 @@ if (
 
 console.log('OAUTH_CALLBACK=PASS')
 console.log('PRODUCTION_HEALTH=PASS')
+
+function assertSecurityHeaders(response) {
+  const requiredHeaders = [
+    'content-security-policy',
+    'content-security-policy-report-only',
+    'x-content-type-options',
+    'x-frame-options',
+    'referrer-policy',
+  ]
+
+  for (const header of requiredHeaders) {
+    if (!response.headers.get(header)) fail(`security_headers: ${header} ausente`)
+  }
+
+  console.log('SECURITY_HEADERS=PASS')
+}
 
 async function request(path, options = {}) {
   const controller = new AbortController()

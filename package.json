@@ -12,7 +12,7 @@
     "test:e2e:accessibility": "playwright test tests/public/accessibility.spec.ts",
     "test:e2e:csp": "playwright test tests/public/csp.spec.ts",
     "test:e2e:roles": "playwright test tests/roles",
-    "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit",
+    "test:unit": "PLAYWRIGHT_NO_SERVER=1 playwright test tests/unit --project=chromium",
     "check:safe": "npm run lint && npx tsc --noEmit && npm run test:unit",
     "check:production": "node scripts/check-production-health.mjs",
     "backup:database": "node scripts/backup-database.mjs",
