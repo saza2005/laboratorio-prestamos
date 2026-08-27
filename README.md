@@ -98,6 +98,7 @@ El procedimiento detallado y el linaje vigente están en
 - [Pruebas funcionales](docs/PRUEBAS_FUNCIONALES.md)
 - [Respuesta a incidentes](docs/RESPUESTA_INCIDENTES.md)
 - [Rotación de secretos](docs/ROTACION_SECRETOS.md)
+- [Política para reportar vulnerabilidades](.github/SECURITY.md)
 - [Guía de usuario](docs/GUIA_USUARIO.md)
 - [Manual de Administrador](docs/manuales/Manual_Administrador.docx)
 - [Manual de Laboratorista](docs/manuales/Manual_Laboratorista.docx)

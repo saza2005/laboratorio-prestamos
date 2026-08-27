@@ -29,6 +29,8 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   Dependabot, además de Secret Scanning con protección de pushes. Las
   correcciones automáticas se proponen mediante pull requests y requieren
   revisión antes de integrarse.
+- El repositorio acepta reportes privados de vulnerabilidades mediante GitHub
+  Security Advisories y publica las reglas de reporte en `.github/SECURITY.md`.
 - El smoke público programado valida portada, login y callback OAuth cada seis
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,
