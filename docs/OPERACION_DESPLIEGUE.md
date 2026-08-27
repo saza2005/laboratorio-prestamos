@@ -215,8 +215,16 @@ arquitectura actual:
 - ocultamiento de `X-Powered-By`.
 
 Vercel añade HSTS en producción. Una Content Security Policy estricta queda para
-una fase específica porque debe probarse conjuntamente con Next, Supabase y
-Google OAuth; no debe improvisarse directamente en producción.
+una activación posterior. Actualmente se emite como
+`Content-Security-Policy-Report-Only` para observar compatibilidad con Next,
+Supabase y Google OAuth sin bloquear usuarios. `connect-src` se deriva de
+`NEXT_PUBLIC_SUPABASE_URL`; una URL ausente o inválida no amplía permisos y deja
+únicamente el mismo origen.
+
+Antes de cambiarla a modo de bloqueo se deben revisar violaciones reales en
+producción y probar al menos login Google, dashboard, formularios, gráficos y
+exportación. No se debe eliminar una directiva para silenciar un error sin
+identificar primero el recurso y su necesidad.
 
 ## Monitoreo de producción
 
