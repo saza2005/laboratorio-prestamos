@@ -22,6 +22,9 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
 
 - CI valida auditoría de dependencias, ESLint, TypeScript, pruebas unitarias y
   build de producción.
+- CodeQL analiza JavaScript y TypeScript en cada cambio a `main`, en pull
+  requests y semanalmente mediante el conjunto ampliado de consultas de
+  seguridad.
 - El smoke público programado valida portada, login y callback OAuth cada seis
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,

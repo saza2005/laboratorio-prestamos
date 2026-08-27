@@ -157,6 +157,11 @@ git push
 
 Después del push, revisar el despliegue de Vercel y probar las rutas principales.
 
+GitHub Actions también ejecuta CodeQL sobre JavaScript y TypeScript en pushes a
+`main`, pull requests y una programación semanal. Sus alertas deben revisarse en
+**Security > Code scanning**; no deben silenciarse sin documentar por qué el
+hallazgo no es explotable o cómo quedó mitigado.
+
 ## Rutas principales para prueba
 
 - `/`
