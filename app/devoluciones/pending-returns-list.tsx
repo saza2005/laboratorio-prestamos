@@ -259,6 +259,7 @@ export function PendingReturnsList({ loanItems }: PendingReturnsListProps) {
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
           <select
+            aria-label="Filtrar préstamos por estado"
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"

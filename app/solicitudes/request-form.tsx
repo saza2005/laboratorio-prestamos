@@ -154,6 +154,7 @@ export function RequestForm({
           Fecha estimada de devolución
         </label>
         <input
+          aria-label="Fecha estimada de devolución"
           name="scheduled_return_date"
           type="date"
           min={minScheduledReturnDate}
@@ -185,6 +186,7 @@ export function RequestForm({
             />
 
             <select
+              aria-label="Filtrar ítems por categoría"
               value={categoryFilter}
               onChange={(event) => setCategoryFilter(event.target.value)}
               className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"

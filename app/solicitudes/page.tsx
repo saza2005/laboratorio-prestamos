@@ -38,7 +38,7 @@ export default async function SolicitudesPage() {
                   {formatUserRole(profile.role)}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-600">
                 {profile.role === 'teacher'
                   ? 'Gestiona solicitudes individuales, grupales y revisa tus préstamos.'
                   : 'Crea solicitudes, revisa su estado y consulta tus préstamos activos.'}
@@ -75,7 +75,7 @@ export default async function SolicitudesPage() {
         <section className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">Módulos del portal</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-600">
               Selecciona una sección para trabajar sin cargar todo en una sola pantalla.
             </p>
           </div>
