@@ -138,6 +138,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           />
           <select
+            aria-label="Filtrar por tipo de mantenimiento"
             value={typeFilter}
             onChange={(event) => setTypeFilter(event.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
@@ -148,6 +149,7 @@ export function MaintenanceHistory({ records, limit }: MaintenanceHistoryProps) 
             <option value="general">Trabajo general</option>
           </select>
           <select
+            aria-label="Filtrar por estado de unidad"
             value={unitStateFilter}
             onChange={(event) => setUnitStateFilter(event.target.value)}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm"

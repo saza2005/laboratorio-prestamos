@@ -39,12 +39,12 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   actualizaciones automáticas y requieren una fase explícita de compatibilidad.
 - Pull requests e incidencias utilizan plantillas con controles explícitos de
   validación, migraciones, privacidad y pruebas mutantes.
-- La Content Security Policy se encuentra en fase `Report-Only`: restringe por
-  definición scripts, estilos, imágenes, formularios, frames y conexiones, pero
-  aún no bloquea recursos hasta completar la observación en producción y las
-  rutas autenticadas.
-- Portada y login ya aplican esa CSP en modo de bloqueo después de validar sus
-  recursos con Playwright; las demás rutas continúan en observación.
+- La Content Security Policy se aplica globalmente en modo de bloqueo y conserva
+  además el header `Report-Only` como señal de observación. Restringe scripts,
+  estilos, imágenes, formularios, frames y conexiones a los orígenes previstos.
+- La activación global se realizó después de validar con Playwright 14
+  combinaciones autenticadas de ruta y rol, sin violaciones, errores de página,
+  Server Actions ni escrituras de negocio.
 - La rama `main` está protegida: exige pull request, CI y CodeQL en PASS, rama
   actualizada, conversaciones resueltas e historial lineal; impide force-push y
   eliminación. El bypass administrativo se reserva para emergencias.
@@ -52,6 +52,9 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
   horas.
 - Un smoke automatizado con Axe valida semanalmente reglas WCAG A/AA en portada,
   login y registro institucional.
+- La auditoría autenticada con Axe validó reglas WCAG A/AA en 14 combinaciones
+  representativas de ruta y rol (`admin`, `lab_staff`, `teacher` y `student`),
+  sin ejecutar Server Actions ni escrituras de negocio.
 - La aplicación está desplegada en Vercel y el smoke público actual responde
   correctamente.
 - El linaje canónico de migraciones está documentado en
@@ -68,8 +71,19 @@ deben repetirse sin un objetivo concreto, presupuesto de escritura y respaldo.
 - Copia externa comprimida y cifrada con GPG/AES-256 cuando la memoria USB está
   conectada.
 - Prueba de recuperación local validada sin ejecutar SQL ni modificar Supabase.
+- El 2026-08-26 se confirmó nuevamente un respaldo completo local y externo,
+  seguido por una prueba de recuperación cifrada en PASS sin importar SQL.
 - La contraseña de recuperación debe mantenerse en un gestor independiente de
   la memoria USB y del computador.
+
+## Automatización operativa activa
+
+- Respaldo diario: activo mediante timer de usuario.
+- Auditoría semanal de almacenamiento: activa.
+- Prueba mensual de recuperación cifrada: activa.
+- Smoke público de producción cada seis horas: activo.
+- Recordatorio trimestral de revisión de secretos: activo; no accede a valores
+  de credenciales ni realiza rotaciones automáticas.
 
 ## Operación pendiente y recurrente
 
@@ -96,8 +110,20 @@ La revisión y sustitución controlada de credenciales está documentada en
 ## Límites conocidos
 
 - El plan actual no incluye Point-in-Time Recovery ni restauración administrada
-  de Supabase.
+  de Supabase. Los backups administrados, restauración a otro proyecto y PITR
+  requieren un upgrade; mientras tanto se mantiene el respaldo local y externo
+  cifrado ya validado.
 - La copia USB protege contra pérdida del disco principal, pero depende de que la
   memoria se conecte y se custodie correctamente.
 - Las señales de analítica apoyan decisiones administrativas; no determinan por
   sí solas compra, renovación o reemplazo de bienes.
+
+## Decisiones administrativas provisionales
+
+- Licencia: el repositorio público permanece temporalmente sin licencia. No se
+  concede una licencia abierta hasta consultar la política y titularidad
+  institucional aplicable; no se añade una atribución de copyright no
+  confirmada.
+- Dominio: el despliegue continúa usando el dominio estable de Vercel. Un dominio
+  institucional personalizado es opcional y solo requerirá actualizar Vercel,
+  Google OAuth y las URLs de Supabase cuando la Universidad lo proporcione.

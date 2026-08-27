@@ -18,6 +18,29 @@ La revisión trimestral no obliga a reemplazar una clave si el proveedor utiliza
 otro mecanismo seguro o la rotación causaría indisponibilidad sin beneficio. La
 decisión debe quedar registrada.
 
+## Recordatorio trimestral local
+
+La estación operativa puede registrar automáticamente el vencimiento de la
+revisión trimestral. El recordatorio no lee, imprime ni cambia credenciales; solo
+añade una marca no sensible al registro privado local:
+
+```text
+~/.local/state/laboratorio-prestamos/secret-rotation-reminders.log
+```
+
+Para instalarlo:
+
+```bash
+cp ops/systemd/laboratorio-prestamos-secret-rotation-review.* ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now laboratorio-prestamos-secret-rotation-review.timer
+```
+
+El timer se ejecuta al inicio de enero, abril, julio y octubre. `Persistent=true`
+permite registrar una revisión omitida cuando el equipo vuelva a encenderse.
+Cada aviso debe cerrarse revisando las credenciales de la tabla siguiente y
+documentando fecha, responsable y decisión, nunca sus valores.
+
 ## Clasificación
 
 | Credencial | Ubicación de uso | Sensibilidad |

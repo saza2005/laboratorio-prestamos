@@ -159,6 +159,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
               className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
             />
             <select
+              aria-label="Filtrar equipos por categoría"
               value={category}
               onChange={(event) => setCategory(event.target.value)}
               className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
@@ -371,6 +372,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
       />
 
       <input
+        aria-label="Fecha de mantenimiento"
         name="maintenance_date"
         type="date"
         required
@@ -378,6 +380,7 @@ export function MaintenanceForm({ items }: { items: MaintenanceItem[] }) {
       />
 
       <select
+        aria-label="Tipo de mantenimiento"
         name="maintenance_type"
         required
         value={maintenanceType}

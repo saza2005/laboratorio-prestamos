@@ -180,4 +180,26 @@ Completar una fila por ronda de pruebas:
 
 | Fecha | Ambiente | Rol(es) | Responsable | Resultado general | Observaciones |
 | --- | --- | --- | --- | --- | --- |
+| 2026-08-26 | Localhost E2E en modo producción | admin, lab_staff, teacher, student | Codex + supervisión del propietario | Correcto | Evidencia acumulada de CHANGE-001 a CHANGE-005: ciclos funcionales cerrados, 37/37 pruebas unitarias, build de producción y auditoría autenticada WCAG A/AA en 14 combinaciones ruta/rol. Cero escrituras durante la auditoría de accesibilidad. |
 |  | Localhost / Vercel |  |  | Pendiente / Correcto / Revisar |  |
+
+## Evidencia automatizada vigente
+
+La tabla principal permanece como checklist reutilizable para cada aceptación o
+despliegue importante. Los estados `Pendiente` no invalidan la evidencia
+histórica: indican que esa fila debe volver a comprobarse cuando se abra una
+nueva ronda institucional.
+
+Evidencia disponible al 2026-08-26:
+
+- CHANGE-001 a CHANGE-005: validados y cerrados con sus ciclos E2E en PASS.
+- Flujos mutantes de entrega y devolución: preservados como evidencia histórica;
+  no deben repetirse sin un objetivo concreto y presupuesto de escritura.
+- Pruebas unitarias locales: 37 de 37 en PASS.
+- ESLint y TypeScript: PASS.
+- Build de producción: PASS con el compilador Webpack soportado por Next.js.
+- Accesibilidad pública: portada, login y registro institucional cubiertos.
+- Accesibilidad autenticada: 14 combinaciones de ruta y rol en PASS para
+  `admin`, `lab_staff`, `teacher` y `student`, sin Server Actions ni escrituras.
+- Inicio de sesión institucional con Google: comprobado manualmente por el
+  propietario en el despliegue configurado.
