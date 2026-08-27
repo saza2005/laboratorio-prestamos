@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canManageInventory } from '@/lib/supabase/auth/roles'
 import { getActionErrorMessage } from '@/lib/action-error'
+import { parseAssetCodes, validateAssetCodes } from '@/lib/inventory-asset-codes'
 
 export type InventoryActionState = {
   error: string | null
@@ -30,6 +31,7 @@ async function persistItem(formData: FormData) {
   const stockAvailable = Number(formData.get('stock_available') || 0)
   const status = String(formData.get('status') || '').trim()
   const location = String(formData.get('location') || '').trim()
+  const assetCodes = parseAssetCodes(formData.get('asset_codes'))
 
   if (!code || !name || !itemType || !status) {
     throw new Error('Faltan campos obligatorios.')
@@ -65,6 +67,13 @@ async function persistItem(formData: FormData) {
     )
   }
 
+  const assetCodeError = validateAssetCodes({
+    assetCodes,
+    stockTotal,
+    trackIndividual,
+  })
+  if (assetCodeError) throw new Error(assetCodeError)
+
   const { error } = await supabase.rpc('create_inventory_item_transaction', {
     p_code: code,
     p_name: name,
@@ -76,6 +85,7 @@ async function persistItem(formData: FormData) {
     p_stock_available: stockAvailable,
     p_status: status,
     p_location: location || null,
+    p_asset_codes: assetCodes,
   })
 
   if (error) {

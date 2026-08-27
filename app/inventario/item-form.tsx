@@ -1,10 +1,13 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { useConfirmSubmit } from '@/components/confirm-submit'
 import { createItemWithState } from './actions'
 
 export function ItemForm() {
+  const [trackIndividual, setTrackIndividual] = useState(false)
+  const [stockTotal, setStockTotal] = useState(0)
+  const [assetCodesText, setAssetCodesText] = useState('')
   const [state, formAction, isPending] = useActionState(createItemWithState, {
     error: null,
   })
@@ -94,6 +97,7 @@ export function ItemForm() {
           min="0"
           defaultValue="0"
           required
+          onChange={(event) => setStockTotal(Number(event.target.value) || 0)}
           className="w-full rounded-lg border border-slate-300 px-3 py-2"
         />
       </div>
@@ -124,11 +128,36 @@ export function ItemForm() {
           id="track_individual"
           name="track_individual"
           type="checkbox"
+          checked={trackIndividual}
+          onChange={(event) => setTrackIndividual(event.target.checked)}
           className="h-4 w-4"
         />
         <label htmlFor="track_individual" className="text-sm font-medium">
           Seguimiento individual
         </label>
+      </div>
+
+      <div className="md:col-span-2">
+        <label htmlFor="asset_codes" className="block text-sm font-medium mb-1">
+          Códigos patrimoniales
+        </label>
+        <textarea
+          id="asset_codes"
+          name="asset_codes"
+          rows={Math.min(Math.max(stockTotal, 3), 8)}
+          value={assetCodesText}
+          onChange={(event) => setAssetCodesText(event.target.value)}
+          disabled={!trackIndividual}
+          required={trackIndividual && stockTotal > 0}
+          aria-describedby="asset-codes-help"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
+          placeholder={'UCU-LAB-0001\nUCU-LAB-0002'}
+        />
+        <p id="asset-codes-help" className="mt-1 text-xs text-slate-500">
+          {trackIndividual
+            ? `Ingrese un código por línea. Se requieren ${stockTotal} para el stock actual.`
+            : 'Active el seguimiento individual para registrar un código por cada unidad física.'}
+        </p>
       </div>
 
       <div className="md:col-span-2">
