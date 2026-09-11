@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LogoutButton } from '@/app/logout-button'
-import { LinkGoogleButton } from '@/app/auth/link-google-button'
 import { DashboardCharts } from './dashboard-charts'
 import { ModuleTabs } from '@/components/module-tabs'
+import { PageHeader } from '@/components/page-header'
+import { MetricCard } from '@/components/metric-card'
+import { ModuleCard } from '@/components/module-card'
 import {
   canSeeInventoryModule,
   canSeeLoansModule,
@@ -22,7 +23,6 @@ import {
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import {
   formatInventoryStatus,
-  formatUserRole,
   inventoryStatusBadgeClass,
   formatLoanStatus,
   formatMaintenanceType,
@@ -32,7 +32,6 @@ import {
   formatRequestStatus,
   loanStatusBadgeClass as statusBadgeClass,
   requestStatusBadgeClass,
-  userRoleBadgeClass,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { compareRequestsByOperationalPriority } from '@/lib/request-delivery-status'
@@ -77,7 +76,7 @@ export default async function DashboardPage({
     redirect('/auth/login')
   }
 
-  const { supabase, user, profile } = auth
+  const { supabase, profile } = auth
   const params = await searchParams
   const now = new Date()
 
@@ -492,33 +491,12 @@ export default async function DashboardPage({
   return (
     <main className="app-page">
       <div className="app-container space-y-6">
-        <section className="surface-card overflow-hidden p-5 sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Dashboard del laboratorio</h1>
-              <p className="mt-2 text-slate-600">
-                Bienvenido, {profile?.full_name || user.email}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-600">
-                <span className="rounded-full bg-slate-100 px-3 py-1">
-                  {profile?.email || user.email}
-                </span>
-                <span
-                  className={`rounded-full px-3 py-1 font-medium ring-1 ${userRoleBadgeClass(
-                    profile?.role
-                  )}`}
-                >
-                  Rol: {formatUserRole(profile?.role)}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid gap-2 sm:grid-cols-2 lg:flex lg:items-center">
-              <LinkGoogleButton className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700" />
-              <LogoutButton className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700" />
-            </div>
-          </div>
-        </section>
+        <PageHeader
+          eyebrow="Centro operativo"
+          title="Dashboard del laboratorio"
+          description="Indicadores, actividad reciente y accesos para la gestión diaria."
+          meta={<span className="text-slate-600">Bienvenido, {profile.full_name}</span>}
+        />
 
         <ModuleTabs
           tabs={[
@@ -554,51 +532,17 @@ export default async function DashboardPage({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Ítems registrados</p>
-              <p className="mt-2 text-3xl font-bold">{totalItems}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Stock total</p>
-              <p className="mt-2 text-3xl font-bold">{totalStock}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Disponible</p>
-              <p className="mt-2 text-3xl font-bold text-green-700">
-                {totalAvailable}
-              </p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">En uso / no disponible</p>
-              <p className="mt-2 text-3xl font-bold text-amber-700">
-                {totalUnavailable}
-              </p>
-            </div>
+            <MetricCard label="Ítems registrados" value={totalItems} icon="archive" tone="neutral" />
+            <MetricCard label="Stock total" value={totalStock} icon="boxes" />
+            <MetricCard label="Disponible" value={totalAvailable} icon="boxes" tone="success" />
+            <MetricCard label="En uso / no disponible" value={totalUnavailable} icon="loan" tone="warning" />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Préstamos activos</p>
-              <p className="mt-2 text-3xl font-bold text-blue-700">{activeLoans}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Devoluciones parciales</p>
-              <p className="mt-2 text-3xl font-bold text-amber-700">{partialLoans}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Préstamos vencidos</p>
-              <p className="mt-2 text-3xl font-bold text-red-700">{overdueLoans}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Préstamos cerrados</p>
-              <p className="mt-2 text-3xl font-bold text-green-700">{returnedLoans}</p>
-            </div>
+            <MetricCard label="Préstamos activos" value={activeLoans} icon="loan" />
+            <MetricCard label="Devoluciones parciales" value={partialLoans} icon="return" tone="warning" />
+            <MetricCard label="Préstamos vencidos" value={overdueLoans} icon="loan" tone="danger" />
+            <MetricCard label="Préstamos cerrados" value={returnedLoans} icon="return" tone="success" />
           </div>
         </section>
 
@@ -612,75 +556,27 @@ export default async function DashboardPage({
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
             {canSeeLoans && (
-              <Link
-                href="/prestamos"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Préstamos</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Entregas y gestión de préstamos
-                </p>
-              </Link>
+              <ModuleCard href="/prestamos" title="Préstamos" description="Entregas y gestión de préstamos" icon="loan" />
             )}
 
             {canSeeReturns && (
-              <Link
-                href="/devoluciones"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Devoluciones</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Recepción y cierre de préstamos
-                </p>
-              </Link>
+              <ModuleCard href="/devoluciones" title="Devoluciones" description="Recepción y cierre de préstamos" icon="return" />
             )}
 
             {canSeeInventory && (
-              <Link
-                href="/inventario"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Inventario</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Control de materiales y kardex
-                </p>
-              </Link>
+              <ModuleCard href="/inventario" title="Inventario" description="Control de materiales y kardex" icon="boxes" />
             )}
 
             {canSeeInventory && (
-              <Link
-                href="/mantenimiento"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Mantenimiento</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Registro y control de mantenimientos
-                </p>
-              </Link>
+              <ModuleCard href="/mantenimiento" title="Mantenimiento" description="Registro y control de mantenimientos" icon="maintenance" />
             )}
 
             {canSeeLoans && (
-              <Link
-                href="/dashboard/solicitudes"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Solicitudes</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Revisión y aprobación de solicitudes
-                </p>
-              </Link>
+              <ModuleCard href="/dashboard/solicitudes" title="Solicitudes" description="Revisión y aprobación" icon="clipboard" />
             )}
 
             {canSeeUsers && (
-              <Link
-                href="/dashboard/usuarios"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Usuarios</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Administración de usuarios y roles
-                </p>
-              </Link>
+              <ModuleCard href="/dashboard/usuarios" title="Usuarios" description="Administración de usuarios y roles" icon="users" />
             )}
           </div>
         </section>
