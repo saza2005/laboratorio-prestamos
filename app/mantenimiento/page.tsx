@@ -10,6 +10,7 @@ import { MaintenanceHistory } from './maintenance-history'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
+import { AppShell } from '@/components/app-shell'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function MantenimientoPage() {
@@ -96,6 +97,7 @@ export default async function MantenimientoPage() {
     })) ?? []
 
   return (
+    <AppShell variant="operational" userName={profile.full_name || profile.email} role={profile.role}>
     <main className="app-page">
       <div className="mx-auto max-w-6xl space-y-6">
         <PageHeader
@@ -145,5 +147,6 @@ export default async function MantenimientoPage() {
 
       </div>
     </main>
+    </AppShell>
   )
 }

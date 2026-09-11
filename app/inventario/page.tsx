@@ -11,6 +11,7 @@ import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
 import { formatLoanStatus, formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
+import { AppShell } from '@/components/app-shell'
 
 
 export default async function InventarioPage() {
@@ -469,6 +470,7 @@ export default async function InventarioPage() {
   )
 
   return (
+    <AppShell variant="operational" userName={profile.full_name || profile.email} role={profile.role}>
     <main className="app-page">
       <div className="app-container">
         <PageHeader
@@ -531,5 +533,6 @@ export default async function InventarioPage() {
         </ModuleTabs>
       </div>
     </main>
+    </AppShell>
   )
 }

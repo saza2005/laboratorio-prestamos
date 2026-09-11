@@ -9,6 +9,7 @@ import { ADMIN_HISTORY_LIMIT, PROFILE_SELECT_LIMIT } from '@/lib/query-limits'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
+import { AppShell } from '@/components/app-shell'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 const RETURN_HISTORY_ITEM_FETCH_LIMIT = ADMIN_HISTORY_LIMIT * 5
@@ -201,6 +202,7 @@ export default async function DevolucionesPage() {
       }
     }) ?? []
   return (
+    <AppShell variant="operational" userName={profile.full_name || profile.email} role={profile.role}>
     <main className="app-page">
       <div className="app-container">
         <PageHeader
@@ -265,5 +267,6 @@ export default async function DevolucionesPage() {
         </ModuleTabs>
       </div>
     </main>
+    </AppShell>
   )
 }

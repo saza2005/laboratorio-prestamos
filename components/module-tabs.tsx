@@ -28,7 +28,7 @@ export function ModuleTabs({ tabs, children }: ModuleTabsProps) {
 
   return (
     <section className="space-y-5">
-      <div className="surface-card sticky top-2 z-20 overflow-x-auto p-1.5 sm:static sm:p-2">
+      <div className="module-tabs-bar sticky top-[5.1rem] z-20 overflow-x-auto sm:static">
         <div className="flex min-w-max gap-1" role="tablist" aria-label="Secciones del módulo">
           {tabs.map((tab) => {
             const selected = tab.id === activeTab
@@ -54,10 +54,10 @@ export function ModuleTabs({ tabs, children }: ModuleTabsProps) {
                     selectRelativeTab(-1)
                   }
                 }}
-                className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
+                className={`module-tab ${
                   selected
-                    ? 'bg-blue-700 text-white shadow-sm'
-                    : 'text-slate-600 hover:bg-blue-50 hover:text-blue-800'
+                    ? 'is-active'
+                    : ''
                 }`}
               >
                 {tab.label}
@@ -68,7 +68,7 @@ export function ModuleTabs({ tabs, children }: ModuleTabsProps) {
       </div>
 
       {activeDescription && (
-        <p className="border-l-2 border-blue-300 pl-3 text-sm leading-6 text-slate-600">
+        <p className="border-l-2 border-blue-400 pl-3 text-sm leading-6 text-slate-600">
           {activeDescription}
         </p>
       )}
