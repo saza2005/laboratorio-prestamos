@@ -36,10 +36,12 @@ function getErrorMessage(error?: string) {
       return 'No se pudo iniciar sesión con Google. Intente nuevamente.'
     case 'password_login_disabled':
       return 'El acceso con contraseña está deshabilitado. Use Google institucional.'
+    case 'inactive_account':
+      return 'Su cuenta se encuentra desactivada. Contacte al administrador del laboratorio.'
     case 'profile_link_failed':
       return 'No se pudo enlazar el perfil institucional. Si ya tenía solicitudes o préstamos de prueba, contacte al administrador.'
     case 'google_link_required':
-      return 'Ya existe un perfil con ese correo. Inicie sesión con contraseña y use Vincular Google desde el dashboard.'
+      return 'Ya existe un perfil con ese correo y no pudo vincularse automáticamente. Contacte al administrador del laboratorio.'
     default:
       return null
   }

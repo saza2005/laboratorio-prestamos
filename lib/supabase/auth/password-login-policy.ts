@@ -1,5 +1,4 @@
-export function isPasswordLoginEnabled(
-  value = process.env.PASSWORD_LOGIN_ENABLED ?? 'false'
-): boolean {
-  return value === 'true'
+export function isPasswordLoginEnabled(value?: string): boolean {
+  void value
+  return false
 }

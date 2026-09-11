@@ -6,8 +6,8 @@ test.describe('Política de acceso con contraseña', () => {
     expect(isPasswordLoginEnabled(undefined)).toBe(false)
   })
 
-  test('solo se habilita con el valor explícito true', () => {
-    expect(isPasswordLoginEnabled('true')).toBe(true)
+  test('no puede habilitarse mediante configuración', () => {
+    expect(isPasswordLoginEnabled('true')).toBe(false)
     expect(isPasswordLoginEnabled('false')).toBe(false)
     expect(isPasswordLoginEnabled('TRUE')).toBe(false)
     expect(isPasswordLoginEnabled('1')).toBe(false)
