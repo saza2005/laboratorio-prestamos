@@ -7,16 +7,6 @@ import {
   resolveAppOrigin,
 } from '@/lib/supabase/auth/redirect-policy'
 
-function getFullName(userMetadata: Record<string, unknown>, email: string) {
-  const name = userMetadata.full_name ?? userMetadata.name
-
-  if (typeof name === 'string' && name.trim()) {
-    return name.trim().slice(0, 120)
-  }
-
-  return email.split('@')[0].slice(0, 120)
-}
-
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
@@ -46,38 +36,31 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/auth/login?error=invalid_domain`)
   }
 
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
+  const { error: ensureProfileError } = await supabase.rpc(
+    'ensure_google_institutional_profile'
+  )
 
-  if (profileError) {
-    await supabase.auth.signOut({ scope: 'local' })
-    return NextResponse.redirect(`${origin}/auth/login?error=no_profile`)
-  }
-
-  if (profile) {
-    const destination = getSafeAuthNextPath(next, getHomeRouteByRole(profile.role))
-    return NextResponse.redirect(`${origin}${destination}`)
-  }
-
-  const { data: insertedProfile, error: insertError } = await supabase
-    .from('profiles')
-    .insert({
-      id: user.id,
-      full_name: getFullName(user.user_metadata, email),
-      email,
-      role: 'student',
-    })
-    .select('role')
-    .single()
-
-  if (insertError || !insertedProfile) {
+  if (ensureProfileError) {
     await supabase.auth.signOut({ scope: 'local' })
     return NextResponse.redirect(`${origin}/auth/login?error=google_link_required`)
   }
 
-  const destination = getSafeAuthNextPath(next, getHomeRouteByRole(insertedProfile.role))
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role, is_active')
+    .eq('id', user.id)
+    .single()
+
+  if (profileError || !profile) {
+    await supabase.auth.signOut({ scope: 'local' })
+    return NextResponse.redirect(`${origin}/auth/login?error=no_profile`)
+  }
+
+  if (!profile.is_active) {
+    await supabase.auth.signOut({ scope: 'local' })
+    return NextResponse.redirect(`${origin}/auth/login?error=inactive_account`)
+  }
+
+  const destination = getSafeAuthNextPath(next, getHomeRouteByRole(profile.role))
   return NextResponse.redirect(`${origin}${destination}`)
 }
