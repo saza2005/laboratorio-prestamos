@@ -58,12 +58,6 @@ export default async function UsersAdminPage({
           eyebrow="Administración"
           title="Usuarios y roles"
           description="Consulta usuarios registrados y asigna roles operativos. Las cuentas administradoras permanecen protegidas."
-          actions={<Link
-            href="/dashboard"
-            className="button-secondary"
-          >
-            Volver al dashboard
-          </Link>}
         />
 
         <section className="surface-card p-4 sm:p-6">

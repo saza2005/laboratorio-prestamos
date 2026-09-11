@@ -10,7 +10,6 @@ import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
 import { AppShell } from '@/components/app-shell'
-import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 const RETURN_HISTORY_ITEM_FETCH_LIMIT = ADMIN_HISTORY_LIMIT * 5
 
@@ -209,24 +208,7 @@ export default async function DevolucionesPage() {
           eyebrow="Operación"
           title="Gestión de devoluciones"
           description="Procesa devoluciones parciales o completas y revisa materiales pendientes."
-          meta={<>
-              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
-                  profile?.role
-                )}`}
-              >
-                {formatUserRole(profile?.role)}
-              </span>
-            </>}
           actions={<>
-            <Link
-              href="/dashboard"
-              className="button-secondary"
-            >
-              Volver al dashboard
-            </Link>
-
             <Link
               href="/prestamos"
               className="button-primary"

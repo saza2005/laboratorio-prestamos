@@ -43,6 +43,20 @@ function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('') || 'LP'
 }
 
+function compactDisplayName(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  const selected = parts.length >= 4
+    ? [parts[0], parts.at(-2)]
+    : parts.length === 3
+      ? [parts[0], parts.at(-1)]
+      : parts
+
+  return selected
+    .filter((part): part is string => Boolean(part))
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1).toLocaleLowerCase('es')}`)
+    .join(' ')
+}
+
 export function AppShell({ children, userName, role, variant }: { children: ReactNode; userName: string; role: string; variant: ShellVariant }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
@@ -50,6 +64,7 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
   const items = (variant === 'operational' ? operationalItems : portalItems).filter(
     (item) => (!item.adminOnly || role === 'admin') && (!item.teacherOnly || role === 'teacher')
   )
+  const displayName = compactDisplayName(userName)
 
   function isActive(href: string) {
     if (href === '/dashboard' || href === '/solicitudes') return pathname === href
@@ -98,10 +113,10 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
           </div>
           <div className="app-user-summary">
             <span className="app-avatar" aria-hidden="true">{initials(userName)}</span>
-            <span className="hidden min-w-0 lg:block"><strong className="block max-w-44 truncate text-sm">{userName}</strong><span className={`mt-0.5 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${userRoleBadgeClass(role)}`}>{formatUserRole(role)}</span></span>
+            <span className="hidden min-w-0 lg:block" title={userName}><strong className="block text-sm">{displayName}</strong><span className={`mt-0.5 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${userRoleBadgeClass(role)}`}>{formatUserRole(role)}</span></span>
           </div>
           <div className="hidden items-center gap-2 sm:flex">
-            <LinkGoogleButton className="button-quiet min-h-9 px-3 py-2 text-xs" />
+            <LinkGoogleButton className="button-quiet min-h-8 px-2.5 py-1.5 text-[11px] text-slate-500" />
             <LogoutButton className="button-danger min-h-9 px-3 py-2 text-xs" />
           </div>
           <div className="sm:hidden">

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import {
@@ -11,7 +10,6 @@ import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
 import { AppShell } from '@/components/app-shell'
-import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 
 export default async function MantenimientoPage() {
   let auth
@@ -104,22 +102,6 @@ export default async function MantenimientoPage() {
           eyebrow="Cuidado de activos"
           title="Mantenimiento de equipos"
           description="Registra intervenciones y consulta el historial técnico de los bienes."
-          meta={<>
-              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
-                  profile?.role
-                )}`}
-              >
-                {formatUserRole(profile?.role)}
-              </span>
-            </>}
-          actions={<Link
-            href="/dashboard"
-            className="button-secondary"
-          >
-            Volver al dashboard
-          </Link>}
         />
 
         <ModuleTabs

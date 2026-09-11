@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { PageHeader } from '@/components/page-header'
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
@@ -283,12 +282,6 @@ const requests =
           eyebrow="Operación"
           title="Gestión de solicitudes"
           description="Revisa, aprueba y prepara las solicitudes de préstamo del laboratorio."
-          actions={<Link
-            href="/dashboard"
-            className="button-secondary"
-          >
-            Volver al dashboard
-          </Link>}
         />
         <RequestsTable requests={requestsWithActions} limit={100} />
       </div>

@@ -4,13 +4,9 @@ import { DashboardCharts } from './dashboard-charts'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
 import { MetricCard } from '@/components/metric-card'
-import { ModuleCard } from '@/components/module-card'
+import { AppIcon } from '@/components/app-icon'
 import {
-  canSeeInventoryModule,
-  canSeeLoansModule,
-  canSeeReturnsModule,
   canSeeReportsModule,
-  canManageUsers,
 } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
@@ -110,11 +106,7 @@ export default async function DashboardPage({
     .toISOString()
     .slice(0, 10)
 
-  const canSeeInventory = canSeeInventoryModule(profile.role)
-  const canSeeLoans = canSeeLoansModule(profile.role)
-  const canSeeReturns = canSeeReturnsModule(profile.role)
   const canSeeReports = canSeeReportsModule(profile.role)
-  const canSeeUsers = canManageUsers(profile.role)
 
   const [dashboardSummaryResult, lowStockItemsResult] = await Promise.all([
     supabase.rpc('get_dashboard_operational_summary', {
@@ -495,7 +487,6 @@ export default async function DashboardPage({
           eyebrow="Centro operativo"
           title="Dashboard del laboratorio"
           description="Indicadores, actividad reciente y accesos para la gestión diaria."
-          meta={<span className="text-slate-600">Bienvenido, {profile.full_name}</span>}
         />
 
         <ModuleTabs
@@ -543,41 +534,6 @@ export default async function DashboardPage({
             <MetricCard label="Devoluciones parciales" value={partialLoans} icon="return" tone="warning" />
             <MetricCard label="Préstamos vencidos" value={overdueLoans} icon="loan" tone="danger" />
             <MetricCard label="Préstamos cerrados" value={returnedLoans} icon="return" tone="success" />
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold">Módulos operativos</h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Accesos directos para la gestión diaria del laboratorio.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-            {canSeeLoans && (
-              <ModuleCard href="/prestamos" title="Préstamos" description="Entregas y gestión de préstamos" icon="loan" />
-            )}
-
-            {canSeeReturns && (
-              <ModuleCard href="/devoluciones" title="Devoluciones" description="Recepción y cierre de préstamos" icon="return" />
-            )}
-
-            {canSeeInventory && (
-              <ModuleCard href="/inventario" title="Inventario" description="Control de materiales y kardex" icon="boxes" />
-            )}
-
-            {canSeeInventory && (
-              <ModuleCard href="/mantenimiento" title="Mantenimiento" description="Registro y control de mantenimientos" icon="maintenance" />
-            )}
-
-            {canSeeLoans && (
-              <ModuleCard href="/dashboard/solicitudes" title="Solicitudes" description="Revisión y aprobación" icon="clipboard" />
-            )}
-
-            {canSeeUsers && (
-              <ModuleCard href="/dashboard/usuarios" title="Usuarios" description="Administración de usuarios y roles" icon="users" />
-            )}
           </div>
         </section>
 
@@ -653,6 +609,27 @@ export default async function DashboardPage({
               No hay solicitudes pendientes ni aprobadas por entregar.
             </p>
           )}
+        </section>
+
+        <section className="space-y-3" aria-labelledby="quick-actions-title">
+          <div>
+            <h2 id="quick-actions-title" className="text-lg font-semibold">Acciones rápidas</h2>
+            <p className="mt-1 text-sm text-slate-600">Tareas frecuentes de la operación diaria.</p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <Link href="/prestamos" className="quick-action">
+              <AppIcon name="loan" className="h-4 w-4" />
+              <span>Registrar préstamo</span>
+            </Link>
+            <Link href="/dashboard/solicitudes" className="quick-action">
+              <AppIcon name="clipboard" className="h-4 w-4" />
+              <span>Gestionar solicitudes</span>
+            </Link>
+            <Link href="/devoluciones" className="quick-action">
+              <AppIcon name="return" className="h-4 w-4" />
+              <span>Registrar devolución</span>
+            </Link>
+          </div>
         </section>
 
         <section className="space-y-4 rounded-lg bg-white p-5 shadow sm:p-6">

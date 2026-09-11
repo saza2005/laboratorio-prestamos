@@ -7,6 +7,7 @@ import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
 import { getVisibleRequestStatus } from '@/lib/request-delivery-status'
 import {
+  formatLoanStatus,
   formatRequestStatus,
   requestKindBadgeClass,
   requestStatusBadgeClass as statusBadgeClass,
@@ -361,9 +362,9 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
                   {selectedRequest.loan && (
                   <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm">
                     <p className="font-medium text-green-800">Préstamo generado</p>
-                    <p className="text-green-700">ID: {selectedRequest.loan.id ?? '-'}</p>
+                    <p className="mt-1 break-all font-mono text-xs text-green-700/75">ID: {selectedRequest.loan.id ?? '-'}</p>
                     <p className="text-green-700">
-                      Estado del préstamo: {selectedRequest.loan.status ?? '-'}
+                      Estado del préstamo: {formatLoanStatus(selectedRequest.loan.status)}
                     </p>
                     <p className="text-green-700">
                       Fecha de entrega:{' '}
