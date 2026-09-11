@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, type ReactNode } from 'react'
-import { LinkGoogleButton } from '@/app/auth/link-google-button'
 import { LogoutButton } from '@/app/logout-button'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 import { AppFooter } from './app-footer'
@@ -115,8 +114,7 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
             <span className="app-avatar" aria-hidden="true">{initials(userName)}</span>
             <span className="hidden min-w-0 lg:block" title={userName}><strong className="block text-sm">{displayName}</strong><span className={`mt-0.5 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ${userRoleBadgeClass(role)}`}>{formatUserRole(role)}</span></span>
           </div>
-          <div className="hidden items-center gap-2 sm:flex">
-            <LinkGoogleButton className="button-quiet min-h-8 px-2.5 py-1.5 text-[11px] text-slate-500" />
+          <div className="hidden items-center sm:flex">
             <LogoutButton className="button-danger min-h-9 px-3 py-2 text-xs" />
           </div>
           <div className="sm:hidden">
