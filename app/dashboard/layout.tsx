@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { canViewOperationalDashboard, getHomeRouteByRole } from '@/lib/supabase/auth/roles'
+import { AppShell } from '@/components/app-shell'
 
 export default async function DashboardLayout({
   children,
@@ -23,8 +24,12 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <AppShell
+      variant="operational"
+      userName={profile.full_name || profile.email}
+      role={profile.role}
+    >
       {children}
-    </div>
+    </AppShell>
   )
 }

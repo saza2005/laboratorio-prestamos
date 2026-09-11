@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { LoanForm } from './loan-form'
 import { LoansList } from './loans-list'
@@ -14,7 +13,7 @@ import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
-import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
+import { AppShell } from '@/components/app-shell'
 
 export default async function PrestamosPage() {
   let auth
@@ -251,28 +250,13 @@ export default async function PrestamosPage() {
     }) ?? []
 
   return (
+    <AppShell variant="operational" userName={profile.full_name || profile.email} role={profile.role}>
     <main className="app-page">
       <div className="app-container">
         <PageHeader
           eyebrow="Operación"
           title="Gestión de préstamos"
           description="Registra entregas directas y consulta el historial operativo del laboratorio."
-          meta={<>
-              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
-                  profile?.role
-                )}`}
-              >
-                {formatUserRole(profile?.role)}
-              </span>
-            </>}
-          actions={<Link
-            href="/dashboard"
-            className="button-secondary"
-          >
-            Volver al dashboard
-          </Link>}
         />
 
         <ModuleTabs
@@ -312,5 +296,6 @@ export default async function PrestamosPage() {
         </ModuleTabs>
       </div>
     </main>
+    </AppShell>
   )
 }

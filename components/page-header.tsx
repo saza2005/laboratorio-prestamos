@@ -14,16 +14,15 @@ export function PageHeader({
   actions?: ReactNode
 }) {
   return (
-    <header className="surface-card mb-6 overflow-hidden">
-      <div className="h-1 bg-blue-700" aria-hidden="true" />
-      <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-start lg:justify-between">
+    <header className="page-header mb-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
           {eyebrow && (
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">
               {eyebrow}
             </p>
           )}
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+          <h1 className="mt-1 text-2xl font-bold tracking-[-0.025em] text-slate-950 sm:text-[1.85rem]">
             {title}
           </h1>
           {description && (

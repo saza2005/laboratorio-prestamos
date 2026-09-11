@@ -123,7 +123,7 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
         <input type="hidden" name="loan_item_id" value={selectedId} />
       </div>
 
-      <div className="md:col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <div className={`md:col-span-2 rounded-xl border border-slate-200 bg-slate-50 ${selectedLoanItem ? 'p-4' : 'p-3'}`}>
         {selectedLoanItem ? (
           <>
             <h3 className="font-semibold text-slate-800 mb-2">
@@ -205,8 +205,8 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
         )}
       </div>
 
-      <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-4">
-        <h3 className="mb-3 font-semibold text-slate-800">
+      <div className={`md:col-span-2 rounded-xl border border-slate-200 bg-white ${selectedLoanItem ? 'p-4' : 'p-3'}`}>
+        <h3 className={`${selectedLoanItem ? 'mb-3' : 'mb-1'} font-semibold text-slate-800`}>
           Cantidades de la devolución
         </h3>
 
@@ -322,8 +322,8 @@ export function ReturnForm({ loanItems }: ReturnFormProps) {
         )}
       </div>
 
-      <div className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-4 text-sm">
-        <h3 className="font-semibold text-slate-800 mb-2">
+      <div className={`md:col-span-2 rounded-xl border border-slate-200 bg-white text-sm ${selectedLoanItem ? 'p-4' : 'p-3'}`}>
+        <h3 className={`font-semibold text-slate-800 ${selectedLoanItem ? 'mb-2' : 'mb-1'}`}>
           Resumen de esta devolución
         </h3>
 

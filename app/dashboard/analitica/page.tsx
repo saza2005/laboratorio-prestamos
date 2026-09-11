@@ -11,6 +11,7 @@ import { formatDateTime } from '@/lib/format-date'
 import { loadItemUsageAnalytics } from './data'
 import { AnalyticsCharts } from './analytics-charts'
 import { PageHeader } from '@/components/page-header'
+import { MetricCard } from '@/components/metric-card'
 
 type SearchParams = Promise<{
   period?: string
@@ -87,9 +88,6 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
             <Link href={`/dashboard/analitica/export?${exportParams}`} className="rounded-lg bg-emerald-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-800">
               Exportar Excel
             </Link>
-            <Link href="/dashboard" className="rounded-lg bg-slate-800 px-4 py-2 text-center text-sm font-medium text-white hover:bg-slate-900">
-              Volver al dashboard
-            </Link>
           </>}
         />
 
@@ -128,10 +126,10 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
         </form>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Bienes visibles" value={rows.length} />
-          <MetricCard label="Unidades prestadas" value={totalQuantity} />
-          <MetricCard label="Bienes con uso en periodo" value={activeItems} />
-          <MetricCard label="Sin uso histórico" value={unusedItems} />
+          <MetricCard label="Bienes visibles" value={rows.length} icon="archive" tone="neutral" />
+          <MetricCard label="Unidades prestadas" value={totalQuantity} icon="loan" />
+          <MetricCard label="Bienes con uso en periodo" value={activeItems} icon="analytics" tone="success" />
+          <MetricCard label="Sin uso histórico" value={unusedItems} icon="boxes" tone="warning" />
         </section>
 
         <AnalyticsCharts topItems={topItems} monthlyUsage={monthlyUsage} distribution={distribution} />
@@ -167,8 +165,4 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
       </div>
     </main>
   )
-}
-
-function MetricCard({ label, value }: { label: string; value: number }) {
-  return <div className="surface-card p-5"><p className="text-sm font-medium text-slate-500">{label}</p><p className="mt-2 text-3xl font-bold tracking-tight text-slate-950">{value}</p></div>
 }

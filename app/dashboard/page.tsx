@@ -1,15 +1,12 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { LogoutButton } from '@/app/logout-button'
-import { LinkGoogleButton } from '@/app/auth/link-google-button'
 import { DashboardCharts } from './dashboard-charts'
 import { ModuleTabs } from '@/components/module-tabs'
+import { PageHeader } from '@/components/page-header'
+import { MetricCard } from '@/components/metric-card'
+import { AppIcon } from '@/components/app-icon'
 import {
-  canSeeInventoryModule,
-  canSeeLoansModule,
-  canSeeReturnsModule,
   canSeeReportsModule,
-  canManageUsers,
 } from '@/lib/supabase/auth/roles'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import { formatDateTime, formatMonthName } from '@/lib/format-date'
@@ -22,7 +19,6 @@ import {
 import { getEcuadorDate, getEffectiveLoanStatus } from '@/lib/loan-status'
 import {
   formatInventoryStatus,
-  formatUserRole,
   inventoryStatusBadgeClass,
   formatLoanStatus,
   formatMaintenanceType,
@@ -32,7 +28,6 @@ import {
   formatRequestStatus,
   loanStatusBadgeClass as statusBadgeClass,
   requestStatusBadgeClass,
-  userRoleBadgeClass,
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { compareRequestsByOperationalPriority } from '@/lib/request-delivery-status'
@@ -77,7 +72,7 @@ export default async function DashboardPage({
     redirect('/auth/login')
   }
 
-  const { supabase, user, profile } = auth
+  const { supabase, profile } = auth
   const params = await searchParams
   const now = new Date()
 
@@ -111,11 +106,7 @@ export default async function DashboardPage({
     .toISOString()
     .slice(0, 10)
 
-  const canSeeInventory = canSeeInventoryModule(profile.role)
-  const canSeeLoans = canSeeLoansModule(profile.role)
-  const canSeeReturns = canSeeReturnsModule(profile.role)
   const canSeeReports = canSeeReportsModule(profile.role)
-  const canSeeUsers = canManageUsers(profile.role)
 
   const [dashboardSummaryResult, lowStockItemsResult] = await Promise.all([
     supabase.rpc('get_dashboard_operational_summary', {
@@ -492,33 +483,11 @@ export default async function DashboardPage({
   return (
     <main className="app-page">
       <div className="app-container space-y-6">
-        <section className="surface-card overflow-hidden p-5 sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Dashboard del laboratorio</h1>
-              <p className="mt-2 text-slate-600">
-                Bienvenido, {profile?.full_name || user.email}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-600">
-                <span className="rounded-full bg-slate-100 px-3 py-1">
-                  {profile?.email || user.email}
-                </span>
-                <span
-                  className={`rounded-full px-3 py-1 font-medium ring-1 ${userRoleBadgeClass(
-                    profile?.role
-                  )}`}
-                >
-                  Rol: {formatUserRole(profile?.role)}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid gap-2 sm:grid-cols-2 lg:flex lg:items-center">
-              <LinkGoogleButton className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700" />
-              <LogoutButton className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700" />
-            </div>
-          </div>
-        </section>
+        <PageHeader
+          eyebrow="Centro operativo"
+          title="Dashboard del laboratorio"
+          description="Indicadores, actividad reciente y accesos para la gestión diaria."
+        />
 
         <ModuleTabs
           tabs={[
@@ -554,134 +523,17 @@ export default async function DashboardPage({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Ítems registrados</p>
-              <p className="mt-2 text-3xl font-bold">{totalItems}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Stock total</p>
-              <p className="mt-2 text-3xl font-bold">{totalStock}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Disponible</p>
-              <p className="mt-2 text-3xl font-bold text-green-700">
-                {totalAvailable}
-              </p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">En uso / no disponible</p>
-              <p className="mt-2 text-3xl font-bold text-amber-700">
-                {totalUnavailable}
-              </p>
-            </div>
+            <MetricCard label="Ítems registrados" value={totalItems} icon="archive" tone="neutral" />
+            <MetricCard label="Stock total" value={totalStock} icon="boxes" />
+            <MetricCard label="Disponible" value={totalAvailable} icon="boxes" tone="success" />
+            <MetricCard label="En uso / no disponible" value={totalUnavailable} icon="loan" tone="warning" />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Préstamos activos</p>
-              <p className="mt-2 text-3xl font-bold text-blue-700">{activeLoans}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Devoluciones parciales</p>
-              <p className="mt-2 text-3xl font-bold text-amber-700">{partialLoans}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Préstamos vencidos</p>
-              <p className="mt-2 text-3xl font-bold text-red-700">{overdueLoans}</p>
-            </div>
-
-            <div className="surface-card p-5">
-              <p className="text-sm text-slate-500">Préstamos cerrados</p>
-              <p className="mt-2 text-3xl font-bold text-green-700">{returnedLoans}</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold">Módulos operativos</h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Accesos directos para la gestión diaria del laboratorio.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-            {canSeeLoans && (
-              <Link
-                href="/prestamos"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Préstamos</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Entregas y gestión de préstamos
-                </p>
-              </Link>
-            )}
-
-            {canSeeReturns && (
-              <Link
-                href="/devoluciones"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Devoluciones</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Recepción y cierre de préstamos
-                </p>
-              </Link>
-            )}
-
-            {canSeeInventory && (
-              <Link
-                href="/inventario"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Inventario</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Control de materiales y kardex
-                </p>
-              </Link>
-            )}
-
-            {canSeeInventory && (
-              <Link
-                href="/mantenimiento"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Mantenimiento</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Registro y control de mantenimientos
-                </p>
-              </Link>
-            )}
-
-            {canSeeLoans && (
-              <Link
-                href="/dashboard/solicitudes"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Solicitudes</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Revisión y aprobación de solicitudes
-                </p>
-              </Link>
-            )}
-
-            {canSeeUsers && (
-              <Link
-                href="/dashboard/usuarios"
-                className="surface-card block p-5 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50/30"
-              >
-                <h3 className="font-semibold">Usuarios</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Administración de usuarios y roles
-                </p>
-              </Link>
-            )}
+            <MetricCard label="Préstamos activos" value={activeLoans} icon="loan" />
+            <MetricCard label="Devoluciones parciales" value={partialLoans} icon="return" tone="warning" />
+            <MetricCard label="Préstamos vencidos" value={overdueLoans} icon="loan" tone="danger" />
+            <MetricCard label="Préstamos cerrados" value={returnedLoans} icon="return" tone="success" />
           </div>
         </section>
 
@@ -757,6 +609,27 @@ export default async function DashboardPage({
               No hay solicitudes pendientes ni aprobadas por entregar.
             </p>
           )}
+        </section>
+
+        <section className="space-y-3" aria-labelledby="quick-actions-title">
+          <div>
+            <h2 id="quick-actions-title" className="text-lg font-semibold">Acciones rápidas</h2>
+            <p className="mt-1 text-sm text-slate-600">Tareas frecuentes de la operación diaria.</p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <Link href="/prestamos" className="quick-action">
+              <AppIcon name="loan" className="h-4 w-4" />
+              <span>Registrar préstamo</span>
+            </Link>
+            <Link href="/dashboard/solicitudes" className="quick-action">
+              <AppIcon name="clipboard" className="h-4 w-4" />
+              <span>Gestionar solicitudes</span>
+            </Link>
+            <Link href="/devoluciones" className="quick-action">
+              <AppIcon name="return" className="h-4 w-4" />
+              <span>Registrar devolución</span>
+            </Link>
+          </div>
         </section>
 
         <section className="space-y-4 rounded-lg bg-white p-5 shadow sm:p-6">

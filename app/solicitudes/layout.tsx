@@ -5,6 +5,7 @@ import {
   canUseRequestPortal,
   getHomeRouteByRole,
 } from '@/lib/supabase/auth/roles'
+import { AppShell } from '@/components/app-shell'
 
 export default async function SolicitudesLayout({
   children,
@@ -25,5 +26,13 @@ export default async function SolicitudesLayout({
     redirect(getHomeRouteByRole(profile.role))
   }
 
-  return <>{children}</>
+  return (
+    <AppShell
+      variant="portal"
+      userName={profile.full_name || profile.email}
+      role={profile.role}
+    >
+      {children}
+    </AppShell>
+  )
 }

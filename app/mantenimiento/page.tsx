@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getAuthProfile } from '@/lib/supabase/auth/get-auth-profile'
 import {
@@ -10,7 +9,7 @@ import { MaintenanceHistory } from './maintenance-history'
 import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT } from '@/lib/query-limits'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
-import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
+import { AppShell } from '@/components/app-shell'
 
 export default async function MantenimientoPage() {
   let auth
@@ -96,28 +95,13 @@ export default async function MantenimientoPage() {
     })) ?? []
 
   return (
+    <AppShell variant="operational" userName={profile.full_name || profile.email} role={profile.role}>
     <main className="app-page">
       <div className="mx-auto max-w-6xl space-y-6">
         <PageHeader
           eyebrow="Cuidado de activos"
           title="Mantenimiento de equipos"
           description="Registra intervenciones y consulta el historial técnico de los bienes."
-          meta={<>
-              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
-                  profile?.role
-                )}`}
-              >
-                {formatUserRole(profile?.role)}
-              </span>
-            </>}
-          actions={<Link
-            href="/dashboard"
-            className="button-secondary"
-          >
-            Volver al dashboard
-          </Link>}
         />
 
         <ModuleTabs
@@ -145,5 +129,6 @@ export default async function MantenimientoPage() {
 
       </div>
     </main>
+    </AppShell>
   )
 }

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ItemForm } from './item-form'
 import { MovementsTable } from './movements-table'
@@ -10,7 +9,8 @@ import { ADMIN_HISTORY_LIMIT, INVENTORY_CATALOG_LIMIT, INVENTORY_ITEM_HISTORY_LI
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { ModuleTabs } from '@/components/module-tabs'
 import { PageHeader } from '@/components/page-header'
-import { formatLoanStatus, formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
+import { formatLoanStatus } from '@/lib/status-format'
+import { AppShell } from '@/components/app-shell'
 
 
 export default async function InventarioPage() {
@@ -469,28 +469,13 @@ export default async function InventarioPage() {
   )
 
   return (
+    <AppShell variant="operational" userName={profile.full_name || profile.email} role={profile.role}>
     <main className="app-page">
       <div className="app-container">
         <PageHeader
           eyebrow="Bienes del laboratorio"
           title="Gestión de inventario"
           description="Consulta existencias, unidades patrimoniales, movimientos y estado operativo."
-          meta={<>
-              <span className="text-slate-600">Usuario: {profile?.full_name}</span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${userRoleBadgeClass(
-                  profile?.role
-                )}`}
-              >
-                {formatUserRole(profile?.role)}
-              </span>
-            </>}
-          actions={<Link
-            href="/dashboard"
-            className="button-secondary"
-          >
-            Volver al dashboard
-          </Link>}
         />
 
         <ModuleTabs
@@ -531,5 +516,6 @@ export default async function InventarioPage() {
         </ModuleTabs>
       </div>
     </main>
+    </AppShell>
   )
 }
