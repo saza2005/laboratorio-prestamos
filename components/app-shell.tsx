@@ -79,8 +79,14 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
   return (
     <div className={`app-shell ${collapsed ? 'app-shell-collapsed' : ''}`}>
       <aside className="app-sidebar">{navigation}</aside>
-      {mobileOpen && <button className="app-sidebar-backdrop" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} />}
-      <aside className={`app-sidebar-mobile ${mobileOpen ? 'is-open' : ''}`}>{navigation}</aside>
+      {mobileOpen && <button type="button" className="app-sidebar-backdrop" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} />}
+      <aside
+        className={`app-sidebar-mobile ${mobileOpen ? 'is-open' : ''}`}
+        aria-hidden={!mobileOpen}
+        inert={!mobileOpen}
+      >
+        {navigation}
+      </aside>
       <div className="app-shell-body">
         <header className="app-topbar">
           <button type="button" className="app-mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Abrir navegación" aria-expanded={mobileOpen}>
