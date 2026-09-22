@@ -13,6 +13,7 @@ export type AppIconName =
   | 'menu'
   | 'return'
   | 'search'
+  | 'support'
   | 'users'
   | 'x'
 
@@ -29,6 +30,7 @@ const paths: Record<AppIconName, React.ReactNode> = {
   menu: <><path d="M4 6h16M4 12h16M4 18h16"/></>,
   return: <><path d="M9 7 4 12l5 5"/><path d="M4 12h10a6 6 0 0 1 6 6"/></>,
   search: <><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></>,
+  support: <><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="m6.4 6.4 3.5 3.5M14.1 14.1l3.5 3.5M17.6 6.4l-3.5 3.5M9.9 14.1l-3.5 3.5"/></>,
   users: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></>,
   x: <><path d="M18 6 6 18M6 6l12 12"/></>,
 }
