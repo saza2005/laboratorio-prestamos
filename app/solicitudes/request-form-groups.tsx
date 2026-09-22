@@ -7,6 +7,7 @@ import { createRequestWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
 import { stockAvailabilityBadgeClass } from '@/lib/status-format'
 import { filterProfilesForSelection } from '@/lib/profile-search'
+import { TermsAcceptance } from '@/components/terms-acceptance'
 
 type ItemOption = {
   id: string
@@ -63,6 +64,7 @@ export function RequestFormGroups({
   })
   const [groups, setGroups] = useState<Group[]>([makeGroup(0)])
   const [addedItemMessage, setAddedItemMessage] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const mounted = useIsHydrated()
 
   const itemMap = useMemo(() => {
@@ -619,11 +621,17 @@ export function RequestFormGroups({
         )}
       </div>
 
+      <TermsAcceptance
+        checked={termsAccepted}
+        onCheckedChange={setTermsAccepted}
+        disabled={isPending}
+      />
+
       <div>
         <button
           type="submit"
           suppressHydrationWarning
-          disabled={!mounted || hasErrors || isPending}
+          disabled={!mounted || hasErrors || !termsAccepted || isPending}
           className="w-full rounded bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {isPending ? 'Enviando...' : 'Enviar solicitud con grupos'}

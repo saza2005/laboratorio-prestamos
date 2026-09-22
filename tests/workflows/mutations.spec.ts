@@ -38,6 +38,12 @@ test.describe("Flujo mutacional individual", () => {
     await itemResult.first().click()
 
     const submit = page.getByRole("button", { name: "Enviar solicitud" })
+    await expect(submit).toBeDisabled()
+    await page
+      .getByRole("checkbox", {
+        name: "Acepto los términos y condiciones del préstamo de bienes del laboratorio.",
+      })
+      .check()
     await expect(submit).toBeEnabled()
     await submit.click()
     await expect(page).toHaveURL(/\/solicitudes$/)

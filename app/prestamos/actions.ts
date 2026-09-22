@@ -6,6 +6,7 @@ import { canManageLoans } from '@/lib/supabase/auth/roles'
 import { getActionErrorMessage } from '@/lib/action-error'
 import { isValidDateInput } from '@/lib/date-input'
 import { getEcuadorDate } from '@/lib/loan-status'
+import { isLoanTermsAccepted } from '@/lib/loan-terms'
 
 export type LoanActionState = { error: string | null }
 
@@ -53,6 +54,13 @@ async function persistLoan(formData: FormData): Promise<void> {
   const loanItems = parseLoanItems(formData)
   const expectedReturnDateRaw = String(formData.get('expected_return_date') || '').trim()
   const notes = String(formData.get('notes') || '').trim()
+  const termsAccepted = isLoanTermsAccepted(formData.get('terms_accepted'))
+
+  if (!termsAccepted) {
+    throw new Error(
+      'Debe aceptar los términos y condiciones antes de registrar el préstamo.'
+    )
+  }
 
   if (!userId || loanItems.length === 0) {
     throw new Error('Debe seleccionar un prestatario y al menos un material.')
@@ -70,6 +78,7 @@ async function persistLoan(formData: FormData): Promise<void> {
     p_expected_return_date: expectedReturnDateRaw || null,
     p_notes: notes || null,
     p_delivered_by: user.id,
+    p_terms_accepted: true,
   })
   if (error) throw new Error(error.message)
 }
@@ -95,5 +104,4 @@ function parseNumber(value: FormDataEntryValue | null): number {
   const number = Number(value)
   return Number.isInteger(number) && number > 0 ? number : 0
 }
-
 

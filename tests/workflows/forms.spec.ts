@@ -32,6 +32,12 @@ test.describe("Formularios funcionales por rol", () => {
     await expect(
       page.getByRole("button", { name: "Enviar solicitud" })
     ).toBeVisible()
+    await expect(
+      page.getByRole("checkbox", { name: /Acepto los términos y condiciones/ })
+    ).toBeVisible()
+    await expect(
+      page.getByRole("button", { name: "Ver términos y condiciones" })
+    ).toBeVisible()
 
     await page.goto("/solicitudes/grupal")
     await expect(
@@ -39,6 +45,9 @@ test.describe("Formularios funcionales por rol", () => {
     ).toBeVisible()
     await expect(page.locator("select").first()).toBeVisible()
     await expect(page.getByRole("button", { name: "Enviar solicitud" })).toBeVisible()
+    await expect(
+      page.getByRole("checkbox", { name: /Acepto los términos y condiciones/ })
+    ).toBeVisible()
   })
 
   test("student ve solo el formulario individual", async ({ page }) => {
@@ -61,6 +70,9 @@ test.describe("Formularios funcionales por rol", () => {
     await expect(page.getByRole("heading", { name: "Gestión de Préstamos" })).toBeVisible()
     await expect(page.getByRole("heading", { name: "Registrar préstamo" })).toBeVisible()
     await expect(page.getByRole("button", { name: "Guardar préstamo" })).toBeVisible()
+    await expect(
+      page.getByRole("checkbox", { name: /Acepto los términos y condiciones/ })
+    ).toBeVisible()
   })
 
   test("lab_staff ve los formularios de préstamos y devoluciones", async ({ page }) => {

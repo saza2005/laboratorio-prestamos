@@ -7,6 +7,7 @@ import { createLoanWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
 import { stockAvailabilityBadgeClass } from '@/lib/status-format'
 import { filterProfilesForSelection } from '@/lib/profile-search'
+import { TermsAcceptance } from '@/components/terms-acceptance'
 
 type Item = {
   id: string
@@ -68,6 +69,7 @@ export function LoanForm({
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const confirmSubmit = useConfirmSubmit({
     title: 'Registrar préstamo',
     message: 'Confirma que deseas registrar este préstamo con los ítems seleccionados.',
@@ -193,7 +195,8 @@ export function LoanForm({
   }
 
   const hasItemFilters = Boolean(itemSearch || categoryFilter)
-  const canSubmit = Boolean(selectedUserId) && !hasErrors && !isPending
+  const canSubmit =
+    Boolean(selectedUserId) && !hasErrors && termsAccepted && !isPending
 
   useEffect(() => {
     if (!addedItemName) return
@@ -496,6 +499,12 @@ export function LoanForm({
         <label className="mb-1 block text-sm font-medium">Notas</label>
         <textarea aria-label="Notas del préstamo" name="notes" rows={3} className="w-full rounded-lg border px-3 py-2" />
       </div>
+
+      <TermsAcceptance
+        checked={termsAccepted}
+        onCheckedChange={setTermsAccepted}
+        disabled={isPending}
+      />
 
       <div>
         <button
