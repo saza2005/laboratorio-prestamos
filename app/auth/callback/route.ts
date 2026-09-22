@@ -41,6 +41,9 @@ export async function GET(request: Request) {
   )
 
   if (ensureProfileError) {
+    console.error('[auth/callback] Google profile assurance failed', {
+      code: ensureProfileError.code ?? 'unknown',
+    })
     await supabase.auth.signOut({ scope: 'local' })
     return NextResponse.redirect(`${origin}/auth/login?error=google_link_required`)
   }
