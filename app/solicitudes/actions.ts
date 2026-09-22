@@ -7,6 +7,7 @@ import { canCreateGroupRequests, canUseRequestPortal } from '@/lib/supabase/auth
 import { isValidDateInput } from '@/lib/date-input'
 import { getEcuadorDate } from '@/lib/loan-status'
 import { sendTransactionalEmail } from '@/lib/email/send-transactional-email'
+import { isLoanTermsAccepted } from '@/lib/loan-terms'
 
 export type RequestActionState = {
   error: string | null
@@ -117,6 +118,13 @@ async function persistRequest(formData: FormData): Promise<void> {
   const scheduledReturnDate = String(
     formData.get('scheduled_return_date') || ''
   ).trim()
+  const termsAccepted = isLoanTermsAccepted(formData.get('terms_accepted'))
+
+  if (!termsAccepted) {
+    throw new Error(
+      'Debe aceptar los términos y condiciones antes de enviar la solicitud.'
+    )
+  }
 
   const groups = parseGroups(formData)
 
@@ -157,6 +165,7 @@ async function persistRequest(formData: FormData): Promise<void> {
     p_scheduled_return_date: scheduledReturnDate || null,
     p_items: groups.length > 0 ? [] : rows,
     p_groups: groups,
+    p_terms_accepted: true,
   })
 
   if (error) {

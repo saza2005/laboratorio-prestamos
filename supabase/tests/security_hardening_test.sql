@@ -106,7 +106,7 @@ begin
   if (select count(*) from public.profiles) <> 1 then raise exception 'SECURITY_TEST_FAILED: lectura mínima de perfil incorrecta'; end if;
   if (select count(*) from public.items) <> 0 then raise exception 'SECURITY_TEST_FAILED: inactivo leyó inventario'; end if;
   begin
-    perform public.create_request_transaction('Security test', null, current_date + 1, '[]', '[]');
+    perform public.create_request_transaction('Security test', null, current_date + 1, '[]', '[]', true);
   exception when others then blocked := position('Cuenta inactiva' in sqlerrm) > 0;
   end;
   if not blocked then raise exception 'SECURITY_TEST_FAILED: student inactivo alcanzó RPC'; end if;
@@ -117,7 +117,7 @@ select set_config('request.jwt.claims', '{"sub":"10000000-0000-0000-0000-0000000
 do $test$
 declare blocked boolean := false;
 begin
-  begin perform public.create_request_transaction('Security test', null, current_date + 1, '[]', '[]');
+  begin perform public.create_request_transaction('Security test', null, current_date + 1, '[]', '[]', true);
   exception when others then blocked := position('Cuenta inactiva' in sqlerrm) > 0; end;
   if not blocked then raise exception 'SECURITY_TEST_FAILED: teacher inactivo alcanzó RPC'; end if;
 end;

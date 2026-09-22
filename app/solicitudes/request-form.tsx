@@ -6,6 +6,7 @@ import { useIsHydrated } from '@/lib/use-is-hydrated'
 import { createRequestWithState } from './actions'
 import { ItemAddedToast } from '@/components/item-added-toast'
 import { stockAvailabilityBadgeClass } from '@/lib/status-format'
+import { TermsAcceptance } from '@/components/terms-acceptance'
 
 type ItemOption = {
   id: string
@@ -40,6 +41,7 @@ export function RequestForm({
   const [itemSearch, setItemSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [addedItemName, setAddedItemName] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const mounted = useIsHydrated()
 
   const selectedIds = rows.map((row) => row.item_id)
@@ -343,12 +345,20 @@ export function RequestForm({
       </div>
 
       <div className="md:col-span-2">
+        <TermsAcceptance
+          checked={termsAccepted}
+          onCheckedChange={setTermsAccepted}
+          disabled={isPending}
+        />
+      </div>
+
+      <div className="md:col-span-2">
         <button
           type="submit"
           suppressHydrationWarning
-          disabled={!mounted || hasErrors || isPending}
+          disabled={!mounted || hasErrors || !termsAccepted || isPending}
           className={`w-full rounded-lg px-5 py-2.5 font-medium transition sm:w-auto ${
-            hasErrors
+            hasErrors || !termsAccepted
               ? 'cursor-not-allowed bg-gray-400 text-white'
               : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
