@@ -508,8 +508,8 @@ export default async function DashboardPage({
             },
             {
               id: 'reportes',
-              label: 'Reportes',
-              description: 'Filtro de periodo y exportaciones Excel por módulo.',
+              label: 'Exportaciones',
+              description: 'Informes operativos mensuales y exportaciones Excel por módulo.',
             },
           ]}
         >
@@ -983,9 +983,9 @@ export default async function DashboardPage({
         <section className="rounded-lg bg-white p-5 shadow sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Periodo de reporte</h2>
+              <h2 className="text-lg font-semibold">Exportaciones administrativas</h2>
               <p className="mt-1 text-sm text-slate-500">
-                Filtra métricas, gráficas y exportaciones del dashboard.
+                Selecciona el mes del informe operativo y descarga la información por módulo.
               </p>
             </div>
 
@@ -1035,7 +1035,7 @@ export default async function DashboardPage({
                   href="/dashboard/analitica"
                   className="rounded-lg bg-indigo-600 px-4 py-2 text-center font-medium text-white transition hover:bg-indigo-700"
                 >
-                  Analítica de uso de bienes
+                  Abrir analítica de utilización de bienes
                 </Link>
                 <form
                   action="/dashboard/export"
@@ -1051,7 +1051,7 @@ export default async function DashboardPage({
                       defaultValue="all"
                       className="w-full rounded-lg border border-slate-300 px-3 py-2"
                     >
-                      <option value="all">Todo el reporte</option>
+                      <option value="all">Informe operativo completo</option>
                       <option value="requests">Solicitudes</option>
                       <option value="loans">Préstamos</option>
                       <option value="returns">Devoluciones</option>
@@ -1065,7 +1065,7 @@ export default async function DashboardPage({
                     type="submit"
                     className="rounded-lg bg-green-600 px-4 py-2 text-center font-medium text-white transition hover:bg-green-700"
                   >
-                    Exportar Excel
+                    Exportar informe Excel
                   </button>
                 </form>
                 </div>

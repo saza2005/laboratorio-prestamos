@@ -26,7 +26,7 @@ const operationalItems: NavItem[] = [
   { href: '/inventario', label: 'Inventario', icon: 'boxes' },
   { href: '/mantenimiento', label: 'Mantenimiento', icon: 'maintenance' },
   { href: '/dashboard/usuarios', label: 'Usuarios', icon: 'users', adminOnly: true },
-  { href: '/dashboard/analitica', label: 'Reportes', icon: 'analytics' },
+  { href: '/dashboard/analitica', label: 'Analítica de bienes', icon: 'analytics' },
 ]
 
 const portalItems: NavItem[] = [

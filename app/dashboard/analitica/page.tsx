@@ -47,13 +47,14 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
 
   const params = await searchParams
   const period = parsePeriod(params.period)
+  const ranking = params.ranking === 'least' ? 'least' : 'most'
   const analytics = await loadItemUsageAnalytics(auth.supabase, { now: new Date(), period })
   const rows = filterItemUsageRows(analytics.rows, {
     search: params.q,
     category: params.category,
     status: params.status,
     onlyUnused: params.unused === '1',
-    ranking: params.ranking === 'least' ? 'least' : 'most',
+    ranking,
   })
   const categories = [...new Set(analytics.rows.map((row) => row.category).filter(Boolean))]
     .sort((a, b) => (a ?? '').localeCompare(b ?? '', 'es')) as string[]
@@ -61,7 +62,7 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
   const activeItems = rows.filter((row) => row.totalQuantity > 0).length
   const unusedItems = rows.filter((row) => row.historicalQuantity === 0).length
   const topItems = rows.filter((row) => row.totalQuantity > 0).slice(0, 10)
-    .map((row) => ({ name: row.name, value: row.totalQuantity }))
+    .map((row) => ({ code: row.code, name: row.name, value: row.totalQuantity }))
   const monthlyMap = new Map<string, number>()
   for (const row of rows) {
     for (const [month, value] of Object.entries(row.monthlyUsage)) {
@@ -81,12 +82,12 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
     <main className="app-page">
       <div className="app-container space-y-6">
         <PageHeader
-          eyebrow="Inteligencia operativa"
-          title="Analítica de uso de bienes"
+          eyebrow="Analítica de bienes"
+          title="Analítica de utilización de bienes"
           description="Señales basadas en préstamos efectivamente entregados. Orientan la revisión administrativa, pero no determinan por sí solas compras, renovación u obsolescencia."
           actions={<>
             <Link href={`/dashboard/analitica/export?${exportParams}`} className="rounded-lg bg-emerald-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-800">
-              Exportar Excel
+              Exportar analítica Excel
             </Link>
           </>}
         />
@@ -132,7 +133,12 @@ export default async function ItemAnalyticsPage({ searchParams }: { searchParams
           <MetricCard label="Sin uso histórico" value={unusedItems} icon="boxes" tone="warning" />
         </section>
 
-        <AnalyticsCharts topItems={topItems} monthlyUsage={monthlyUsage} distribution={distribution} />
+        <AnalyticsCharts
+          topItems={topItems}
+          monthlyUsage={monthlyUsage}
+          distribution={distribution}
+          ranking={ranking}
+        />
 
         <section className="surface-card overflow-hidden">
           <div className="border-b px-5 py-4">
