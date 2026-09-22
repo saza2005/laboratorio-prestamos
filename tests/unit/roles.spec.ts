@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test"
 import {
   ASSIGNABLE_USER_ROLES,
   canCreateGroupRequests,
+  canManageAssetClearanceCertificates,
   canManageInventory,
   canManageLoans,
   canManageReturns,
@@ -11,6 +12,7 @@ import {
   canSeeReportsModule,
   canSeeReturnsModule,
   canUseRequestPortal,
+  canRequestAssetClearanceCertificate,
   canViewOperationalDashboard,
   getHomeRouteByRole,
   isAssignableUserRole,
@@ -30,6 +32,8 @@ test.describe("Matriz de permisos por rol", () => {
       expect(canSeeReportsModule(role)).toBe(true)
       expect(canUseRequestPortal(role)).toBe(false)
       expect(canCreateGroupRequests(role)).toBe(false)
+      expect(canManageAssetClearanceCertificates(role)).toBe(true)
+      expect(canRequestAssetClearanceCertificate(role)).toBe(false)
       expect(getHomeRouteByRole(role)).toBe("/dashboard")
     }
   })
@@ -41,6 +45,8 @@ test.describe("Matriz de permisos por rol", () => {
     expect(canManageLoans("teacher")).toBe(false)
     expect(canManageReturns("teacher")).toBe(false)
     expect(canViewOperationalDashboard("teacher")).toBe(false)
+    expect(canRequestAssetClearanceCertificate("teacher")).toBe(true)
+    expect(canManageAssetClearanceCertificates("teacher")).toBe(false)
     expect(getHomeRouteByRole("teacher")).toBe("/solicitudes")
   })
 
@@ -51,6 +57,8 @@ test.describe("Matriz de permisos por rol", () => {
     expect(canManageLoans("student")).toBe(false)
     expect(canManageReturns("student")).toBe(false)
     expect(canViewOperationalDashboard("student")).toBe(false)
+    expect(canRequestAssetClearanceCertificate("student")).toBe(true)
+    expect(canManageAssetClearanceCertificates("student")).toBe(false)
     expect(getHomeRouteByRole("student")).toBe("/solicitudes")
   })
 
@@ -60,6 +68,8 @@ test.describe("Matriz de permisos por rol", () => {
       expect(canUseRequestPortal(role)).toBe(false)
       expect(canCreateGroupRequests(role)).toBe(false)
       expect(canManageUsers(role)).toBe(false)
+      expect(canRequestAssetClearanceCertificate(role)).toBe(false)
+      expect(canManageAssetClearanceCertificates(role)).toBe(false)
       expect(getHomeRouteByRole(role)).toBe("/auth/login")
     }
   })

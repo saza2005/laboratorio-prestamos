@@ -26,6 +26,7 @@ const operationalItems: NavItem[] = [
   { href: '/devoluciones', label: 'Devoluciones', icon: 'return' },
   { href: '/inventario', label: 'Inventario', icon: 'boxes' },
   { href: '/mantenimiento', label: 'Mantenimiento', icon: 'maintenance' },
+  { href: '/dashboard/certificados', label: 'Certificados', icon: 'certificate' },
   { href: '/dashboard/usuarios', label: 'Usuarios', icon: 'users', adminOnly: true },
   { href: '/dashboard/analitica', label: 'Analítica de bienes', icon: 'analytics' },
 ]
@@ -37,6 +38,7 @@ const portalItems: NavItem[] = [
   { href: '/solicitudes/catalogo', label: 'Catálogo', icon: 'boxes' },
   { href: '/solicitudes/mis-solicitudes', label: 'Mis solicitudes', icon: 'book' },
   { href: '/solicitudes/mis-prestamos', label: 'Mis préstamos', icon: 'loan' },
+  { href: '/solicitudes/certificados', label: 'Certificados', icon: 'certificate' },
 ]
 
 function initials(name: string) {

@@ -71,3 +71,11 @@ export function canSeeReturnsModule(role?: string | null) {
 export function canSeeReportsModule(role?: string | null) {
   return role === 'admin' || role === 'lab_staff'
 }
+
+export function canRequestAssetClearanceCertificate(role?: string | null) {
+  return role === 'teacher' || role === 'student'
+}
+
+export function canManageAssetClearanceCertificates(role?: string | null) {
+  return role === 'admin' || role === 'lab_staff'
+}
