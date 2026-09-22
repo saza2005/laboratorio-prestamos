@@ -5,6 +5,7 @@ export type AppIconName =
   | 'archive'
   | 'book'
   | 'boxes'
+  | 'certificate'
   | 'clipboard'
   | 'dashboard'
   | 'flask'
@@ -22,6 +23,7 @@ const paths: Record<AppIconName, React.ReactNode> = {
   archive: <><path d="M3 6h18"/><path d="M5 6v14h14V6"/><path d="M9 10h6"/><path d="M4 3h16v3H4z"/></>,
   book: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 6.5v13"/></>,
   boxes: <><path d="m12 2 4.5 2.5L12 7 7.5 4.5z"/><path d="m7.5 4.5v5L12 12l4.5-2.5v-5"/><path d="m6.5 12 4.5 2.5L6.5 17 2 14.5z"/><path d="m17.5 12 4.5 2.5-4.5 2.5-4.5-2.5z"/><path d="M2 14.5v5L6.5 22l4.5-2.5v-5M13 14.5v5l4.5 2.5 4.5-2.5v-5"/></>,
+  certificate: <><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4M9 11h6M9 15h4"/><circle cx="15.5" cy="17.5" r="2.5"/><path d="m14 19.5-.5 2 2-1 2 1-.5-2"/></>,
   clipboard: <><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M9 10h6M9 14h6"/></>,
   dashboard: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
   flask: <><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 16h9"/></>,
