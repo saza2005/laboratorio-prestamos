@@ -7,6 +7,7 @@ import { LogoutButton } from '@/app/logout-button'
 import { formatUserRole, userRoleBadgeClass } from '@/lib/status-format'
 import { AppFooter } from './app-footer'
 import { AppIcon, type AppIconName } from './app-icon'
+import { SupportDialog } from './support-dialog'
 
 type ShellVariant = 'operational' | 'portal'
 
@@ -60,6 +61,7 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [supportOpen, setSupportOpen] = useState(false)
   const items = (variant === 'operational' ? operationalItems : portalItems).filter(
     (item) => (!item.adminOnly || role === 'admin') && (!item.teacherOnly || role === 'teacher')
   )
@@ -84,6 +86,22 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
           </Link>
         ))}
       </nav>
+      {variant === 'operational' && (
+        <div className="border-t border-white/10 px-3 py-3">
+          <button
+            type="button"
+            className="app-nav-link w-full"
+            onClick={() => {
+              setMobileOpen(false)
+              setSupportOpen(true)
+            }}
+            title={collapsed ? 'Soporte' : undefined}
+          >
+            <AppIcon name="support" className="h-5 w-5 shrink-0" />
+            {!collapsed && <span>Soporte</span>}
+          </button>
+        </div>
+      )}
       <button type="button" className="app-sidebar-collapse" onClick={() => setCollapsed((value) => !value)} aria-label={collapsed ? 'Expandir navegación' : 'Contraer navegación'}>
         <span aria-hidden="true">{collapsed ? '→' : '←'}</span>{!collapsed && <span>Contraer</span>}
       </button>
@@ -124,6 +142,7 @@ export function AppShell({ children, userName, role, variant }: { children: Reac
         <div className="app-shell-content">{children}</div>
         <AppFooter />
       </div>
+      <SupportDialog open={supportOpen} onClose={() => setSupportOpen(false)} />
     </div>
   )
 }
