@@ -84,6 +84,7 @@ export function CertificateRequestsTable({ certificates }: { certificates: Certi
     return (!normalizedSearch || userText.includes(normalizedSearch)) && (!status || certificate.status === status)
   }), [certificates, normalizedSearch, status])
   const selected = certificates.find((certificate) => certificate.id === selectedId) ?? null
+  const hasActiveFilters = Boolean(search || status)
 
   return (
     <div className="space-y-4">
@@ -107,17 +108,18 @@ export function CertificateRequestsTable({ certificates }: { certificates: Certi
       </div>
 
       <section className="surface-card overflow-hidden" aria-label="Solicitudes de certificados">
-        <div className="hidden grid-cols-[170px_minmax(0,1fr)_130px_150px] gap-4 border-b border-slate-200 bg-slate-100 px-5 py-3 text-xs font-semibold uppercase text-slate-600 md:grid">
-          <span>Fecha</span><span>Solicitante</span><span>Rol</span><span>Estado</span>
+        <div className="hidden grid-cols-[160px_minmax(0,1fr)_120px_130px_100px] gap-4 border-b border-slate-200 bg-slate-100 px-5 py-3 text-xs font-semibold uppercase text-slate-600 md:grid">
+          <span>Fecha</span><span>Solicitante</span><span>Rol</span><span>Estado</span><span>Acción</span>
         </div>
         {filtered.length > 0 ? <div className="divide-y divide-slate-200">{filtered.map((certificate) => (
-          <button key={certificate.id} type="button" onClick={() => setSelectedId(certificate.id)} className="grid w-full gap-2 px-5 py-4 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[170px_minmax(0,1fr)_130px_150px] md:items-center md:gap-4">
+          <button key={certificate.id} type="button" onClick={() => setSelectedId(certificate.id)} className="grid w-full gap-2 px-5 py-4 text-left text-sm transition hover:bg-slate-50 md:grid-cols-[160px_minmax(0,1fr)_120px_130px_100px] md:items-center md:gap-4">
             <span className="text-slate-500">{formatDateTime(certificate.requested_at)}</span>
             <span className="min-w-0"><strong className="block truncate text-slate-900">{certificate.applicant?.full_name || 'Sin nombre'}</strong><span className="block truncate text-xs text-slate-500">{certificate.applicant?.email || '-'}</span></span>
             <span className="text-slate-600">{formatUserRole(certificate.applicant?.role)}</span>
             <span><span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${certificateStatusBadgeClass(certificate.status)}`}>{formatCertificateStatus(certificate.status)}</span></span>
+            <span className="font-medium text-blue-700">Ver detalle</span>
           </button>
-        ))}</div> : <p className="px-5 py-10 text-center text-sm text-slate-500">No existen solicitudes que coincidan con los filtros.</p>}
+        ))}</div> : <p className="px-5 py-10 text-center text-sm text-slate-500">{hasActiveFilters ? 'No existen solicitudes que coincidan con los filtros seleccionados.' : 'No existen solicitudes de certificados registradas.'}</p>}
       </section>
 
       <DetailDrawer isOpen={Boolean(selected)} onClose={() => setSelectedId(null)} maxWidthClassName="max-w-2xl">

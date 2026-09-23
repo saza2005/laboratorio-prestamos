@@ -77,4 +77,17 @@ test.describe('Interfaz de certificados de no adeudo — fase 2', () => {
     expect(adminTable).toContain('required className="form-control mt-1"')
     expect(adminTable).toContain('type="search"')
   })
+
+  test('presenta textos claros y distingue estados vacíos administrativos', () => {
+    const requestButton = read('app/solicitudes/certificados/certificate-request-button.tsx')
+    expect(requestButton).toContain('Solicitar certificado de no adeudo')
+    expect(portalPage).toContain('Mis certificados')
+    expect(portalPage).toContain('Historial de solicitudes de certificados.')
+    expect(adminPage).toContain('Gestiona las solicitudes de certificados')
+    expect(adminPage).toContain('label="Emitidos"')
+    expect(adminPage).not.toContain('PDF no disponible en esta fase')
+    expect(adminTable).toContain('<span>Acción</span>')
+    expect(adminTable).toContain('No existen solicitudes de certificados registradas.')
+    expect(adminTable).toContain('No existen solicitudes que coincidan con los filtros seleccionados.')
+  })
 })

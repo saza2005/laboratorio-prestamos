@@ -57,8 +57,8 @@ export default async function OwnCertificatesPage() {
 
         <section className="surface-card overflow-hidden">
           <div className="border-b border-slate-200 px-5 py-4 sm:px-6">
-            <h2 className="text-lg font-semibold text-slate-950">Mis solicitudes</h2>
-            <p className="mt-1 text-sm text-slate-500">Historial de los últimos {USER_CERTIFICATES_LIMIT} trámites.</p>
+            <h2 className="text-lg font-semibold text-slate-950">Mis certificados</h2>
+            <p className="mt-1 text-sm text-slate-500">Historial de solicitudes de certificados.</p>
           </div>
           {(certificates?.length ?? 0) > 0 ? (
             <div className="divide-y divide-slate-200">
