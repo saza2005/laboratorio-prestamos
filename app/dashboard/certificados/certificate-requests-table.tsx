@@ -11,7 +11,7 @@ import {
 } from '@/lib/asset-clearance-certificates'
 import { formatDateTime } from '@/lib/format-date'
 import { formatUserRole } from '@/lib/status-format'
-import { reviewAssetClearanceCertificate } from './actions'
+import { generateAssetClearanceCertificate, reviewAssetClearanceCertificate } from './actions'
 
 export type CertificateRequestRow = {
   id: string
@@ -65,6 +65,30 @@ function ReviewForm({ certificateId }: { certificateId: string }) {
       )}
       <button type="submit" className={decision === 'approved' ? 'button-primary' : 'button-danger'} disabled={pending}>
         {pending ? 'Procesando...' : decision === 'approved' ? 'Aprobar' : 'Rechazar'}
+      </button>
+      <div aria-live="polite">
+        {state.error && <p className="text-sm text-red-700">{state.error}</p>}
+        {state.success && <p className="text-sm text-emerald-700">{state.success}</p>}
+      </div>
+    </form>
+  )
+}
+
+function GenerateCertificateForm({ certificateId }: { certificateId: string }) {
+  const [state, action, pending] = useActionState(generateAssetClearanceCertificate, {
+    error: null,
+    success: null,
+  })
+
+  return (
+    <form action={action} className="space-y-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
+      <input type="hidden" name="certificate_id" value={certificateId} />
+      <div>
+        <h3 className="font-semibold text-slate-900">Emisión institucional</h3>
+        <p className="mt-1 text-sm text-slate-600">La elegibilidad se comprobará nuevamente antes de fijar el código y el contenido histórico.</p>
+      </div>
+      <button type="submit" className="button-primary" disabled={pending}>
+        {pending ? 'Generando...' : 'Generar certificado'}
       </button>
       <div aria-live="polite">
         {state.error && <p className="text-sm text-red-700">{state.error}</p>}
@@ -142,7 +166,22 @@ export function CertificateRequestsTable({ certificates }: { certificates: Certi
               {snapshot.checked_at && <p className="mt-3 text-xs text-slate-500">Evaluado: {formatDateTime(snapshot.checked_at)}</p>}
             </section>
             {(selected.observations || selected.rejection_reason) && <section className="rounded-xl border border-slate-200 p-4"><h3 className="font-semibold text-slate-900">Observaciones</h3>{selected.observations && <p className="mt-2 text-sm text-slate-600">{selected.observations}</p>}{selected.rejection_reason && <p className="mt-2 text-sm text-red-700">Motivo de rechazo: {selected.rejection_reason}</p>}</section>}
-            {selected.status === 'pending' ? <ReviewForm key={selected.id} certificateId={selected.id} /> : <p className="rounded-xl bg-slate-100 p-4 text-sm text-slate-600">Esta solicitud ya fue revisada. No hay acciones administrativas pendientes.</p>}
+            {selected.status === 'pending' && <ReviewForm key={selected.id} certificateId={selected.id} />}
+            {selected.status === 'approved' && <GenerateCertificateForm key={selected.id} certificateId={selected.id} />}
+            {selected.status === 'rejected' && <p className="rounded-xl bg-slate-100 p-4 text-sm text-slate-600">Esta solicitud fue rechazada. No hay acciones administrativas pendientes.</p>}
+            {selected.status === 'generated' && (
+              <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                <h3 className="font-semibold text-slate-900">Certificado emitido</h3>
+                <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+                  <div><dt className="font-medium text-slate-500">Código</dt><dd className="mt-1 font-mono font-semibold text-slate-900">{selected.certificate_code}</dd></div>
+                  <div><dt className="font-medium text-slate-500">Fecha de emisión</dt><dd className="mt-1 text-slate-900">{formatDateTime(selected.generated_at)}</dd></div>
+                </dl>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <a href={`/dashboard/certificados/${selected.id}/pdf`} target="_blank" rel="noopener noreferrer" className="button-primary text-center">Ver PDF</a>
+                  <a href={`/dashboard/certificados/${selected.id}/pdf`} target="_blank" rel="noopener noreferrer" className="button-secondary text-center" title="Abre el certificado para utilizar la opción de impresión del navegador">Imprimir</a>
+                </div>
+              </section>
+            )}
           </div>
         })()}
       </DetailDrawer>

@@ -10,6 +10,8 @@ export type CertificateReviewActionState = {
   success: string | null
 }
 
+export type CertificateGenerationActionState = CertificateReviewActionState
+
 export async function reviewAssetClearanceCertificate(
   _previousState: CertificateReviewActionState,
   formData: FormData
@@ -49,6 +51,43 @@ export async function reviewAssetClearanceCertificate(
   } catch (error) {
     return {
       error: getActionErrorMessage(error, 'No se pudo completar la revisión.'),
+      success: null,
+    }
+  }
+}
+
+export async function generateAssetClearanceCertificate(
+  _previousState: CertificateGenerationActionState,
+  formData: FormData
+): Promise<CertificateGenerationActionState> {
+  try {
+    const { supabase, profile } = await getAuthProfile()
+
+    if (!canManageAssetClearanceCertificates(profile.role)) {
+      throw new Error('No tiene permisos para emitir certificados.')
+    }
+
+    const certificateId = String(formData.get('certificate_id') ?? '').trim()
+    if (!certificateId) throw new Error('La solicitud seleccionada no es válida.')
+
+    const { data, error } = await supabase.rpc('generate_asset_clearance_certificate', {
+      p_certificate_id: certificateId,
+    })
+
+    if (error) throw new Error(error.message)
+    if (!Array.isArray(data) || data.length !== 1 || !data[0]?.certificate_code) {
+      throw new Error('No se pudo confirmar la emisión del certificado.')
+    }
+
+    revalidatePath('/dashboard/certificados')
+    revalidatePath('/solicitudes/certificados')
+    return {
+      error: null,
+      success: `Certificado ${data[0].certificate_code} generado correctamente.`,
+    }
+  } catch (error) {
+    return {
+      error: getActionErrorMessage(error, 'No se pudo generar el certificado.'),
       success: null,
     }
   }
