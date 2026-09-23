@@ -42,9 +42,12 @@ test.describe('Interfaz de certificados de no adeudo — fase 2', () => {
     expect(adminAction).not.toMatch(/\.from\([^)]*\)\s*\.(insert|update|delete)/)
   })
 
-  test('no expone generación, impresión o descarga de PDF', () => {
-    const phaseTwoSources = `${portalPage}\n${adminPage}\n${adminTable}\n${portalAction}\n${adminAction}`
-    expect(phaseTwoSources).not.toMatch(/generar pdf|imprimir|descargar pdf|application\/pdf/i)
+  test('no expone generación, impresión o descarga de PDF en el portal del solicitante', () => {
+    const portalSources = `${portalPage}\n${portalAction}`
+    expect(portalSources).not.toMatch(/generar pdf|ver pdf|imprimir|descargar pdf|application\/pdf/i)
+    expect(adminTable).toContain('Generar certificado')
+    expect(adminTable).toContain('Ver PDF')
+    expect(adminTable).toContain('Imprimir')
   })
 
   test('normaliza estados y snapshots sin confiar en estructuras desconocidas', () => {
