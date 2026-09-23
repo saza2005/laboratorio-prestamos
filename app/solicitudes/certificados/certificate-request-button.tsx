@@ -12,7 +12,7 @@ export function CertificateRequestButton({ disabled }: { disabled: boolean }) {
   return (
     <form action={action} className="space-y-3">
       <button type="submit" className="button-primary" disabled={disabled || pending}>
-        {pending ? 'Enviando solicitud...' : 'Solicitar certificado'}
+        {pending ? 'Enviando solicitud...' : 'Solicitar certificado de no adeudo'}
       </button>
       {disabled && (
         <p className="text-sm text-amber-700">Ya tiene una solicitud pendiente o aprobada.</p>
