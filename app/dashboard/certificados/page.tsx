@@ -41,12 +41,12 @@ export default async function CertificatesAdminPage() {
   return (
     <main className="app-page">
       <div className="mx-auto max-w-7xl space-y-6">
-        <PageHeader eyebrow="Administración" title="Certificados de no adeudo" description="Revisa las solicitudes y determina si el usuario mantiene obligaciones de bienes con el laboratorio." />
+        <PageHeader eyebrow="Administración" title="Certificados de no adeudo" description="Gestiona las solicitudes de certificados y verifica si los usuarios mantienen obligaciones pendientes con el laboratorio." />
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Pendientes" value={count('pending')} tone="warning" icon="certificate" />
           <MetricCard label="Aprobados" value={count('approved')} tone="primary" icon="certificate" />
           <MetricCard label="Rechazados" value={count('rejected')} tone="danger" icon="certificate" />
-          <MetricCard label="Generados" value={count('generated')} tone="success" icon="certificate" detail="PDF no disponible en esta fase" />
+          <MetricCard label="Emitidos" value={count('generated')} tone="success" icon="certificate" />
         </section>
         <CertificateRequestsTable certificates={certificates} />
       </div>
