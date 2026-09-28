@@ -15,6 +15,13 @@ import {
 } from '@/lib/status-format'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { formatDateTime } from '@/lib/format-date'
+import {
+  configureDetailedExportSheet,
+  exportText,
+  formatLoanPurpose,
+  summarizeDeliveredItems,
+  summarizeRequestedItems,
+} from '@/lib/report-export-details'
 
 
 export async function GET(request: NextRequest) {
@@ -145,7 +152,14 @@ export async function GET(request: NextRequest) {
         delivery_date,
         expected_return_date,
         returned_at,
-        profiles:profiles!loans_user_id_fkey(full_name, email)
+        profiles:profiles!loans_user_id_fkey(full_name, email),
+        requests:requests!loans_request_id_fkey(purpose),
+        loan_items(
+          item_id,
+          quantity,
+          items:items(name, code),
+          item_units:item_units(asset_code)
+        )
       `)
       .gte('delivery_date', startTimestamp)
       .lt('delivery_date', endTimestamp)
@@ -157,17 +171,22 @@ export async function GET(request: NextRequest) {
 
     const loansSheet = workbook.addWorksheet('Préstamos')
 
-      loansSheet.columns = [
+    loansSheet.columns = [
       { header: 'Usuario', key: 'user', width: 30 },
       { header: 'Correo', key: 'email', width: 30 },
       { header: 'Fecha de entrega', key: 'deliveryDate', width: 22 },
       { header: 'Devolución esperada', key: 'expectedReturnDate', width: 22 },
       { header: 'Fecha devuelto', key: 'returnedAt', width: 22 },
       { header: 'Estado', key: 'status', width: 18 },
+      { header: 'Propósito / Práctica', key: 'purpose', width: 30 },
+      { header: 'Bienes entregados', key: 'items', width: 34 },
+      { header: 'Códigos', key: 'codes', width: 34 },
+      { header: 'Cantidad total', key: 'totalQuantity', width: 16 },
     ]
 
     for (const loan of loans ?? []) {
       const borrower = firstOrNull(loan.profiles)
+      const deliveredItems = summarizeDeliveredItems(loan.loan_items)
 
       loansSheet.addRow({
         user: borrower?.full_name ?? '-',
@@ -178,8 +197,14 @@ export async function GET(request: NextRequest) {
         status: formatLoanStatus(
           getEffectiveLoanStatus(loan.status, loan.expected_return_date)
         ),
+        purpose: formatLoanPurpose(loan.requests),
+        items: deliveredItems.items,
+        codes: deliveredItems.codes,
+        totalQuantity: deliveredItems.totalQuantity,
       })
     }
+
+    configureDetailedExportSheet(loansSheet, ['purpose', 'items', 'codes'])
   }
 
   if (includeModule('requests')) {
@@ -190,9 +215,16 @@ export async function GET(request: NextRequest) {
         requested_at,
         status,
         purpose,
+        comments,
         scheduled_return_date,
         profiles:profiles!requests_user_id_fkey(full_name, email),
-        request_items(quantity_approved, quantity_delivered),
+        request_items(
+          item_id,
+          quantity_requested,
+          quantity_approved,
+          quantity_delivered,
+          items:items(name, code)
+        ),
         request_groups(request_group_items(item_id, quantity)),
         loans(loan_items(item_id, quantity))
       `)
@@ -208,23 +240,40 @@ export async function GET(request: NextRequest) {
     requestsSheet.columns = [
       { header: 'Usuario', key: 'user', width: 30 },
       { header: 'Correo', key: 'email', width: 30 },
-      { header: 'Fecha', key: 'date', width: 22 },
+      { header: 'Fecha solicitud', key: 'date', width: 22 },
       { header: 'Estado', key: 'status', width: 22 },
       { header: 'Devolución programada', key: 'scheduledReturnDate', width: 24 },
-      { header: 'Propósito', key: 'purpose', width: 45 },
+      { header: 'Propósito / Práctica', key: 'purpose', width: 30 },
+      { header: 'Bienes solicitados', key: 'items', width: 34 },
+      { header: 'Códigos', key: 'codes', width: 22 },
+      { header: 'Cantidad total', key: 'totalQuantity', width: 16 },
+      { header: 'Observaciones', key: 'comments', width: 34 },
     ]
 
     for (const requestEntry of requests ?? []) {
       const requester = firstOrNull(requestEntry.profiles)
+      const requestedItems = summarizeRequestedItems(requestEntry.request_items)
+
       requestsSheet.addRow({
         user: requester?.full_name ?? '-',
         email: requester?.email ?? '-',
         date: requestEntry.requested_at ?? '-',
         status: formatExportRequestStatus(requestEntry),
         scheduledReturnDate: requestEntry.scheduled_return_date ?? '-',
-        purpose: requestEntry.purpose ?? '-',
+        purpose: exportText(requestEntry.purpose),
+        items: requestedItems.items,
+        codes: requestedItems.codes,
+        totalQuantity: requestedItems.totalQuantity,
+        comments: exportText(requestEntry.comments),
       })
     }
+
+    configureDetailedExportSheet(requestsSheet, [
+      'purpose',
+      'items',
+      'codes',
+      'comments',
+    ])
   }
 
   const formatReturnResult = (totals: {
