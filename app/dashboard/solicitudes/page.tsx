@@ -7,11 +7,13 @@ import {
 } from '@/lib/supabase/auth/roles'
 import { RequestsTable } from './requests-table'
 import { RequestActionsPanel } from './request-actions-panel'
-import { ADMIN_REQUESTS_LIMIT } from '@/lib/query-limits'
+import { loadRequests, parseRequestFilters, requestsHref } from './requests-query'
 import { firstOrNull } from '@/lib/supabase/query-utils'
 import { compareRequestsByOperationalPriority, getVisibleRequestStatus } from '@/lib/request-delivery-status'
 
-export default async function DashboardSolicitudesPage() {
+export default async function DashboardSolicitudesPage({ searchParams }: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
   let auth
 
   try {
@@ -26,66 +28,12 @@ export default async function DashboardSolicitudesPage() {
     redirect(getHomeRouteByRole(profile.role))
   }
 
-const { data: rawRequests, error } = await supabase
-  .from('requests')
-  .select(`
-    id,
-    status,
-    requested_at,
-    purpose,
-    comments,
-    scheduled_return_date,
-    rejection_reason,
-    requester:profiles!requests_user_id_fkey(full_name, email),
-    loans (
-      id,
-      status,
-      delivery_date,
-      expected_return_date,
-      loan_items (
-        item_id,
-        quantity
-      )
-    ),
-    request_items (
-      id,
-      quantity_requested,
-      quantity_approved,
-      quantity_delivered,
-      items (
-        id,
-        name,
-        code,
-        stock_available,
-        track_individual,
-        item_units(asset_code)
-      )
-    ),
-
-    request_groups (
-      id,
-      group_name,
-      leader:profiles(full_name),
-      request_group_items (
-        item_id,
-        quantity,
-        items (
-          id,
-          name,
-          code,
-          stock_available,
-          track_individual,
-          item_units(asset_code)
-        )
-      )
-    )
-  `)
-  .order('requested_at', { ascending: true })
-  .limit(ADMIN_REQUESTS_LIMIT)
-
-  if (error) {
-    throw new Error(error.message)
+  const filters = parseRequestFilters(await searchParams)
+  const result = await loadRequests(supabase, filters.status, filters.page)
+  if (result.page !== filters.page) {
+    redirect(requestsHref(filters.status, result.page, filters.search))
   }
+  const rawRequests = result.rows
 
 const getAssetCodes = (
   units: { asset_code?: string | null }[] | null | undefined
@@ -283,7 +231,16 @@ const requests =
           title="Gestión de solicitudes"
           description="Revisa, aprueba y prepara las solicitudes de préstamo del laboratorio."
         />
-        <RequestsTable requests={requestsWithActions} limit={100} />
+        <RequestsTable
+          key={`${filters.status}:${result.page}:${filters.search}`}
+          requests={requestsWithActions}
+          statusFilter={filters.status}
+          initialSearch={filters.search}
+          page={result.page}
+          total={result.total}
+          historicalCount={result.historicalCount}
+          operational={result.operational}
+        />
       </div>
     </main>
   )

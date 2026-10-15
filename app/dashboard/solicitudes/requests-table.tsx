@@ -1,7 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { OPERATIONAL_PAGE_SIZE, requestsHref, type RequestStatusFilter } from './requests-query'
 import { DetailDrawer } from '@/components/detail-drawer'
 import { formatDateTime } from '@/lib/format-date'
 import { normalizeSearchText } from '@/lib/item-format'
@@ -79,7 +81,12 @@ type StaffRequestRow = {
 
 type RequestsTableProps = {
   requests: StaffRequestRow[]
-  limit?: number
+  statusFilter: RequestStatusFilter
+  initialSearch: string
+  page: number
+  total: number
+  historicalCount: number
+  operational: boolean
 }
 
 function getRequestType(req: StaffRequestRow) {
@@ -110,9 +117,10 @@ function getPreviewText(req: StaffRequestRow) {
     : firstItem
 }
 
-export function RequestsTable({ requests, limit }: RequestsTableProps) {
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+export function RequestsTable({ requests, statusFilter, initialSearch, page, total, historicalCount, operational }: RequestsTableProps) {
+  const router = useRouter()
+  const [isNavigating, startNavigation] = useTransition()
+  const [search, setSearch] = useState(initialSearch)
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
 
   const filteredRequests = useMemo(() => {
@@ -173,7 +181,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
 
   function clearFilters() {
     setSearch('')
-    setStatusFilter('')
+    startNavigation(() => router.push(requestsHref('')))
     setSelectedRequestId(null)
   }
 
@@ -193,7 +201,11 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
 
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            disabled={isNavigating}
+            onChange={(e) => {
+              setSelectedRequestId(null)
+              startNavigation(() => router.push(requestsHref(e.target.value as RequestStatusFilter, 1, search)))
+            }}
             className="rounded-lg border border-slate-300 px-3 py-2"
           >
             <option value="">Todos los estados</option>
@@ -210,7 +222,7 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
           <div className="flex flex-col gap-2 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
             <span>
               Resultados: {filteredRequests.length}
-              {limit ? ` de las últimas ${limit} solicitudes` : ''}
+              {' en los registros cargados'}
             </span>
             {hasFilters && (
               <button
@@ -223,6 +235,29 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="space-y-2 text-sm text-slate-600" aria-live="polite" aria-busy={isNavigating}>
+        {operational && (
+          <>
+            <p>
+              {statusFilter === 'pending' ? 'Pendientes' : statusFilter === 'approved' ? 'Aprobadas por entregar' : 'Cola operativa (pendientes y aprobadas)'}:
+              {' '}{total === 0 ? '0' : `${(page - 1) * OPERATIONAL_PAGE_SIZE + 1}–${Math.min(page * OPERATIONAL_PAGE_SIZE, total)}`} de {total} solicitudes.
+            </p>
+            <nav className="flex items-center gap-3" aria-label="Páginas de solicitudes operativas">
+              {page > 1 && <Link prefetch={false} href={requestsHref(statusFilter, page - 1, search)} className="text-blue-700 underline">Anterior</Link>}
+              <span>Página {page} de {Math.max(1, Math.ceil(total / OPERATIONAL_PAGE_SIZE))}</span>
+              {page * OPERATIONAL_PAGE_SIZE < total && <Link prefetch={false} href={requestsHref(statusFilter, page + 1, search)} className="text-blue-700 underline">Siguiente</Link>}
+            </nav>
+          </>
+        )}
+        {(!statusFilter || !operational) && (
+          <p>Historial: {historicalCount} registros cargados, hasta 100 de los más antiguos{!statusFilter ? ' sin pendientes ni aprobadas' : ''}.</p>
+        )}
+        <p>
+          La búsqueda examina únicamente los registros cargados{operational ? ' de esta página operativa' : ' del historial'}{!statusFilter ? ' y el historial mostrado' : ''}.
+          {operational && ' Para buscar en otras solicitudes operativas, navega entre páginas; el texto de búsqueda se conserva.'}
+        </p>
       </div>
 
       {filteredRequests.length > 0 ? (
@@ -432,7 +467,13 @@ export function RequestsTable({ requests, limit }: RequestsTableProps) {
       ) : (
         <div className="surface-card p-6">
           <p className="text-slate-500">
-            No hay solicitudes que coincidan con los filtros.
+            {search
+              ? 'No hay coincidencias en los registros cargados. La búsqueda no incluye otras páginas.'
+              : operational && statusFilter && total === 0
+                ? 'No hay solicitudes en este estado.'
+                : requests.length === 0
+                  ? 'No hay solicitudes para mostrar.'
+                  : 'No hay solicitudes que coincidan con los filtros en el historial cargado.'}
           </p>
         </div>
       )}
